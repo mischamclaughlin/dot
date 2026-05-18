@@ -1,38 +1,22 @@
+import { PiNotePencilThin } from "react-icons/pi";
+import { PiImageThin } from "react-icons/pi";
+import { PiPuzzlePieceThin } from "react-icons/pi";
+import { PiChatTeardropTextThin } from "react-icons/pi";
+
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { dotGridTheme, cssVars } from "./dotGridTheme";
+import type { Bounds, Cell } from "./dotGridGeometry";
+import { getBounds, getSelectionRect, isInBounds } from "./dotGridGeometry";
 import styles from "./DotGrid.module.css";
 
-type Cell = {
-    row: number;
-    col: number;
+type BlockType = "text" | "image" | "component" | "describe";
+
+type Block = {
+    id: string;
+    type: BlockType;
+    bounds: Bounds;
+    text?: string;
 };
-
-type Bounds = {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-};
-
-function getBounds(start: Cell, end: Cell): Bounds {
-    return {
-        top: Math.min(start.row, end.row),
-        bottom: Math.max(start.row, end.row),
-        left: Math.min(start.col, end.col),
-        right: Math.max(start.col, end.col),
-    };
-}
-
-function isInBounds(row: number, col: number, bounds: Bounds | null) {
-    if (bounds === null) return false;
-
-    return (
-        row >= bounds.top &&
-        row <= bounds.bottom &&
-        col >= bounds.left &&
-        col <= bounds.right
-    );
-}
 
 export default function DotGrid() {
     const ref = useRef<HTMLDivElement | null>(null);
@@ -43,6 +27,11 @@ export default function DotGrid() {
     const [dragCell, setDragCell] = useState<Cell | null>(null);
     const [activeCells, setActiveCells] = useState<Bounds | null>(null);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
+    const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+    const [text, setText] = useState<string>("");
+    const [blockType, setBlockType] = useState<BlockType | null>(null);
+    const [blocks, setBlocks] = useState<Block[]>([]);
 
     const previewCells = useMemo(() => {
         if (!isMouseDown || firstCell === null || dragCell === null)
@@ -58,6 +47,7 @@ export default function DotGrid() {
         const observer = new ResizeObserver(([entry]) => {
             const { width, height } = entry.contentRect;
 
+            setContainerSize({ width, height });
             setRows(Math.floor(height / dotGridTheme.cellSize));
             setCols(Math.floor(width / dotGridTheme.cellSize));
         });
@@ -67,11 +57,23 @@ export default function DotGrid() {
         return () => observer.disconnect();
     }, []);
 
+    const selectionStyle = activeCells
+        ? getSelectionRect(activeCells, {
+              cellSize: dotGridTheme.cellSize,
+              containerWidth: containerSize.width,
+              containerHeight: containerSize.height,
+              rows,
+              cols,
+          })
+        : undefined;
+
     function handleMouseDown(row: number, col: number) {
         const cell = { row, col };
 
         setFirstCell(cell);
         setDragCell(cell);
+        setBlockType(null);
+        setText("");
         setIsMouseDown(true);
     }
 
@@ -116,10 +118,132 @@ export default function DotGrid() {
         ));
     }
 
+    function saveTextBlock() {
+        if (!activeCells) return;
+
+        const trimmedText = text.trim();
+
+        if (trimmedText === "") {
+            setText("");
+            setBlockType(null);
+            setActiveCells(null);
+            return;
+        }
+
+        setBlocks((blocks) => [
+            ...blocks,
+            {
+                id: crypto.randomUUID(),
+                type: "text",
+                bounds: activeCells,
+                text: trimmedText,
+            },
+        ]);
+
+        setText("");
+        setBlockType(null);
+        setActiveCells(null);
+    }
+
     return (
         <>
             <div className={styles.pageContainer} style={cssVars} ref={ref}>
                 {viewGrid()}
+
+                {blocks.map((block) => (
+                    <div
+                        key={block.id}
+                        className={styles.textBlock}
+                        style={getSelectionRect(block.bounds, {
+                            cellSize: dotGridTheme.cellSize,
+                            containerWidth: containerSize.width,
+                            containerHeight: containerSize.height,
+                            rows,
+                            cols,
+                        })}
+                    >
+                        <p>{block.text}</p>
+                    </div>
+                ))}
+
+                {activeCells && (
+                    <>
+                        {activeCells && blockType === null && (
+                            <div
+                                className={styles.blockChoice}
+                                style={selectionStyle}
+                            >
+                                <button
+                                    className={styles.choiceBtn}
+                                    type="button"
+                                    onClick={() => setBlockType("text")}
+                                >
+                                    <PiNotePencilThin className={styles.icon} />
+                                </button>
+                                <button
+                                    className={styles.choiceBtn}
+                                    type="button"
+                                    onClick={() => setBlockType("image")}
+                                >
+                                    <PiImageThin className={styles.icon} />
+                                </button>
+                                <button
+                                    className={styles.choiceBtn}
+                                    type="button"
+                                    onClick={() => setBlockType("component")}
+                                >
+                                    <PiPuzzlePieceThin
+                                        className={styles.icon}
+                                    />
+                                </button>
+                                <button
+                                    className={styles.choiceBtn}
+                                    type="button"
+                                    onClick={() => setBlockType("describe")}
+                                >
+                                    <PiChatTeardropTextThin
+                                        className={styles.icon}
+                                    />
+                                </button>
+                            </div>
+                        )}
+
+                        {activeCells && blockType === "text" && (
+                            <input
+                                className={styles.textBox}
+                                style={selectionStyle}
+                                autoFocus
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                                onBlur={saveTextBlock}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        saveTextBlock();
+                                    }
+                                }}
+                            />
+                        )}
+
+                        {activeCells && blockType === "image" && (
+                            <div
+                                className={styles.imageBlock}
+                                style={selectionStyle}
+                            >
+                                image block
+                            </div>
+                        )}
+
+                        {activeCells && blockType === "component" && (
+                            <div
+                                className={styles.componentBlock}
+                                style={selectionStyle}
+                            >
+                                component block
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </>
     );

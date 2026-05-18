@@ -4,6 +4,7 @@
 
     user-select: none;
 
+    position: relative;
     width: 100vw;
     height: 100vh;
 
@@ -15,6 +16,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, var(--cell-size));
         justify-content: center;
+        background: transparent;
 
         .cell {
             width: var(--cell-size);
@@ -36,7 +38,7 @@
             }
         }
         .activeCell {
-            background: rgba(107, 99, 117, 0.25);
+            background: var(--accent-bg);
 
             .dot {
                 background: var(--accent);
@@ -47,8 +49,75 @@
 
             .dot {
                 transform: scale(2.5);
-                background: var(--text-h);
+                background: var(--accent);
             }
         }
+    }
+
+    .textBox {
+        z-index: 2;
+        position: absolute;
+        box-sizing: border-box;
+        resize: none;
+        border: 1px solid var(--accent-border);
+        background: var(--bg);
+        color: var(--text-h);
+        padding: 0.5rem;
+    }
+
+    .textBlock,
+    .imageBlock,
+    .componentBlock {
+        z-index: 2;
+        position: absolute;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .textBlock {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        color: var(--text-h);
+        background: var(--bg);
+    }
+
+    .textBlock p {
+        margin: 0;
+    }
+
+    .blockChoice {
+        position: absolute;
+        box-sizing: border-box;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.1rem;
+
+        .choiceBtn {
+            padding: 0.25rem 0.5rem;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            color: var(--accent);
+            font-size: 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition:
+                background-color 125ms ease-in,
+                color 125ms ease-in;
+
+            .icon {
+                font-size: 2rem;
+            }
+        }
+        .choiceBtn:hover {
+            background: var(--accent-border);
+            color: var(--bg);
+            cursor: pointer;
+        }
+    }
+
+    .blockChoice button {
+        min-width: 0;
     }
 }
