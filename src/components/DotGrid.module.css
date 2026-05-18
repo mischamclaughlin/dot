@@ -1,0 +1,54 @@
+.pageContainer {
+    --cell-size: 20px;
+    --dot-size: 10px;
+
+    user-select: none;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-auto-rows: var(--cell-size);
+    align-content: center;
+
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, var(--cell-size));
+        justify-content: center;
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            display: grid;
+            place-items: center;
+            transition:
+                background-color 125ms ease,
+                transform 250ms ease;
+
+            .dot {
+                width: var(--dot-size);
+                height: var(--dot-size);
+                background: var(--text);
+                border-radius: 50%;
+                transition:
+                    background-color 25ms linear,
+                    transform 25ms linear;
+            }
+        }
+        .activeCell {
+            background: rgba(107, 99, 117, 0.25);
+
+            .dot {
+                background: var(--accent);
+            }
+        }
+        .cell:hover {
+            cursor: crosshair;
+
+            .dot {
+                transform: scale(2.5);
+                background: var(--text-h);
+            }
+        }
+    }
+}
