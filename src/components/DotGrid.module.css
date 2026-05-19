@@ -82,29 +82,26 @@
         background: var(--bg);
     }
 
-    .textBlock p {
-        margin: 0;
-    }
-
     .blockChoice {
         position: absolute;
         box-sizing: border-box;
         z-index: 3;
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 0.1rem;
+        gap: 0.25rem;
 
         .choiceBtn {
-            padding: 0.25rem 0.5rem;
+            display: grid;
+            place-items: center;
             background: var(--accent-bg);
+            backdrop-filter: blur(1rem);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--accent-border);
             color: var(--accent);
-            font-size: 0.75rem;
-            border-radius: 4px;
-            font-weight: 600;
+            border-radius: 0.25rem;
             transition:
-                background-color 125ms ease-in,
-                color 125ms ease-in;
+                background-color 50ms ease-in,
+                color 150ms ease-in;
 
             .icon {
                 font-size: 2rem;

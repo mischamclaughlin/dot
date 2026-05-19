@@ -6,7 +6,7 @@ import { PiChatTeardropTextThin } from "react-icons/pi";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { dotGridTheme, cssVars } from "./dotGridTheme";
 import type { Bounds, Cell } from "./dotGridGeometry";
-import { getBounds, getSelectionRect, isInBounds } from "./dotGridGeometry";
+import { getBounds, getOptionsRect, getSelectionRect, isInBounds } from "./dotGridGeometry";
 import styles from "./DotGrid.module.css";
 
 type BlockType = "text" | "image" | "component" | "describe";
@@ -59,6 +59,16 @@ export default function DotGrid() {
 
     const selectionStyle = activeCells
         ? getSelectionRect(activeCells, {
+              cellSize: dotGridTheme.cellSize,
+              containerWidth: containerSize.width,
+              containerHeight: containerSize.height,
+              rows,
+              cols,
+          })
+        : undefined;
+
+    const optionsStyle = activeCells
+        ? getOptionsRect(activeCells, {
               cellSize: dotGridTheme.cellSize,
               containerWidth: containerSize.width,
               containerHeight: containerSize.height,
@@ -171,7 +181,7 @@ export default function DotGrid() {
                         {activeCells && blockType === null && (
                             <div
                                 className={styles.blockChoice}
-                                style={selectionStyle}
+                                style={optionsStyle}
                             >
                                 <button
                                     className={styles.choiceBtn}

@@ -46,6 +46,31 @@ export function getSelectionRect(bounds: Bounds, metrics: GridMetrics) {
     };
 }
 
+export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
+    const gridLeftOffset = Math.max(
+        0,
+        (metrics.containerWidth - metrics.cols * metrics.cellSize) / 2,
+    );
+
+    const gridTopOffset = Math.max(
+        0,
+        (metrics.containerHeight - metrics.rows * metrics.cellSize) / 2,
+    );
+
+    return {
+        left: gridLeftOffset + bounds.left * metrics.cellSize,
+        top:
+            gridTopOffset +
+            bounds.top * metrics.cellSize +
+            (bounds.bottom - bounds.top + 1.25) * metrics.cellSize,
+        width: Math.max(
+            175,
+            (bounds.right - bounds.left + 1) * metrics.cellSize,
+        ),
+        height: 4,
+    };
+}
+
 export function isInBounds(row: number, col: number, bounds: Bounds | null) {
     if (bounds === null) return false;
 
