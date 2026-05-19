@@ -62,23 +62,38 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
         gridTopOffset +
         bounds.top * metrics.cellSize +
         (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
-    const width: number = Math.max(
+    let width: number = Math.max(
         175,
-        (bounds.right - bounds.left + 1) * metrics.cellSize,
+        (bounds.right - bounds.left) * metrics.cellSize,
     );
-    const height: number = 40;
+    let height: number = 40;
 
-    const bottomEdge = top + height;
-    if (bottomEdge + 20 > metrics.containerHeight) {
-        top =
-            gridTopOffset +
-            bounds.top * metrics.cellSize -
-            (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
-    }
+    if (metrics.containerWidth < 240) {
+        width = metrics.cellSize * 4;
+        height = metrics.cellSize * 4;
 
-    const rightEdge = left + width;
-    if (rightEdge > metrics.containerWidth) {
-        left = gridLeftOffset + bounds.left * metrics.cellSize - width + 20;
+        const rightEdge = left + width;
+        if (rightEdge > metrics.containerWidth) {
+            left -= metrics.cellSize * 3;
+        }
+
+        const bottomEdge = top + height;
+        if (bottomEdge + 20 > metrics.containerHeight) {
+            top -= metrics.cellSize * 5 + 10;
+        }
+    } else {
+        const rightEdge = left + width;
+        if (rightEdge > metrics.containerWidth) {
+            left = gridLeftOffset + bounds.left * metrics.cellSize - width + 20;
+        }
+
+        const bottomEdge = top + height;
+        if (bottomEdge + 20 > metrics.containerHeight) {
+            top =
+                gridTopOffset +
+                bounds.top * metrics.cellSize -
+                (bounds.bottom - bounds.top) * metrics.cellSize - 45;
+        }
     }
 
     return {

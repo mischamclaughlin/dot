@@ -114,7 +114,7 @@
         }
     }
 
-    @media (max-width: 180px) {
+    @media (max-width: 220px) {
         .blockChoice {
             grid-template-columns: repeat(2, minmax(0, 40px));
         }
