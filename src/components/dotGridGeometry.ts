@@ -57,7 +57,7 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
         (metrics.containerHeight - metrics.rows * metrics.cellSize) / 2,
     );
 
-    const left: number = gridLeftOffset + bounds.left * metrics.cellSize;
+    let left: number = gridLeftOffset + bounds.left * metrics.cellSize;
     let top: number =
         gridTopOffset +
         bounds.top * metrics.cellSize +
@@ -74,6 +74,11 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
             gridTopOffset +
             bounds.top * metrics.cellSize -
             (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
+    }
+
+    const rightEdge = left + width;
+    if (rightEdge > metrics.containerWidth) {
+        left = gridLeftOffset + bounds.left * metrics.cellSize - width + 20;
     }
 
     return {
