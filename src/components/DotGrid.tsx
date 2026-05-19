@@ -6,16 +6,33 @@ import { PiChatTeardropTextThin } from "react-icons/pi";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { dotGridTheme, cssVars } from "./dotGridTheme";
 import type { Bounds, Cell } from "./dotGridGeometry";
-import { getBounds, getOptionsRect, getSelectionRect, isInBounds } from "./dotGridGeometry";
+import {
+    getBounds,
+    getOptionsRect,
+    getSelectionRect,
+    isInBounds,
+} from "./dotGridGeometry";
 import styles from "./DotGrid.module.css";
 
 type BlockType = "text" | "image" | "component" | "describe";
+
+type TextBoxStyle = {
+    textAlign: "left" | "center" | "right";
+    fontSize: number;
+    fontWeight: 400 | 500 | 600 | 700 | 800 | 900;
+    fontStyle: "normal" | "italic";
+    color: string;
+    lineHeight: number;
+    letterSpacing: number;
+    backgroundColor: string;
+};
 
 type Block = {
     id: string;
     type: BlockType;
     bounds: Bounds;
     text?: string;
+    style?: TextBoxStyle;
 };
 
 export default function DotGrid() {

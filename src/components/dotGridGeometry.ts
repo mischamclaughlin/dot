@@ -64,7 +64,7 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
         (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
     let width: number = Math.max(
         175,
-        (bounds.right - bounds.left) * metrics.cellSize,
+        (bounds.right - bounds.left + 1) * metrics.cellSize,
     );
     let height: number = 40;
 
@@ -84,15 +84,21 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
     } else {
         const rightEdge = left + width;
         if (rightEdge > metrics.containerWidth) {
-            left = gridLeftOffset + bounds.left * metrics.cellSize - width + 20;
+            left = Math.max(
+                0,
+                gridLeftOffset + bounds.left * metrics.cellSize - width + 20,
+            );
         }
 
         const bottomEdge = top + height;
         if (bottomEdge + 20 > metrics.containerHeight) {
-            top =
+            top = Math.max(
+                0,
                 gridTopOffset +
-                bounds.top * metrics.cellSize -
-                (bounds.bottom - bounds.top) * metrics.cellSize - 45;
+                    bounds.top * metrics.cellSize -
+                    (bounds.bottom - bounds.top) * metrics.cellSize -
+                    45,
+            );
         }
     }
 
