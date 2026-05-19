@@ -57,17 +57,30 @@ export function getOptionsRect(bounds: Bounds, metrics: GridMetrics) {
         (metrics.containerHeight - metrics.rows * metrics.cellSize) / 2,
     );
 
-    return {
-        left: gridLeftOffset + bounds.left * metrics.cellSize,
-        top:
+    const left: number = gridLeftOffset + bounds.left * metrics.cellSize;
+    let top: number =
+        gridTopOffset +
+        bounds.top * metrics.cellSize +
+        (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
+    const width: number = Math.max(
+        175,
+        (bounds.right - bounds.left + 1) * metrics.cellSize,
+    );
+    const height: number = 40;
+
+    const bottomEdge = top + height;
+    if (bottomEdge + 20 > metrics.containerHeight) {
+        top =
             gridTopOffset +
-            bounds.top * metrics.cellSize +
-            (bounds.bottom - bounds.top + 1.25) * metrics.cellSize,
-        width: Math.max(
-            175,
-            (bounds.right - bounds.left + 1) * metrics.cellSize,
-        ),
-        height: 4,
+            bounds.top * metrics.cellSize -
+            (bounds.bottom - bounds.top + 1.25) * metrics.cellSize;
+    }
+
+    return {
+        left: left,
+        top: top,
+        width: width,
+        height: height,
     };
 }
 
