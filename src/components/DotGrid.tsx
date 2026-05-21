@@ -1,9 +1,25 @@
-import { PiNotePencilThin } from "react-icons/pi";
-import { PiImageThin } from "react-icons/pi";
-import { PiPuzzlePieceThin } from "react-icons/pi";
-import { PiChatTeardropTextThin } from "react-icons/pi";
+import {
+    PiChatTeardropTextThin,
+    PiCheckThin,
+    PiImageThin,
+    PiNotePencilThin,
+    PiPaintBucketThin,
+    PiPuzzlePieceThin,
+    PiTextAaThin,
+    PiTextAlignCenterThin,
+    PiTextAlignLeftThin,
+    PiTextAlignRightThin,
+    PiTextBThin,
+    PiTextItalicThin,
+} from "react-icons/pi";
 
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+    type CSSProperties,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { dotGridTheme, cssVars } from "./dotGridTheme";
 import type { Bounds, Cell } from "./dotGridGeometry";
 import {
@@ -16,8 +32,10 @@ import styles from "./DotGrid.module.css";
 
 type BlockType = "text" | "image" | "component" | "describe";
 
+type TextAlign = "left" | "center" | "right";
+
 type TextBoxStyle = {
-    textAlign: "left" | "center" | "right";
+    textAlign: TextAlign;
     fontSize: number;
     fontWeight: 400 | 500 | 600 | 700 | 800 | 900;
     fontStyle: "normal" | "italic";
@@ -29,14 +47,39 @@ type TextBoxStyle = {
 
 type Block = {
     id: string;
-    type: BlockType;
+    type: "text";
     bounds: Bounds;
-    text?: string;
-    style?: TextBoxStyle;
+    text: string;
+    style: TextBoxStyle;
 };
+
+const createDefaultTextBoxStyle = (): TextBoxStyle => ({
+    textAlign: "left",
+    fontSize: 16,
+    fontWeight: 400,
+    fontStyle: "normal",
+    color: "#08060d",
+    lineHeight: 1.4,
+    letterSpacing: 0,
+    backgroundColor: "#ffffff",
+});
+
+function getTextBoxCssProperties(style: TextBoxStyle): CSSProperties {
+    return {
+        textAlign: style.textAlign,
+        fontSize: `${style.fontSize}px`,
+        fontWeight: style.fontWeight,
+        fontStyle: style.fontStyle,
+        color: style.color,
+        lineHeight: style.lineHeight,
+        letterSpacing: `${style.letterSpacing}px`,
+        backgroundColor: style.backgroundColor,
+    };
+}
 
 export default function DotGrid() {
     const ref = useRef<HTMLDivElement | null>(null);
+    const textEditorRef = useRef<HTMLDivElement | null>(null);
 
     const [rows, setRows] = useState<number>(0);
     const [cols, setCols] = useState<number>(0);
@@ -47,6 +90,9 @@ export default function DotGrid() {
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
     const [text, setText] = useState<string>("");
+    const [textStyle, setTextStyle] = useState<TextBoxStyle>(
+        createDefaultTextBoxStyle,
+    );
     const [blockType, setBlockType] = useState<BlockType | null>(null);
     const [blocks, setBlocks] = useState<Block[]>([]);
 
@@ -74,6 +120,24 @@ export default function DotGrid() {
         return () => observer.disconnect();
     }, []);
 
+    useLayoutEffect(() => {
+        if (blockType !== "text") return;
+
+        const editor = textEditorRef.current;
+        if (!editor) return;
+
+        editor.textContent = "";
+        editor.focus();
+
+        const range = document.createRange();
+        range.selectNodeContents(editor);
+        range.collapse(false);
+
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+    }, [blockType]);
+
     const selectionStyle = activeCells
         ? getSelectionRect(activeCells, {
               cellSize: dotGridTheme.cellSize,
@@ -82,6 +146,13 @@ export default function DotGrid() {
               rows,
               cols,
           })
+        : undefined;
+
+    const textEditorStyle = selectionStyle
+        ? {
+              ...selectionStyle,
+              ...getTextBoxCssProperties(textStyle),
+          }
         : undefined;
 
     const optionsStyle = activeCells
@@ -94,6 +165,25 @@ export default function DotGrid() {
           })
         : undefined;
 
+    const textControlsWidth = optionsStyle
+        ? Math.min(containerSize.width, Math.max(optionsStyle.width, 240))
+        : 0;
+
+    const textControlsStyle = optionsStyle
+        ? {
+              ...optionsStyle,
+              left: Math.max(
+                  0,
+                  Math.min(
+                      optionsStyle.left,
+                      containerSize.width - textControlsWidth,
+                  ),
+              ),
+              width: textControlsWidth,
+              height: "auto",
+          }
+        : undefined;
+
     function handleMouseDown(row: number, col: number) {
         const cell = { row, col };
 
@@ -101,6 +191,7 @@ export default function DotGrid() {
         setDragCell(cell);
         setBlockType(null);
         setText("");
+        setTextStyle(createDefaultTextBoxStyle());
         setIsMouseDown(true);
     }
 
@@ -148,10 +239,12 @@ export default function DotGrid() {
     function saveTextBlock() {
         if (!activeCells) return;
 
-        const trimmedText = text.trim();
+        const currentText = textEditorRef.current?.innerText ?? text;
+        const trimmedText = currentText.trim();
 
         if (trimmedText === "") {
             setText("");
+            setTextStyle(createDefaultTextBoxStyle());
             setBlockType(null);
             setActiveCells(null);
             return;
@@ -164,12 +257,34 @@ export default function DotGrid() {
                 type: "text",
                 bounds: activeCells,
                 text: trimmedText,
+                style: { ...textStyle },
             },
         ]);
 
         setText("");
+        setTextStyle(createDefaultTextBoxStyle());
         setBlockType(null);
         setActiveCells(null);
+    }
+
+    function updateTextStyle(style: Partial<TextBoxStyle>) {
+        setTextStyle((currentStyle) => ({
+            ...currentStyle,
+            ...style,
+        }));
+    }
+
+    function startTextBlock() {
+        setText("");
+        setTextStyle(createDefaultTextBoxStyle());
+        setBlockType("text");
+    }
+
+    function getControlButtonClass(isActive = false) {
+        return [
+            styles.controlButton,
+            isActive ? styles.activeControl : "",
+        ].join(" ");
     }
 
     return (
@@ -181,13 +296,16 @@ export default function DotGrid() {
                     <div
                         key={block.id}
                         className={styles.textBlock}
-                        style={getSelectionRect(block.bounds, {
-                            cellSize: dotGridTheme.cellSize,
-                            containerWidth: containerSize.width,
-                            containerHeight: containerSize.height,
-                            rows,
-                            cols,
-                        })}
+                        style={{
+                            ...getSelectionRect(block.bounds, {
+                                cellSize: dotGridTheme.cellSize,
+                                containerWidth: containerSize.width,
+                                containerHeight: containerSize.height,
+                                rows,
+                                cols,
+                            }),
+                            ...getTextBoxCssProperties(block.style),
+                        }}
                     >
                         <p>{block.text}</p>
                     </div>
@@ -203,7 +321,7 @@ export default function DotGrid() {
                                 <button
                                     className={styles.choiceBtn}
                                     type="button"
-                                    onClick={() => setBlockType("text")}
+                                    onClick={startTextBlock}
                                 >
                                     <PiNotePencilThin className={styles.icon} />
                                 </button>
@@ -236,20 +354,263 @@ export default function DotGrid() {
                         )}
 
                         {activeCells && blockType === "text" && (
-                            <input
-                                className={styles.textBox}
-                                style={selectionStyle}
-                                autoFocus
-                                value={text}
-                                onChange={(e) => setText(e.target.value)}
-                                onBlur={saveTextBlock}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        e.preventDefault();
-                                        saveTextBlock();
+                            <>
+                                <div
+                                    ref={textEditorRef}
+                                    className={styles.textBox}
+                                    style={textEditorStyle}
+                                    contentEditable="plaintext-only"
+                                    data-placeholder="Text"
+                                    role="textbox"
+                                    aria-multiline="true"
+                                    suppressContentEditableWarning
+                                    onInput={(e) =>
+                                        setText(e.currentTarget.innerText)
                                     }
-                                }}
-                            />
+                                    onKeyDown={(e) => {
+                                        if (
+                                            (e.metaKey || e.ctrlKey) &&
+                                            e.key === "Enter"
+                                        ) {
+                                            e.preventDefault();
+                                            saveTextBlock();
+                                        }
+                                    }}
+                                />
+    
+                                <div
+                                    className={styles.textControls}
+                                    style={textControlsStyle}
+                                >
+                                    <div className={styles.controlGroup}>
+                                        <button
+                                            className={getControlButtonClass(
+                                                textStyle.textAlign === "left",
+                                            )}
+                                            type="button"
+                                            title="Align left"
+                                            aria-label="Align left"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={() =>
+                                                updateTextStyle({
+                                                    textAlign: "left",
+                                                })
+                                            }
+                                        >
+                                            <PiTextAlignLeftThin />
+                                        </button>
+                                        <button
+                                            className={getControlButtonClass(
+                                                textStyle.textAlign ===
+                                                    "center",
+                                            )}
+                                            type="button"
+                                            title="Align center"
+                                            aria-label="Align center"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={() =>
+                                                updateTextStyle({
+                                                    textAlign: "center",
+                                                })
+                                            }
+                                        >
+                                            <PiTextAlignCenterThin />
+                                        </button>
+                                        <button
+                                            className={getControlButtonClass(
+                                                textStyle.textAlign === "right",
+                                            )}
+                                            type="button"
+                                            title="Align right"
+                                            aria-label="Align right"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={() =>
+                                                updateTextStyle({
+                                                    textAlign: "right",
+                                                })
+                                            }
+                                        >
+                                            <PiTextAlignRightThin />
+                                        </button>
+                                    </div>
+
+                                    <div className={styles.controlGroup}>
+                                        <button
+                                            className={getControlButtonClass(
+                                                textStyle.fontWeight >= 700,
+                                            )}
+                                            type="button"
+                                            title="Bold"
+                                            aria-label="Bold"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={() =>
+                                                updateTextStyle({
+                                                    fontWeight:
+                                                        textStyle.fontWeight >=
+                                                        700
+                                                            ? 400
+                                                            : 700,
+                                                })
+                                            }
+                                        >
+                                            <PiTextBThin />
+                                        </button>
+                                        <button
+                                            className={getControlButtonClass(
+                                                textStyle.fontStyle ===
+                                                    "italic",
+                                            )}
+                                            type="button"
+                                            title="Italic"
+                                            aria-label="Italic"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={() =>
+                                                updateTextStyle({
+                                                    fontStyle:
+                                                        textStyle.fontStyle ===
+                                                        "italic"
+                                                            ? "normal"
+                                                            : "italic",
+                                                })
+                                            }
+                                        >
+                                            <PiTextItalicThin />
+                                        </button>
+                                    </div>
+
+                                    <label
+                                        className={styles.controlField}
+                                        title="Font size"
+                                    >
+                                        <PiTextAaThin />
+                                        <input
+                                            type="range"
+                                            min="10"
+                                            max="72"
+                                            value={textStyle.fontSize}
+                                            onChange={(e) =>
+                                                updateTextStyle({
+                                                    fontSize: Number(
+                                                        e.target.value,
+                                                    ),
+                                                })
+                                            }
+                                        />
+                                        <output>{textStyle.fontSize}</output>
+                                    </label>
+
+                                    <label
+                                        className={styles.controlField}
+                                        title="Line height"
+                                    >
+                                        <span>LH</span>
+                                        <input
+                                            type="range"
+                                            min="0.8"
+                                            max="2.4"
+                                            step="0.1"
+                                            value={textStyle.lineHeight}
+                                            onChange={(e) =>
+                                                updateTextStyle({
+                                                    lineHeight: Number(
+                                                        e.target.value,
+                                                    ),
+                                                })
+                                            }
+                                        />
+                                        <output>
+                                            {textStyle.lineHeight.toFixed(1)}
+                                        </output>
+                                    </label>
+
+                                    <label
+                                        className={styles.controlField}
+                                        title="Letter spacing"
+                                    >
+                                        <span>LS</span>
+                                        <input
+                                            type="range"
+                                            min="-2"
+                                            max="8"
+                                            step="0.5"
+                                            value={textStyle.letterSpacing}
+                                            onChange={(e) =>
+                                                updateTextStyle({
+                                                    letterSpacing: Number(
+                                                        e.target.value,
+                                                    ),
+                                                })
+                                            }
+                                        />
+                                        <output>
+                                            {textStyle.letterSpacing}
+                                        </output>
+                                    </label>
+
+                                    <div className={styles.controlGroup}>
+                                        <label
+                                            className={styles.colorControl}
+                                            title="Text color"
+                                            aria-label="Text color"
+                                        >
+                                            <PiTextAaThin />
+                                            <input
+                                                type="color"
+                                                value={textStyle.color}
+                                                onChange={(e) =>
+                                                    updateTextStyle({
+                                                        color: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </label>
+                                        <label
+                                            className={styles.colorControl}
+                                            title="Background color"
+                                            aria-label="Background color"
+                                        >
+                                            <PiPaintBucketThin />
+                                            <input
+                                                type="color"
+                                                value={
+                                                    textStyle.backgroundColor
+                                                }
+                                                onChange={(e) =>
+                                                    updateTextStyle({
+                                                        backgroundColor:
+                                                            e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </label>
+                                        <button
+                                            className={[
+                                                styles.controlButton,
+                                                styles.confirmButton,
+                                            ].join(" ")}
+                                            type="button"
+                                            title="Save text"
+                                            aria-label="Save text"
+                                            onMouseDown={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={saveTextBlock}
+                                        >
+                                            <PiCheckThin />
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
                         )}
 
                         {activeCells && blockType === "image" && (

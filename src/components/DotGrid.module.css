@@ -58,11 +58,18 @@
         z-index: 2;
         position: absolute;
         box-sizing: border-box;
-        resize: none;
         border: 1px solid var(--accent-border);
-        background: var(--bg);
-        color: var(--text-h);
         padding: 0.5rem;
+        overflow: hidden;
+        white-space: pre-wrap;
+        user-select: text;
+        cursor: text;
+        outline: none;
+    }
+
+    .textBox:empty::before {
+        content: attr(data-placeholder);
+        color: var(--text);
     }
 
     .textBlock,
@@ -75,11 +82,12 @@
     }
 
     .textBlock {
-        display: flex;
-        align-items: center;
         padding: 0.5rem;
-        color: var(--text-h);
-        background: var(--bg);
+        white-space: pre-wrap;
+    }
+
+    .textBlock p {
+        width: 100%;
     }
 
     .blockChoice {
@@ -122,5 +130,95 @@
 
     .blockChoice button {
         min-width: 0;
+    }
+
+    .textControls {
+        position: absolute;
+        box-sizing: border-box;
+        z-index: 4;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem;
+        border: 1px solid var(--accent-border);
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(1rem);
+        -webkit-backdrop-filter: blur(1rem);
+        box-shadow: var(--shadow);
+    }
+
+    .controlGroup {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .controlButton,
+    .colorControl {
+        width: 2rem;
+        height: 2rem;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        background: var(--bg);
+        color: var(--text-h);
+        cursor: pointer;
+    }
+
+    .controlButton {
+        font-size: 1.25rem;
+    }
+
+    .activeControl,
+    .controlButton:hover,
+    .colorControl:hover {
+        border-color: var(--accent-border);
+        background: var(--accent-bg);
+        color: var(--accent);
+    }
+
+    .confirmButton {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--bg);
+    }
+
+    .confirmButton:hover {
+        color: var(--bg);
+    }
+
+    .controlField {
+        min-width: 8rem;
+        display: grid;
+        grid-template-columns: 1.25rem minmax(4rem, 1fr) 2rem;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--text-h);
+        font-size: 0.75rem;
+        line-height: 1;
+    }
+
+    .controlField input {
+        width: 100%;
+    }
+
+    .controlField output {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .colorControl {
+        position: relative;
+        overflow: hidden;
+        font-size: 1.1rem;
+    }
+
+    .colorControl input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
     }
 }
