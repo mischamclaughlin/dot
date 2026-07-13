@@ -1,224 +1,33 @@
-.pageContainer {
-    --cell-size: 20px;
-    --dot-size: 10px;
-
-    user-select: none;
-
+.dotGrid {
+    cursor: crosshair;
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    background-image: radial-gradient(circle, #333 2px, transparent 1px);
+    background-size: 15px 15px;
+}
 
-    display: grid;
-    grid-auto-rows: var(--cell-size);
-    align-content: center;
+.activeDot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: red;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition:
+        top 5ms ease-in,
+        left 5ms ease-in;
+}
 
-    .row {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, var(--cell-size));
-        justify-content: center;
-        background: transparent;
-
-        .cell {
-            width: var(--cell-size);
-            height: var(--cell-size);
-            display: grid;
-            place-items: center;
-            transition:
-                background-color 125ms ease,
-                transform 250ms ease;
-
-            .dot {
-                width: var(--dot-size);
-                height: var(--dot-size);
-                background: var(--text);
-                border-radius: 50%;
-                transition:
-                    background-color 25ms linear,
-                    transform 25ms linear;
-            }
-        }
-        .activeCell {
-            background: var(--accent-bg);
-
-            .dot {
-                background: var(--accent);
-            }
-        }
-        .cell:hover {
-            cursor: crosshair;
-
-            .dot {
-                transform: scale(2.5);
-                background: var(--accent);
-            }
-        }
-    }
-
-    .textBox {
-        z-index: 2;
-        position: absolute;
-        box-sizing: border-box;
-        border: 1px solid var(--accent-border);
-        padding: 0.5rem;
-        overflow: hidden;
-        white-space: pre-wrap;
-        user-select: text;
-        cursor: text;
-        outline: none;
-    }
-
-    .textBox:empty::before {
-        content: attr(data-placeholder);
-        color: var(--text);
-    }
-
-    .textBlock,
-    .imageBlock,
-    .componentBlock {
-        z-index: 2;
-        position: absolute;
-        box-sizing: border-box;
-        overflow: hidden;
-    }
-
-    .textBlock {
-        padding: 0.5rem;
-        white-space: pre-wrap;
-    }
-
-    .textBlock p {
-        width: 100%;
-    }
-
-    .blockChoice {
-        position: absolute;
-        box-sizing: border-box;
-        z-index: 3;
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 0.25rem;
-        backdrop-filter: blur(1rem);
-        -webkit-backdrop-filter: blur(1rem);
-
-        .choiceBtn {
-            display: grid;
-            place-items: center;
-            background: var(--accent-bg);
-            border: 1px solid var(--accent-border);
-            color: var(--accent);
-            border-radius: 0.25rem;
-            transition:
-                background-color 50ms ease-in,
-                color 150ms ease-in;
-
-            .icon {
-                font-size: 2rem;
-            }
-        }
-        .choiceBtn:hover {
-            background: var(--accent-border);
-            color: var(--bg);
-            cursor: pointer;
-        }
-    }
-
-    @media (max-width: 220px) {
-        .blockChoice {
-            grid-template-columns: repeat(2, minmax(0, 40px));
-        }
-    }
-
-    .blockChoice button {
-        min-width: 0;
-    }
-
-    .textControls {
-        position: absolute;
-        box-sizing: border-box;
-        z-index: 4;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.35rem;
-        border: 1px solid var(--accent-border);
-        background: rgba(255, 255, 255, 0.78);
-        backdrop-filter: blur(1rem);
-        -webkit-backdrop-filter: blur(1rem);
-        box-shadow: var(--shadow);
-    }
-
-    .controlGroup {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .controlButton,
-    .colorControl {
-        width: 2rem;
-        height: 2rem;
-        display: grid;
-        place-items: center;
-        border: 1px solid var(--border);
-        border-radius: 0.25rem;
-        background: var(--bg);
-        color: var(--text-h);
-        cursor: pointer;
-    }
-
-    .controlButton {
-        font-size: 1.25rem;
-    }
-
-    .activeControl,
-    .controlButton:hover,
-    .colorControl:hover {
-        border-color: var(--accent-border);
-        background: var(--accent-bg);
-        color: var(--accent);
-    }
-
-    .confirmButton {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: var(--bg);
-    }
-
-    .confirmButton:hover {
-        color: var(--bg);
-    }
-
-    .controlField {
-        min-width: 8rem;
-        display: grid;
-        grid-template-columns: 1.25rem minmax(4rem, 1fr) 2rem;
-        align-items: center;
-        gap: 0.35rem;
-        color: var(--text-h);
-        font-size: 0.75rem;
-        line-height: 1;
-    }
-
-    .controlField input {
-        width: 100%;
-    }
-
-    .controlField output {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .colorControl {
-        position: relative;
-        overflow: hidden;
-        font-size: 1.1rem;
-    }
-
-    .colorControl input {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-    }
+.draftDot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: red;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition:
+        top 5ms ease-in,
+        left 5ms ease-in;
 }
