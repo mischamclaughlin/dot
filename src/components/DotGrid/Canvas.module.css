@@ -40,3 +40,11 @@
     backdrop-filter: blur(3px);
     pointer-events: none;
 }
+
+.active {
+    position: absolute;
+}
+
+.image {
+    background-color: red;
+}

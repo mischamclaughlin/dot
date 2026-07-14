@@ -1,30 +1,33 @@
 import React, { useEffect, useState, type ReactElement } from "react";
+
+import type {
+    CanvasTool,
+    SelectionArea,
+    DotSelection,
+} from "./types/DotGridTypes";
+import { GRID_SIZE } from "./DotGrid";
+
 import styles from "./Canvas.module.css";
-import type { CanvasTool } from "./DotGrid";
-
-export const GRID_SIZE = 15;
-
-type DotSelection = { x: number; y: number };
-
-type SelectionArea = {
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-};
 
 type CanvasProps = {
     activeTool: CanvasTool;
+    activeArea: SelectionArea | null;
+    setActiveArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
+    toolArea: SelectionArea | null;
 };
 
-export default function Canvas({ activeTool }: CanvasProps): ReactElement {
+export default function Canvas({
+    activeTool,
+    activeArea,
+    setActiveArea,
+    toolArea,
+}: CanvasProps): ReactElement {
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
     const [activeDot, setActiveDot] = useState<DotSelection | null>(null);
     const [startArea, setStartArea] = useState<DotSelection | null>(null);
 
     const [tempArea, setTempArea] = useState<SelectionArea | null>(null);
-    const [activeArea, setActiveArea] = useState<SelectionArea | null>(null);
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -39,7 +42,7 @@ export default function Canvas({ activeTool }: CanvasProps): ReactElement {
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, []);
+    }, [setActiveArea]);
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
         const nextactiveDot = getNextactiveDot(e);
@@ -151,6 +154,36 @@ export default function Canvas({ activeTool }: CanvasProps): ReactElement {
                             top: activeArea.top,
                             width: activeArea.width,
                             height: activeArea.height,
+                        }}
+                    />
+                )}
+                {toolArea && activeTool === "text" && (
+                    <textarea
+                        className={
+                            activeTool
+                                ? `${styles[activeTool]} ${styles.active}`
+                                : undefined
+                        }
+                        style={{
+                            left: toolArea.left,
+                            top: toolArea.top,
+                            width: toolArea.width,
+                            height: toolArea.height,
+                        }}
+                    />
+                )}
+                {toolArea && activeTool === "image" && (
+                    <div
+                        className={
+                            activeTool
+                                ? `${styles[activeTool]} ${styles.active}`
+                                : undefined
+                        }
+                        style={{
+                            left: toolArea.left,
+                            top: toolArea.top,
+                            width: toolArea.width,
+                            height: toolArea.height,
                         }}
                     />
                 )}

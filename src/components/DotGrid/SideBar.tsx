@@ -1,10 +1,9 @@
 import React, { useState, type ReactElement } from "react";
 
-import { type CanvasTool } from "./DotGrid";
+import type { CanvasTool } from "./types/DotGridTypes";
+import { MAX_WIDTH_RATIO } from "./DotGrid";
 
 import styles from "./SideBar.module.css";
-
-const MAX_WIDTH_RATIO = 0.85;
 
 type SideBarProps = {
     activeTool: CanvasTool;
@@ -48,16 +47,44 @@ export default function SideBar({
                 <div className={styles.sideBarContainer}>
                     <h1 className={styles.title}>Dot.</h1>
                     <div className={styles.actionContainer}>
-                        <button onClick={() => onSelectTool("text")}>
+                        <button
+                            className={
+                                activeTool === "text"
+                                    ? `${styles[activeTool]} ${styles.active}`
+                                    : undefined
+                            }
+                            onClick={() => onSelectTool("text")}
+                        >
                             Text
                         </button>
-                        <button onClick={() => onSelectTool("image")}>
+                        <button
+                            className={
+                                activeTool === "image"
+                                    ? `${styles[activeTool]} ${styles.active}`
+                                    : undefined
+                            }
+                            onClick={() => onSelectTool("image")}
+                        >
                             Image
                         </button>
-                        <button onClick={() => onSelectTool("component")}>
+                        <button
+                            className={
+                                activeTool === "component"
+                                    ? `${styles[activeTool]} ${styles.active}`
+                                    : undefined
+                            }
+                            onClick={() => onSelectTool("component")}
+                        >
                             Component
                         </button>
-                        <button onClick={() => onSelectTool("describe")}>
+                        <button
+                            className={
+                                activeTool === "describe"
+                                    ? `${styles[activeTool]} ${styles.active}`
+                                    : undefined
+                            }
+                            onClick={() => onSelectTool("describe")}
+                        >
                             Describe
                         </button>
                     </div>
