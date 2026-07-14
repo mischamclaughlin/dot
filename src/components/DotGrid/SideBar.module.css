@@ -1,0 +1,38 @@
+.container {
+    min-width: fit-content;
+    max-width: 85%;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sideBarContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+}
+
+.title {
+    margin-bottom: 2rem;
+}
+
+.actionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+.dragBarContainer {
+    width: 15px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
+    cursor: col-resize;
+}
+
+.dragBar {
+    width: 1px;
+    background-color: var(--foreground);
+}

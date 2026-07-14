@@ -6,7 +6,7 @@
     overflow: hidden;
     background-image: radial-gradient(
         circle,
-        var(--foreground) 2px,
+        var(--foreground-faded) 2px,
         transparent 1px
     );
     background-size: 15px 15px;
@@ -22,27 +22,21 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition:
-        top 1ms ease-in,
-        left 1ms ease-in;
+        top 5ms ease-in,
+        left 5ms ease-in;
 }
 
-.draftDot {
+.tempArea {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: var(--background);
-    transform: translate(-50%, -50%);
+    background-color: var(--background-faded);
+    border: 1px solid var(--background);
     pointer-events: none;
 }
 
-.selectedDot {
+.activeArea {
     position: absolute;
-    width: 15px;
-    height: 15px;
-    transform: translate(-50%, -50%);
-    background-color: var(--background-faded);
-    backdrop-filter: blur(10px);
-    filter: blur(1px);
+    background-color: transparent;
+    border: 1px solid var(--background);
+    backdrop-filter: blur(3px);
     pointer-events: none;
 }
