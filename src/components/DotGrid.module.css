@@ -1,17 +1,22 @@
 .dotGrid {
-    cursor: crosshair;
     position: relative;
+    width: 100%;
     min-height: 100vh;
-    background-image: radial-gradient(circle, #333 2px, transparent 1px);
+    background-image: radial-gradient(
+        circle,
+        var(--foreground) 2px,
+        transparent 1px
+    );
     background-size: 15px 15px;
+    cursor: crosshair;
 }
 
 .activeDot {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background-color: red;
+    background-color: var(--background);
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition:
@@ -24,8 +29,22 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: red;
+    background-color: var(--background);
     transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition:
+        top 5ms ease-in,
+        left 5ms ease-in;
+}
+
+.selectedDot {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    transform: translate(-50%, -50%);
+    background-color: var(--background-faded);
+    backdrop-filter: blur(10px);
+    filter: blur(1px);
     pointer-events: none;
     transition:
         top 5ms ease-in,
