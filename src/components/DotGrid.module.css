@@ -1,7 +1,9 @@
 .dotGrid {
     position: relative;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     min-height: 100vh;
+    overflow: hidden;
     background-image: radial-gradient(
         circle,
         var(--foreground) 2px,
@@ -20,8 +22,8 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition:
-        top 5ms ease-in,
-        left 5ms ease-in;
+        top 1ms ease-in,
+        left 1ms ease-in;
 }
 
 .draftDot {
@@ -32,9 +34,6 @@
     background-color: var(--background);
     transform: translate(-50%, -50%);
     pointer-events: none;
-    transition:
-        top 5ms ease-in,
-        left 5ms ease-in;
 }
 
 .selectedDot {
@@ -46,7 +45,4 @@
     backdrop-filter: blur(10px);
     filter: blur(1px);
     pointer-events: none;
-    transition:
-        top 5ms ease-in,
-        left 5ms ease-in;
 }

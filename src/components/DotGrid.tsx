@@ -12,17 +12,32 @@ export default function DotGrid(): ReactElement {
     const [draftDots, setDraftDots] = useState<DotSelection[]>([]);
     const [selectedDots, setSelectedDots] = useState<DotSelection[]>([]);
 
+    function snapToGrid(value: number, maxValue: number) {
+        const offset = GRID_SIZE / 2;
+        const snapped =
+            Math.round((value - offset) / GRID_SIZE) * GRID_SIZE + offset;
+        const maxGridPos =
+            Math.floor((maxValue - offset) / GRID_SIZE) * GRID_SIZE + offset;
+
+        return Math.min(
+            Math.max(snapped, offset),
+            Math.max(offset, maxGridPos),
+        );
+    }
+
+    function isSameDot(dot: DotSelection | null, nextDot: DotSelection) {
+        return dot?.x === nextDot.x && dot.y === nextDot.y;
+    }
+
     function getNextPos(e: React.MouseEvent<HTMLDivElement>) {
         const rect = e.currentTarget.getBoundingClientRect();
 
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        const offset = GRID_SIZE / 2;
-
         const nextPos: DotSelection = {
-            x: Math.round((x - offset) / GRID_SIZE) * GRID_SIZE + offset,
-            y: Math.round((y - offset) / GRID_SIZE) * GRID_SIZE + offset,
+            x: snapToGrid(x, rect.width),
+            y: snapToGrid(y, rect.height),
         };
 
         return nextPos;
@@ -46,6 +61,9 @@ export default function DotGrid(): ReactElement {
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
         const nextPos = getNextPos(e);
+
+        if (isSameDot(pos, nextPos)) return;
+
         setPos(nextPos);
 
         if (!isMouseDown || !startPos) return;
@@ -69,6 +87,12 @@ export default function DotGrid(): ReactElement {
         setDraftDots([]);
     }
 
+    function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+        if (e.key !== "Escape") return;
+
+        setSelectedDots([]);
+    }
+
     return (
         <>
             <div
@@ -76,6 +100,7 @@ export default function DotGrid(): ReactElement {
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
+                onKeyDown={handleKeyDown}
             >
                 <div
                     className={styles.activeDot}
