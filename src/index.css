@@ -1,3 +1,12 @@
+:root {
+    --text: #000000;
+    --accent: #ff0000;
+    --accent-faded: #ff000030;
+    --background: var(--accent);
+    --background-faded: var(--accent-faded);
+    --foreground: var(--text);
+}
+
 * {
     margin: 0;
     padding: 0;
