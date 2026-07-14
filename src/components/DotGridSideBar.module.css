@@ -1,0 +1,10 @@
+.container {
+    min-width: 100px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dragBar {
+    min-width: 5px;
+    cursor: col-resize;
+}
