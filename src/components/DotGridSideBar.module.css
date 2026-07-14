@@ -5,6 +5,16 @@
 }
 
 .dragBar {
-    min-width: 5px;
+    min-width: 15px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
     cursor: col-resize;
+}
+
+.bar {
+    min-width: 1px;
+    border: none;
+    background-color: var(--foreground);
 }
