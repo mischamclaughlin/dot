@@ -1,4 +1,4 @@
-export type DotSelection = { x: number; y: number };
+export type Dot = { x: number; y: number };
 
 export type SelectionArea = {
     left: number;
@@ -8,3 +8,11 @@ export type SelectionArea = {
 };
 
 export type CanvasTool = "text" | "image" | "component" | "describe" | null;
+
+type Variant = "title" | "subTitle" | "heading" | "subHeading" | "body" | null;
+type Align = "left" | "right" | "center" | "justify" | null;
+
+export type AreaStyle = {
+    variant?: Variant;
+    align?: Align;
+};
