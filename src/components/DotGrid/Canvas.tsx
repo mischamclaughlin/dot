@@ -1,19 +1,33 @@
-import React, { useEffect, useState, type ReactElement } from "react";
+import React, { type ReactElement, useEffect, useState } from "react";
 
 import type {
+    AreaStyle,
     CanvasTool,
+    Dot,
     SelectionArea,
-    DotSelection,
 } from "./types/DotGridTypes";
 import { GRID_SIZE } from "./DotGrid";
 
 import styles from "./Canvas.module.css";
+import {
+    alignCenter,
+    alignJustify,
+    alignLeft,
+    alignRight,
+    variantHeading,
+    variantBody,
+    variantSubHeading,
+    variantSubTitle,
+    variantTitle,
+} from "./styles/DotGridStyles";
 
 type CanvasProps = {
     activeTool: CanvasTool;
     activeArea: SelectionArea | null;
     setActiveArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
     toolArea: SelectionArea | null;
+    onDeselectTool: () => void;
+    activeStyle: AreaStyle | null;
 };
 
 export default function Canvas({
@@ -21,13 +35,32 @@ export default function Canvas({
     activeArea,
     setActiveArea,
     toolArea,
+    onDeselectTool,
+    activeStyle,
 }: CanvasProps): ReactElement {
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
-    const [activeDot, setActiveDot] = useState<DotSelection | null>(null);
-    const [startArea, setStartArea] = useState<DotSelection | null>(null);
+    const [activeDot, setActiveDot] = useState<Dot | null>(null);
+    const [startArea, setStartArea] = useState<Dot | null>(null);
 
     const [tempArea, setTempArea] = useState<SelectionArea | null>(null);
+
+    function updateStyleVariant(style: AreaStyle) {
+        if (style.variant === "title") return variantTitle;
+        if (style.variant === "subTitle") return variantSubTitle;
+        if (style.variant === "heading") return variantHeading;
+        if (style.variant === "subHeading") return variantSubHeading;
+
+        return variantBody;
+    }
+
+    function updateStyleAlign(style: AreaStyle) {
+        if (style.align === "right") return alignRight.textAlign;
+        if (style.align === "center") return alignCenter.textAlign;
+        if (style.align === "justify") return alignJustify.textAlign;
+
+        return alignLeft.textAlign;
+    }
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -37,12 +70,13 @@ export default function Canvas({
             setStartArea(null);
             setTempArea(null);
             setActiveArea(null);
+            onDeselectTool();
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [setActiveArea]);
+    }, [setActiveArea, onDeselectTool]);
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
         const nextactiveDot = getNextactiveDot(e);
@@ -84,7 +118,7 @@ export default function Canvas({
         );
     }
 
-    function isSameDot(dot: DotSelection | null, nextDot: DotSelection) {
+    function isSameDot(dot: Dot | null, nextDot: Dot) {
         return dot?.x === nextDot.x && dot.y === nextDot.y;
     }
 
@@ -94,7 +128,7 @@ export default function Canvas({
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        const nextactiveDot: DotSelection = {
+        const nextactiveDot: Dot = {
             x: snapToGrid(x, rect.width),
             y: snapToGrid(y, rect.height),
         };
@@ -102,7 +136,7 @@ export default function Canvas({
         return nextactiveDot;
     }
 
-    function updateTempArea(start: DotSelection, end: DotSelection) {
+    function updateTempArea(start: Dot, end: Dot) {
         const minX = Math.min(start.x, end.x);
         const maxX = Math.max(start.x, end.x);
         const minY = Math.min(start.y, end.y);
@@ -124,7 +158,7 @@ export default function Canvas({
     return (
         <>
             <div
-                className={styles.dotGrid}
+                className={styles.container}
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
@@ -161,7 +195,7 @@ export default function Canvas({
                     <textarea
                         className={
                             activeTool
-                                ? `${styles[activeTool]} ${styles.active}`
+                                ? `${styles[activeTool]} ${styles.activeTool}`
                                 : undefined
                         }
                         style={{
@@ -169,6 +203,15 @@ export default function Canvas({
                             top: toolArea.top,
                             width: toolArea.width,
                             height: toolArea.height,
+                            fontSize: activeStyle
+                                ? updateStyleVariant(activeStyle).fontSize
+                                : undefined,
+                            fontWeight: activeStyle
+                                ? updateStyleVariant(activeStyle).fontWeight
+                                : undefined,
+                            textAlign: activeStyle
+                                ? updateStyleAlign(activeStyle)
+                                : undefined,
                         }}
                     />
                 )}
@@ -176,7 +219,7 @@ export default function Canvas({
                     <div
                         className={
                             activeTool
-                                ? `${styles[activeTool]} ${styles.active}`
+                                ? `${styles[activeTool]} ${styles.activeTool}`
                                 : undefined
                         }
                         style={{

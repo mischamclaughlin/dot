@@ -16,11 +16,23 @@
     margin-bottom: 2rem;
 }
 
-.actionContainer {
+.controlContainer,
+.actionContainer,
+.toolControls {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     gap: 1rem;
+}
+
+.toolControls {
+    margin-top: 2rem;
+}
+
+.variantContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .dragBarContainer {

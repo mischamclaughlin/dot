@@ -1,4 +1,4 @@
-.dotGrid {
+.container {
     position: relative;
     flex: 1;
     min-width: 0;
@@ -41,7 +41,7 @@
     pointer-events: none;
 }
 
-.active {
+.activeTool {
     position: absolute;
 }
 
