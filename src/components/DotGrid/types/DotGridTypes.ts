@@ -16,3 +16,11 @@ export type AreaStyle = {
     variant?: Variant;
     align?: Align;
 };
+
+export type Element = {
+    text: string;
+    style: AreaStyle | null;
+    area: SelectionArea | null;
+};
+
+export type Elements = { elements: Element[] };

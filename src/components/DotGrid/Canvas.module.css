@@ -48,3 +48,8 @@
 .image {
     background-color: red;
 }
+
+.savedElement {
+    position: absolute;
+    background: green;
+}

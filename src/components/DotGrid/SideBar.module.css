@@ -13,26 +13,25 @@
 }
 
 .title {
+    border: 1px solid var(--foreground);
     margin-bottom: 2rem;
 }
 
-.controlContainer,
 .actionContainer,
-.toolControls {
+.controlsContainer,
+.controlContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    gap: 1rem;
 }
 
-.toolControls {
-    margin-top: 2rem;
-}
-
-.variantContainer {
-    display: flex;
-    flex-direction: column;
+.actionContainer,
+.controlContainer {
     gap: 0.25rem;
+}
+
+.controlsContainer {
+    gap: 1rem;
 }
 
 .dragBarContainer {
@@ -44,6 +43,11 @@
     cursor: col-resize;
 }
 
+.toolTitle {
+    border-bottom: 1px solid var(--foreground);
+    margin-bottom: 0.25rem;
+}
+
 .dragBar {
     width: 1px;
     background-color: var(--foreground);
@@ -51,4 +55,8 @@
 
 .active {
     border-color: var(--background);
+}
+
+.button:hover {
+    background-color: var(--foreground-faded);
 }

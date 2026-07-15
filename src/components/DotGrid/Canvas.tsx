@@ -1,9 +1,15 @@
-import React, { type ReactElement, useEffect, useState } from "react";
+import React, {
+    type CSSProperties,
+    type ReactElement,
+    useEffect,
+    useState,
+} from "react";
 
 import type {
     AreaStyle,
     CanvasTool,
     Dot,
+    Element,
     SelectionArea,
 } from "./types/DotGridTypes";
 import { GRID_SIZE } from "./DotGrid";
@@ -26,8 +32,12 @@ type CanvasProps = {
     activeArea: SelectionArea | null;
     setActiveArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
     toolArea: SelectionArea | null;
+    setToolArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
     onDeselectTool: () => void;
     activeStyle: AreaStyle | null;
+    elements: Element[] | null;
+    text: string;
+    onSetText: (value: string) => void;
 };
 
 export default function Canvas({
@@ -35,8 +45,12 @@ export default function Canvas({
     activeArea,
     setActiveArea,
     toolArea,
+    setToolArea,
     onDeselectTool,
     activeStyle,
+    elements,
+    text,
+    onSetText,
 }: CanvasProps): ReactElement {
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
@@ -44,23 +58,6 @@ export default function Canvas({
     const [startArea, setStartArea] = useState<Dot | null>(null);
 
     const [tempArea, setTempArea] = useState<SelectionArea | null>(null);
-
-    function updateStyleVariant(style: AreaStyle) {
-        if (style.variant === "title") return variantTitle;
-        if (style.variant === "subTitle") return variantSubTitle;
-        if (style.variant === "heading") return variantHeading;
-        if (style.variant === "subHeading") return variantSubHeading;
-
-        return variantBody;
-    }
-
-    function updateStyleAlign(style: AreaStyle) {
-        if (style.align === "right") return alignRight.textAlign;
-        if (style.align === "center") return alignCenter.textAlign;
-        if (style.align === "justify") return alignJustify.textAlign;
-
-        return alignLeft.textAlign;
-    }
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -101,7 +98,12 @@ export default function Canvas({
     function handleMouseUp() {
         setIsMouseDown(false);
         setStartArea(null);
-        setActiveArea(tempArea);
+
+        if (tempArea) {
+            if (activeTool) setToolArea(tempArea);
+            else setActiveArea(tempArea);
+        }
+
         setTempArea(null);
     }
 
@@ -155,6 +157,39 @@ export default function Canvas({
         });
     }
 
+    function updateStyleVariant(style: AreaStyle) {
+        if (style.variant === "title") return variantTitle;
+        if (style.variant === "subTitle") return variantSubTitle;
+        if (style.variant === "heading") return variantHeading;
+        if (style.variant === "subHeading") return variantSubHeading;
+
+        return variantBody;
+    }
+
+    function updateStyleAlign(style: AreaStyle) {
+        if (style.align === "right") return alignRight;
+        if (style.align === "center") return alignCenter;
+        if (style.align === "justify") return alignJustify;
+
+        return alignLeft;
+    }
+
+    function createElementProps(element: Element) {
+        const style = element.style ?? {
+            variant: "body",
+            align: "left",
+        };
+
+        return {
+            text: element.text,
+            style: {
+                ...(element.area ?? {}),
+                ...updateStyleVariant(style),
+                ...updateStyleAlign(style),
+            } satisfies CSSProperties,
+        };
+    }
+
     return (
         <>
             <div
@@ -193,6 +228,10 @@ export default function Canvas({
                 )}
                 {toolArea && activeTool === "text" && (
                     <textarea
+                        value={text}
+                        onChange={(e) => onSetText(e.target.value)}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseUp={(e) => e.stopPropagation()}
                         className={
                             activeTool
                                 ? `${styles[activeTool]} ${styles.activeTool}`
@@ -210,7 +249,7 @@ export default function Canvas({
                                 ? updateStyleVariant(activeStyle).fontWeight
                                 : undefined,
                             textAlign: activeStyle
-                                ? updateStyleAlign(activeStyle)
+                                ? updateStyleAlign(activeStyle).textAlign
                                 : undefined,
                         }}
                     />
@@ -230,6 +269,19 @@ export default function Canvas({
                         }}
                     />
                 )}
+                {elements &&
+                    elements.map((element) => {
+                        const props = createElementProps(element);
+                        return (
+                            <div
+                                key={`${props.style}`}
+                                className={styles.savedElement}
+                                style={props.style}
+                            >
+                                {props.text}
+                            </div>
+                        );
+                    })}
             </div>
         </>
     );

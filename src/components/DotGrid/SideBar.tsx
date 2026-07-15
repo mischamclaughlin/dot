@@ -9,12 +9,14 @@ type SideBarProps = {
     activeTool: CanvasTool;
     onSelectTool: (tool: CanvasTool) => void;
     onSelectStyle: (style: AreaStyle) => void;
+    onSaveElement: (isSave: boolean) => void;
 };
 
 export default function SideBar({
     activeTool,
     onSelectTool,
     onSelectStyle,
+    onSaveElement,
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [width, setWidth] = useState<number>(150);
@@ -48,64 +50,63 @@ export default function SideBar({
             <div className={styles.container} style={{ width: `${width}px` }}>
                 <div className={styles.sideBarContainer}>
                     <h1 className={styles.title}>Dot.</h1>
-                    <div className={styles.controlContainer}>
-                        <div className={styles.actionContainer}>
-                            {!activeTool && (
-                                <>
-                                    <button
-                                        className={
-                                            activeTool === "text"
-                                                ? `${styles[activeTool]} ${styles.active}`
-                                                : undefined
-                                        }
-                                        onClick={() => onSelectTool("text")}
-                                    >
-                                        Text
-                                    </button>
-                                    <button
-                                        className={
-                                            activeTool === "image"
-                                                ? `${styles[activeTool]} ${styles.active}`
-                                                : undefined
-                                        }
-                                        onClick={() => onSelectTool("image")}
-                                    >
-                                        Image
-                                    </button>
-                                    <button
-                                        className={
-                                            activeTool === "component"
-                                                ? `${styles[activeTool]} ${styles.active}`
-                                                : undefined
-                                        }
-                                        onClick={() =>
-                                            onSelectTool("component")
-                                        }
-                                    >
-                                        Component
-                                    </button>
-                                    <button
-                                        className={
-                                            activeTool === "describe"
-                                                ? `${styles[activeTool]} ${styles.active}`
-                                                : undefined
-                                        }
-                                        onClick={() => onSelectTool("describe")}
-                                    >
-                                        Describe
-                                    </button>
-                                </>
-                            )}
-                            {activeTool && (
-                                <h3>{activeTool.toString().toUpperCase()}</h3>
-                            )}
-                        </div>
+                    <div className={styles.actionContainer}>
+                        {!activeTool && (
+                            <>
+                                <button
+                                    className={
+                                        activeTool === "text"
+                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                            : styles.button
+                                    }
+                                    onClick={() => onSelectTool("text")}
+                                >
+                                    Text
+                                </button>
+                                <button
+                                    className={
+                                        activeTool === "image"
+                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                            : styles.button
+                                    }
+                                    onClick={() => onSelectTool("image")}
+                                >
+                                    Image
+                                </button>
+                                <button
+                                    className={
+                                        activeTool === "component"
+                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                            : styles.button
+                                    }
+                                    onClick={() => onSelectTool("component")}
+                                >
+                                    Component
+                                </button>
+                                <button
+                                    className={
+                                        activeTool === "describe"
+                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                            : styles.button
+                                    }
+                                    onClick={() => onSelectTool("describe")}
+                                >
+                                    Describe
+                                </button>
+                            </>
+                        )}
+                        {activeTool && (
+                            <h3 className={styles.toolTitle}>
+                                {activeTool.toString().toUpperCase()}
+                            </h3>
+                        )}
                     </div>
-                    <div className={styles.toolControls}>
+                    <div className={styles.controlsContainer}>
                         {activeTool === "text" && (
                             <>
-                                <div className={styles.variantContainer}>
+                                <div className={styles.controlContainer}>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({ variant: "title" })
                                         }
@@ -113,6 +114,7 @@ export default function SideBar({
                                         Title
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 variant: "subTitle",
@@ -122,6 +124,7 @@ export default function SideBar({
                                         Subtitle
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 variant: "heading",
@@ -131,6 +134,7 @@ export default function SideBar({
                                         Heading
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 variant: "subHeading",
@@ -140,6 +144,7 @@ export default function SideBar({
                                         Subheading
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({ variant: "body" })
                                         }
@@ -147,8 +152,9 @@ export default function SideBar({
                                         Body
                                     </button>
                                 </div>
-                                <div className={styles.variantContainer}>
+                                <div className={styles.controlContainer}>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({ align: "left" })
                                         }
@@ -156,6 +162,7 @@ export default function SideBar({
                                         Left
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 align: "right",
@@ -165,6 +172,7 @@ export default function SideBar({
                                         Right
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 align: "center",
@@ -174,6 +182,7 @@ export default function SideBar({
                                         Center
                                     </button>
                                     <button
+                                        className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
                                                 align: "justify",
@@ -185,7 +194,14 @@ export default function SideBar({
                                 </div>
                             </>
                         )}
-                        {activeTool && <button>Save</button>}
+                        {activeTool && (
+                            <button
+                                className={styles.button}
+                                onClick={() => onSaveElement(true)}
+                            >
+                                Save
+                            </button>
+                        )}
                     </div>
                 </div>
                 <div
