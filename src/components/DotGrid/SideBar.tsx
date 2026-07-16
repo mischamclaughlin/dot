@@ -10,14 +10,16 @@ type SideBarProps = {
     activeTool: CanvasTool;
     onSelectTool: (tool: CanvasTool) => void;
     onSelectStyle: (style: AreaStyle) => void;
-    onSaveElement: (isSave: boolean) => void;
+    onSaveItem: (isSave: boolean) => void;
+    onGoBack: (isBack: boolean) => void;
 };
 
 export default function SideBar({
     activeTool,
     onSelectTool,
     onSelectStyle,
-    onSaveElement,
+    onSaveItem,
+    onGoBack,
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [width, setWidth] = useState<number>(150);
@@ -196,12 +198,20 @@ export default function SideBar({
                             </>
                         )}
                         {activeTool && (
-                            <button
-                                className={styles.button}
-                                onClick={() => onSaveElement(true)}
-                            >
-                                Save
-                            </button>
+                            <div className={styles.controlContainer}>
+                                <button
+                                    className={styles.button}
+                                    onClick={() => onGoBack(true)}
+                                >
+                                    Back
+                                </button>
+                                <button
+                                    className={styles.button}
+                                    onClick={() => onSaveItem(true)}
+                                >
+                                    Save
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>

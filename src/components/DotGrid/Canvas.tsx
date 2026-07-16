@@ -8,25 +8,27 @@ import type {
     SelectionArea,
 } from "./types/DotGridTypes";
 
-import { GRID_SIZE } from "./DotGrid";
-
 import styles from "./Canvas.module.css";
 import { DotGridService } from "./services/DotGridService";
 
 type CanvasProps = {
     activeTool: CanvasTool;
-    onDeselectTool: () => void;
     activeStyle: AreaStyle | null;
     isSaved: boolean;
-    onSavedElement: (isSaved: boolean) => void;
+    isGoBack: boolean;
+    onSelectTool: (tool: CanvasTool) => void;
+    onSaveItem: (isSaved: boolean) => void;
+    onGoBack: (isBack: boolean) => void;
 };
 
 export default function Canvas({
     activeTool,
-    onDeselectTool,
     activeStyle,
     isSaved,
-    onSavedElement,
+    isGoBack,
+    onSelectTool,
+    onSaveItem,
+    onGoBack,
 }: CanvasProps): ReactElement {
     const service = new DotGridService();
 
@@ -39,29 +41,39 @@ export default function Canvas({
     const [selectArea, setSelectArea] = useState<SelectionArea | null>(null);
     const [toolArea, setToolArea] = useState<SelectionArea | null>(null);
 
-    const [items, setItems] = useState<CanvasItem[] | null>(null);
-
     const [text, setText] = useState("");
+
+    const [items, setItems] = useState<CanvasItem[] | null>(null);
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
             if (e.key !== "Escape") return;
 
             setIsDragging(false);
+
             setDragStartDot(null);
+
             setDraftArea(null);
             setSelectArea(null);
-            onDeselectTool();
+            setToolArea(null);
+
+            setText("");
+
+            onSelectTool(null);
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [setSelectArea, onDeselectTool]);
+    }, [setSelectArea, onSelectTool]);
 
     useEffect(() => {
         function handleElementSave() {
             if (!isSaved) return;
+
+            onSaveItem(false);
+
+            if (!toolArea || !activeTool) return;
 
             const item: CanvasItem = {
                 id: crypto.randomUUID(),
@@ -73,13 +85,12 @@ export default function Canvas({
 
             setItems((current) => [...(current ?? []), item]);
 
-            onSavedElement(false);
             setToolArea(null);
             setText("");
         }
 
         handleElementSave();
-    }, [activeStyle, activeTool, isSaved, onSavedElement, text, toolArea]);
+    }, [activeStyle, activeTool, isSaved, onSaveItem, text, toolArea]);
 
     useEffect(() => {
         function handleToolArea() {
@@ -91,6 +102,22 @@ export default function Canvas({
 
         handleToolArea();
     }, [activeTool, selectArea]);
+
+    useEffect(() => {
+        function handleGoBack() {
+            if (!isGoBack) return;
+
+            onGoBack(false);
+            onSelectTool(null);
+
+            if (!toolArea) return;
+
+            setSelectArea(toolArea);
+            setToolArea(null);
+        }
+
+        handleGoBack();
+    }, [isGoBack, onGoBack, onSelectTool, toolArea]);
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -148,7 +175,9 @@ export default function Canvas({
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
-                style={{ backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px` }}
+                style={{
+                    backgroundSize: `${service.gridSize}px ${service.gridSize}px`,
+                }}
             >
                 {hoverDot && (
                     <div

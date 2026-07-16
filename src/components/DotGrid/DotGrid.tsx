@@ -7,7 +7,6 @@ import SideBar from "./SideBar";
 
 import styles from "./DotGrid.module.css";
 
-export const GRID_SIZE = 15;
 export const MAX_WIDTH_RATIO = 0.85;
 
 export default function DotGrid() {
@@ -16,13 +15,10 @@ export default function DotGrid() {
     const [activeStyle, setActiveStyle] = useState<AreaStyle | null>(null);
 
     const [isSaved, setIsSaved] = useState<boolean>(false);
+    const [isGoBack, setIsGoBack] = useState<boolean>(false);
 
     function handleSelectTool(tool: CanvasTool) {
         setActiveTool(tool);
-    }
-
-    function handleDeSelectTool() {
-        setActiveTool(null);
     }
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
@@ -37,15 +33,11 @@ export default function DotGrid() {
         }));
     }
     function handleSaveElement(isSave: boolean) {
-        if (!isSave) return;
-
-        setIsSaved(true);
+        setIsSaved(isSave);
     }
 
-    function handleSavedElement(isSaved: boolean) {
-        if (isSaved) return;
-
-        setIsSaved(false);
+    function handleBack(isBack: boolean) {
+        setIsGoBack(isBack);
     }
 
     return (
@@ -55,14 +47,17 @@ export default function DotGrid() {
                     activeTool={activeTool}
                     onSelectTool={handleSelectTool}
                     onSelectStyle={handleSelectStyle}
-                    onSaveElement={handleSaveElement}
+                    onSaveItem={handleSaveElement}
+                    onGoBack={handleBack}
                 />
                 <Canvas
                     activeTool={activeTool}
-                    onDeselectTool={handleDeSelectTool}
                     activeStyle={activeStyle}
                     isSaved={isSaved}
-                    onSavedElement={handleSavedElement}
+                    isGoBack={isGoBack}
+                    onSelectTool={handleSelectTool}
+                    onSaveItem={handleSaveElement}
+                    onGoBack={handleBack}
                 />
             </div>
         </>
