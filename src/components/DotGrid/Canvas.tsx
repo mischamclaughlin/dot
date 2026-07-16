@@ -1,4 +1,9 @@
-import React, { type ReactElement, useEffect, useState } from "react";
+import React, {
+    type ReactElement,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 
 import type {
     AreaStyle,
@@ -45,15 +50,18 @@ export default function Canvas({
 
     const [items, setItems] = useState<CanvasItem[] | null>(null);
 
+    const resetDrag = useCallback(() => {
+        setIsDragging(false);
+        setDragStartDot(null);
+        setDraftArea(null);
+    }, []);
+
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
             if (e.key !== "Escape") return;
 
-            setIsDragging(false);
+            resetDrag();
 
-            setDragStartDot(null);
-
-            setDraftArea(null);
             setSelectArea(null);
             setToolArea(null);
 
@@ -65,7 +73,7 @@ export default function Canvas({
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [setSelectArea, onSelectTool]);
+    }, [onSelectTool, resetDrag, setSelectArea]);
 
     useEffect(() => {
         function handleElementSave() {
@@ -119,20 +127,21 @@ export default function Canvas({
         handleGoBack();
     }, [isGoBack, onGoBack, onSelectTool, toolArea]);
 
-    function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
 
-        if (service.isSameDot(hoverDot, nextactiveDot)) return;
-
-        setHoverDot(nextactiveDot);
+        if (!service.isSameDot(hoverDot, nextactiveDot)) {
+            setHoverDot(nextactiveDot);
+        }
 
         if (!isDragging || !dragStartDot) return;
 
-        const area = service.updateTempArea(dragStartDot, nextactiveDot);
-        setDraftArea(area);
+        setDraftArea(service.updateTempArea(dragStartDot, nextactiveDot));
     }
 
-    function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+        e.currentTarget.setPointerCapture(e.pointerId);
+
         const nextActiveDot = service.getNextActiveDot(e);
 
         setIsDragging(true);
@@ -140,12 +149,14 @@ export default function Canvas({
         setDragStartDot(nextActiveDot);
     }
 
-    function handleMouseUp() {
+    function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
         const area = draftArea;
 
-        setIsDragging(false);
-        setDragStartDot(null);
-        setDraftArea(null);
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+
+        resetDrag();
 
         if (!area) return;
 
@@ -153,13 +164,17 @@ export default function Canvas({
         else setSelectArea(area);
     }
 
+    function handlePointerCancel() {
+        resetDrag();
+    }
+
     const displayItems =
-        items?.map((element) => {
-            const props = service.createElementProps(element);
+        items?.map((item) => {
+            const props = service.createElementProps(item);
 
             return (
                 <div
-                    key={element.id}
+                    key={item.id}
                     className={styles.savedElement}
                     style={props.style}
                 >
@@ -172,9 +187,10 @@ export default function Canvas({
         <>
             <div
                 className={styles.container}
-                onMouseMove={handleMouseMove}
-                onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}
+                onPointerMove={handlePointerMove}
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerCancel}
                 style={{
                     backgroundSize: `${service.gridSize}px ${service.gridSize}px`,
                 }}
