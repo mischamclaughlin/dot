@@ -1,194 +1,145 @@
-import React, {
-    type CSSProperties,
-    type ReactElement,
-    useEffect,
-    useState,
-} from "react";
+import React, { type ReactElement, useEffect, useState } from "react";
 
 import type {
     AreaStyle,
     CanvasTool,
     Dot,
-    Element,
+    CanvasItem,
     SelectionArea,
 } from "./types/DotGridTypes";
+
 import { GRID_SIZE } from "./DotGrid";
 
 import styles from "./Canvas.module.css";
-import {
-    alignCenter,
-    alignJustify,
-    alignLeft,
-    alignRight,
-    variantHeading,
-    variantBody,
-    variantSubHeading,
-    variantSubTitle,
-    variantTitle,
-} from "./styles/DotGridStyles";
+import { DotGridService } from "./services/DotGridService";
 
 type CanvasProps = {
     activeTool: CanvasTool;
-    activeArea: SelectionArea | null;
-    setActiveArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
-    toolArea: SelectionArea | null;
-    setToolArea: React.Dispatch<React.SetStateAction<SelectionArea | null>>;
     onDeselectTool: () => void;
     activeStyle: AreaStyle | null;
-    elements: Element[] | null;
-    text: string;
-    onSetText: (value: string) => void;
+    isSaved: boolean;
+    onSavedElement: (isSaved: boolean) => void;
 };
 
 export default function Canvas({
     activeTool,
-    activeArea,
-    setActiveArea,
-    toolArea,
-    setToolArea,
     onDeselectTool,
     activeStyle,
-    elements,
-    text,
-    onSetText,
+    isSaved,
+    onSavedElement,
 }: CanvasProps): ReactElement {
-    const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
+    const service = new DotGridService();
 
-    const [activeDot, setActiveDot] = useState<Dot | null>(null);
-    const [startArea, setStartArea] = useState<Dot | null>(null);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    const [tempArea, setTempArea] = useState<SelectionArea | null>(null);
+    const [hoverDot, setHoverDot] = useState<Dot | null>(null);
+    const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
+
+    const [draftArea, setDraftArea] = useState<SelectionArea | null>(null);
+    const [selectArea, setSelectArea] = useState<SelectionArea | null>(null);
+    const [toolArea, setToolArea] = useState<SelectionArea | null>(null);
+
+    const [items, setItems] = useState<CanvasItem[] | null>(null);
+
+    const [text, setText] = useState("");
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
             if (e.key !== "Escape") return;
 
-            setIsMouseDown(false);
-            setStartArea(null);
-            setTempArea(null);
-            setActiveArea(null);
+            setIsDragging(false);
+            setDragStartDot(null);
+            setDraftArea(null);
+            setSelectArea(null);
             onDeselectTool();
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [setActiveArea, onDeselectTool]);
+    }, [setSelectArea, onDeselectTool]);
+
+    useEffect(() => {
+        function handleElementSave() {
+            if (!isSaved) return;
+
+            const item: CanvasItem = {
+                id: crypto.randomUUID(),
+                type: activeTool,
+                text: text,
+                style: activeStyle,
+                area: toolArea,
+            };
+
+            setItems((current) => [...(current ?? []), item]);
+
+            onSavedElement(false);
+            setToolArea(null);
+            setText("");
+        }
+
+        handleElementSave();
+    }, [activeStyle, activeTool, isSaved, onSavedElement, text, toolArea]);
+
+    useEffect(() => {
+        function handleToolArea() {
+            if (!activeTool || !selectArea) return;
+
+            setToolArea(selectArea);
+            setSelectArea(null);
+        }
+
+        handleToolArea();
+    }, [activeTool, selectArea]);
 
     function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-        const nextactiveDot = getNextactiveDot(e);
+        const nextactiveDot = service.getNextActiveDot(e);
 
-        if (isSameDot(activeDot, nextactiveDot)) return;
+        if (service.isSameDot(hoverDot, nextactiveDot)) return;
 
-        setActiveDot(nextactiveDot);
+        setHoverDot(nextactiveDot);
 
-        if (!isMouseDown || !startArea) return;
-        updateTempArea(startArea, nextactiveDot);
+        if (!isDragging || !dragStartDot) return;
+
+        const area = service.updateTempArea(dragStartDot, nextactiveDot);
+        setDraftArea(area);
     }
 
     function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-        const nextactiveDot = getNextactiveDot(e);
+        const nextActiveDot = service.getNextActiveDot(e);
 
-        setIsMouseDown(true);
-        setActiveArea(null);
-        setStartArea(nextactiveDot);
-        setActiveDot(nextactiveDot);
+        setIsDragging(true);
+        setSelectArea(null);
+        setDragStartDot(nextActiveDot);
     }
 
     function handleMouseUp() {
-        setIsMouseDown(false);
-        setStartArea(null);
+        const area = draftArea;
 
-        if (tempArea) {
-            if (activeTool) setToolArea(tempArea);
-            else setActiveArea(tempArea);
-        }
+        setIsDragging(false);
+        setDragStartDot(null);
+        setDraftArea(null);
 
-        setTempArea(null);
+        if (!area) return;
+
+        if (activeTool) setToolArea(area);
+        else setSelectArea(area);
     }
 
-    function snapToGrid(value: number, maxValue: number) {
-        const offset = GRID_SIZE / 2;
-        const snapped =
-            Math.round((value - offset) / GRID_SIZE) * GRID_SIZE + offset;
-        const maxGridactiveDot =
-            Math.floor((maxValue - offset) / GRID_SIZE) * GRID_SIZE + offset;
+    const displayItems =
+        items?.map((element) => {
+            const props = service.createElementProps(element);
 
-        return Math.min(
-            Math.max(snapped, offset),
-            Math.max(offset, maxGridactiveDot),
-        );
-    }
-
-    function isSameDot(dot: Dot | null, nextDot: Dot) {
-        return dot?.x === nextDot.x && dot.y === nextDot.y;
-    }
-
-    function getNextactiveDot(e: React.MouseEvent<HTMLDivElement>) {
-        const rect = e.currentTarget.getBoundingClientRect();
-
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const nextactiveDot: Dot = {
-            x: snapToGrid(x, rect.width),
-            y: snapToGrid(y, rect.height),
-        };
-
-        return nextactiveDot;
-    }
-
-    function updateTempArea(start: Dot, end: Dot) {
-        const minX = Math.min(start.x, end.x);
-        const maxX = Math.max(start.x, end.x);
-        const minY = Math.min(start.y, end.y);
-        const maxY = Math.max(start.y, end.y);
-
-        const left = minX - GRID_SIZE / 2;
-        const top = minY - GRID_SIZE / 2;
-        const width = maxX - minX + GRID_SIZE;
-        const height = maxY - minY + GRID_SIZE;
-
-        setTempArea({
-            left: left,
-            top: top,
-            width: width,
-            height: height,
-        });
-    }
-
-    function updateStyleVariant(style: AreaStyle) {
-        if (style.variant === "title") return variantTitle;
-        if (style.variant === "subTitle") return variantSubTitle;
-        if (style.variant === "heading") return variantHeading;
-        if (style.variant === "subHeading") return variantSubHeading;
-
-        return variantBody;
-    }
-
-    function updateStyleAlign(style: AreaStyle) {
-        if (style.align === "right") return alignRight;
-        if (style.align === "center") return alignCenter;
-        if (style.align === "justify") return alignJustify;
-
-        return alignLeft;
-    }
-
-    function createElementProps(element: Element) {
-        const style = element.style ?? {
-            variant: "body",
-            align: "left",
-        };
-
-        return {
-            text: element.text,
-            style: {
-                ...(element.area ?? {}),
-                ...updateStyleVariant(style),
-                ...updateStyleAlign(style),
-            } satisfies CSSProperties,
-        };
-    }
+            return (
+                <div
+                    key={element.id}
+                    className={styles.savedElement}
+                    style={props.style}
+                >
+                    {props.text}
+                </div>
+            );
+        }) ?? null;
 
     return (
         <>
@@ -197,39 +148,46 @@ export default function Canvas({
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
+                style={{ backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px` }}
             >
-                {activeDot && (
+                {hoverDot && (
                     <div
-                        className={styles.activeDot}
-                        style={{ left: activeDot.x, top: activeDot.y }}
+                        className={styles.hoverDot}
+                        style={{ left: hoverDot.x, top: hoverDot.y }}
                     />
                 )}
-                {tempArea && (
+                {dragStartDot && (
                     <div
-                        className={styles.tempArea}
+                        className={styles.dragStartDot}
+                        style={{ left: dragStartDot.x, top: dragStartDot.y }}
+                    />
+                )}
+                {draftArea && (
+                    <div
+                        className={styles.draftArea}
                         style={{
-                            left: tempArea.left,
-                            top: tempArea.top,
-                            width: tempArea.width,
-                            height: tempArea.height,
+                            left: draftArea.left,
+                            top: draftArea.top,
+                            width: draftArea.width,
+                            height: draftArea.height,
                         }}
                     />
                 )}
-                {activeArea && (
+                {selectArea && (
                     <div
-                        className={styles.activeArea}
+                        className={styles.selectArea}
                         style={{
-                            left: activeArea.left,
-                            top: activeArea.top,
-                            width: activeArea.width,
-                            height: activeArea.height,
+                            left: selectArea.left,
+                            top: selectArea.top,
+                            width: selectArea.width,
+                            height: selectArea.height,
                         }}
                     />
                 )}
                 {toolArea && activeTool === "text" && (
                     <textarea
                         value={text}
-                        onChange={(e) => onSetText(e.target.value)}
+                        onChange={(e) => setText(e.target.value)}
                         onMouseDown={(e) => e.stopPropagation()}
                         onMouseUp={(e) => e.stopPropagation()}
                         className={
@@ -243,13 +201,16 @@ export default function Canvas({
                             width: toolArea.width,
                             height: toolArea.height,
                             fontSize: activeStyle
-                                ? updateStyleVariant(activeStyle).fontSize
+                                ? service.updateStyleVariant(activeStyle)
+                                      .fontSize
                                 : undefined,
                             fontWeight: activeStyle
-                                ? updateStyleVariant(activeStyle).fontWeight
+                                ? service.updateStyleVariant(activeStyle)
+                                      .fontWeight
                                 : undefined,
                             textAlign: activeStyle
-                                ? updateStyleAlign(activeStyle).textAlign
+                                ? service.updateStyleAlign(activeStyle)
+                                      .textAlign
                                 : undefined,
                         }}
                     />
@@ -269,19 +230,7 @@ export default function Canvas({
                         }}
                     />
                 )}
-                {elements &&
-                    elements.map((element) => {
-                        const props = createElementProps(element);
-                        return (
-                            <div
-                                key={`${props.style}`}
-                                className={styles.savedElement}
-                                style={props.style}
-                            >
-                                {props.text}
-                            </div>
-                        );
-                    })}
+                {displayItems}
             </div>
         </>
     );

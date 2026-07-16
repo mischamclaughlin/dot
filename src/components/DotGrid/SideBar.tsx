@@ -1,6 +1,7 @@
 import React, { type ReactElement, useState } from "react";
 
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
+
 import { MAX_WIDTH_RATIO } from "./DotGrid";
 
 import styles from "./SideBar.module.css";

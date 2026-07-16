@@ -7,8 +7,6 @@ export type SelectionArea = {
     height: number;
 };
 
-export type CanvasTool = "text" | "image" | "component" | "describe" | null;
-
 type Variant = "title" | "subTitle" | "heading" | "subHeading" | "body" | null;
 type Align = "left" | "right" | "center" | "justify" | null;
 
@@ -17,10 +15,12 @@ export type AreaStyle = {
     align?: Align;
 };
 
-export type Element = {
+export type CanvasTool = "text" | "image" | "component" | "describe" | null;
+
+export type CanvasItem = {
+    id: string;
+    type: CanvasTool;
     text: string;
     style: AreaStyle | null;
     area: SelectionArea | null;
 };
-
-export type Elements = { elements: Element[] };

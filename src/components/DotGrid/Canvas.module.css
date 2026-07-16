@@ -9,11 +9,10 @@
         var(--foreground-faded) 2px,
         transparent 1px
     );
-    background-size: 15px 15px;
     cursor: crosshair;
 }
 
-.activeDot {
+.hoverDot {
     position: absolute;
     width: 8px;
     height: 8px;
@@ -26,14 +25,23 @@
         left 5ms ease-in;
 }
 
-.tempArea {
+.dragStartDot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: green;
+    transform: translate(-50%, -50%);
+}
+
+.draftArea {
     position: absolute;
     background-color: var(--background-faded);
     border: 1px solid var(--background);
     pointer-events: none;
 }
 
-.activeArea {
+.selectArea {
     position: absolute;
     background-color: transparent;
     border: 1px solid var(--background);

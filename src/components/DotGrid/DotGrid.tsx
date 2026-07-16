@@ -1,13 +1,9 @@
 import { useState } from "react";
 
-import type {
-    AreaStyle,
-    CanvasTool,
-    Element,
-    SelectionArea,
-} from "./types/DotGridTypes";
-import SideBar from "./SideBar";
+import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
+
 import Canvas from "./Canvas";
+import SideBar from "./SideBar";
 
 import styles from "./DotGrid.module.css";
 
@@ -17,25 +13,16 @@ export const MAX_WIDTH_RATIO = 0.85;
 export default function DotGrid() {
     const [activeTool, setActiveTool] = useState<CanvasTool>(null);
 
-    const [activeArea, setActiveArea] = useState<SelectionArea | null>(null);
-    const [toolArea, setToolArea] = useState<SelectionArea | null>(null);
-
     const [activeStyle, setActiveStyle] = useState<AreaStyle | null>(null);
 
-    const [elements, setElements] = useState<Element[] | null>(null);
-
-    const [text, setText] = useState("");
+    const [isSaved, setIsSaved] = useState<boolean>(false);
 
     function handleSelectTool(tool: CanvasTool) {
         setActiveTool(tool);
-        setToolArea(activeArea);
-        setActiveArea(null);
     }
 
     function handleDeSelectTool() {
         setActiveTool(null);
-        setActiveArea(toolArea);
-        setToolArea(null);
     }
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
@@ -52,22 +39,13 @@ export default function DotGrid() {
     function handleSaveElement(isSave: boolean) {
         if (!isSave) return;
 
-        const element: Element = {
-            text,
-            style: activeStyle,
-            area: toolArea,
-        };
-
-        setElements((current) => [...(current ?? []), element]);
-
-        setText("");
-        setActiveTool(null);
-        setActiveArea(null);
-        setToolArea(null);
+        setIsSaved(true);
     }
 
-    function handleSetText(value: string) {
-        setText(value);
+    function handleSavedElement(isSaved: boolean) {
+        if (isSaved) return;
+
+        setIsSaved(false);
     }
 
     return (
@@ -81,15 +59,10 @@ export default function DotGrid() {
                 />
                 <Canvas
                     activeTool={activeTool}
-                    activeArea={activeArea}
-                    setActiveArea={setActiveArea}
-                    toolArea={toolArea}
-                    setToolArea={setToolArea}
                     onDeselectTool={handleDeSelectTool}
                     activeStyle={activeStyle}
-                    elements={elements}
-                    text={text}
-                    onSetText={handleSetText}
+                    isSaved={isSaved}
+                    onSavedElement={handleSavedElement}
                 />
             </div>
         </>
