@@ -16,52 +16,12 @@
     gap: 1rem;
 }
 
-.title {
-    border: 1px solid var(--foreground);
-}
-
 .toolTitle {
     border-bottom: 1px solid var(--foreground);
 }
 
-.controlsContainer,
-.controlContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
-
-.controlsContainer {
-    gap: 1rem;
-}
-
-.controlContainer {
-    gap: 0.25rem;
-}
-
-.colourPicker {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.active {
-    border-color: var(--background);
-}
-
-.button {
-    background: ButtonFace;
-    text-align: left;
-    font: inherit;
-}
-
-.button:hover {
-    background-color: var(--foreground-faded);
-}
-
-.buttonFullscreen {
-    position: absolute;
-    z-index: 10;
+.title {
+    border: 1px solid var(--foreground);
 }
 
 .dragBarContainer {

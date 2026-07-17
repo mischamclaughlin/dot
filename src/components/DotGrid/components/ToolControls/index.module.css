@@ -1,0 +1,20 @@
+.controlContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 0.25rem;
+}
+
+.button {
+    background: ButtonFace;
+    text-align: left;
+    font: inherit;
+}
+
+.button:hover {
+    background-color: var(--foreground-faded);
+}
+
+.active {
+    border: 1px solid var(--accent);
+}

@@ -183,70 +183,62 @@ export default function Canvas({
         }) ?? null;
 
     return (
-        <>
-            <div
-                className={styles.container}
-                onPointerMove={handlePointerMove}
-                onPointerDown={handlePointerDown}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerCancel}
-                style={{
-                    backgroundSize: `${service.gridSize}px ${service.gridSize}px`,
-                }}
-            >
-                {hoverDot && (
-                    <div
-                        className={styles.hoverDot}
-                        style={{ left: hoverDot.x, top: hoverDot.y }}
-                    />
-                )}
-                {dragStartDot && (
-                    <div
-                        className={styles.dragStartDot}
-                        style={{ left: dragStartDot.x, top: dragStartDot.y }}
-                    />
-                )}
-                {draftArea && (
-                    <div
-                        className={styles.draftArea}
-                        style={{ ...draftArea }}
-                    />
-                )}
-                {selectArea && (
-                    <div
-                        className={styles.selectArea}
-                        style={{ ...selectArea }}
-                    />
-                )}
-                {toolArea && activeTool === "text" && (
-                    <textarea
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onPointerDown={(e) => e.stopPropagation()}
-                        className={
-                            activeTool
-                                ? `${styles[activeTool]} ${styles.activeTool}`
-                                : undefined
-                        }
-                        style={{
-                            ...defaultStyle,
-                            ...(activeStyle ?? {}),
-                            ...(toolArea ?? {}),
-                        }}
-                    />
-                )}
-                {toolArea && activeTool === "image" && (
-                    <div
-                        className={
-                            activeTool
-                                ? `${styles[activeTool]} ${styles.activeTool}`
-                                : undefined
-                        }
-                        style={{ ...(toolArea ?? {}) }}
-                    />
-                )}
-                {displayItems}
-            </div>
-        </>
+        <div
+            className={styles.container}
+            onPointerMove={handlePointerMove}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+            style={{
+                backgroundSize: `${service.gridSize}px ${service.gridSize}px`,
+            }}
+        >
+            {hoverDot && (
+                <div
+                    className={styles.hoverDot}
+                    style={{ left: hoverDot.x, top: hoverDot.y }}
+                />
+            )}
+            {dragStartDot && (
+                <div
+                    className={styles.dragStartDot}
+                    style={{ left: dragStartDot.x, top: dragStartDot.y }}
+                />
+            )}
+            {draftArea && (
+                <div className={styles.draftArea} style={{ ...draftArea }} />
+            )}
+            {selectArea && (
+                <div className={styles.selectArea} style={{ ...selectArea }} />
+            )}
+            {toolArea && activeTool === "text" && (
+                <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className={
+                        activeTool
+                            ? `${styles[activeTool]} ${styles.activeTool}`
+                            : undefined
+                    }
+                    style={{
+                        ...defaultStyle,
+                        ...(activeStyle ?? {}),
+                        ...(toolArea ?? {}),
+                    }}
+                />
+            )}
+            {toolArea && activeTool === "image" && (
+                <div
+                    className={
+                        activeTool
+                            ? `${styles[activeTool]} ${styles.activeTool}`
+                            : undefined
+                    }
+                    style={{ ...(toolArea ?? {}) }}
+                />
+            )}
+            {displayItems}
+        </div>
     );
 }

@@ -40,25 +40,23 @@ export default function DotGrid() {
     }
 
     return (
-        <>
-            <div className={styles.container}>
-                <SideBar
-                    activeTool={activeTool}
-                    onSelectTool={handleSelectTool}
-                    onSelectStyle={handleSelectStyle}
-                    onSaveItem={handleSaveElement}
-                    onGoBack={handleBack}
-                />
-                <Canvas
-                    activeTool={activeTool}
-                    activeStyle={activeStyle}
-                    isSaved={isSaved}
-                    isGoBack={isGoBack}
-                    onSelectTool={handleSelectTool}
-                    onSaveItem={handleSaveElement}
-                    onGoBack={handleBack}
-                />
-            </div>
-        </>
+        <div className={styles.container}>
+            <SideBar
+                activeTool={activeTool}
+                onSelectTool={handleSelectTool}
+                onSelectStyle={handleSelectStyle}
+                onSaveItem={handleSaveElement}
+                onGoBack={handleBack}
+            />
+            <Canvas
+                activeTool={activeTool}
+                activeStyle={activeStyle}
+                isSaved={isSaved}
+                isGoBack={isGoBack}
+                onSelectTool={handleSelectTool}
+                onSaveItem={handleSaveElement}
+                onGoBack={handleBack}
+            />
+        </div>
     );
 }
