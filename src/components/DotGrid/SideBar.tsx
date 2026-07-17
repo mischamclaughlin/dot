@@ -110,6 +110,11 @@ export default function SideBar({
                     <div className={styles.sideBarContainer}>
                         <h1 className={styles.title}>Dot.</h1>
                         <div className={styles.controlsContainer}>
+                            <h3 className={styles.toolTitle}>
+                                {activeTool
+                                    ? activeTool.toString().toUpperCase()
+                                    : "TOOLS"}
+                            </h3>
                             {!activeTool && (
                                 <div className={styles.controlContainer}>
                                     <button
@@ -155,11 +160,6 @@ export default function SideBar({
                                         Describe
                                     </button>
                                 </div>
-                            )}
-                            {activeTool && (
-                                <h3 className={styles.toolTitle}>
-                                    {activeTool.toString().toUpperCase()}
-                                </h3>
                             )}
                         </div>
                         {activeTool && (
