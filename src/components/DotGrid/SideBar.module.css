@@ -11,19 +11,19 @@
     min-width: 0;
     height: 100%;
     padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .title {
     border: 1px solid var(--foreground);
-    margin-bottom: 2rem;
 }
 
 .toolTitle {
     border-bottom: 1px solid var(--foreground);
-    margin-bottom: 0.25rem;
 }
 
-.actionContainer,
 .controlsContainer,
 .controlContainer {
     display: flex;
@@ -31,13 +31,12 @@
     justify-content: space-evenly;
 }
 
-.actionContainer,
-.controlContainer {
-    gap: 0.25rem;
-}
-
 .controlsContainer {
     gap: 1rem;
+}
+
+.controlContainer {
+    gap: 0.25rem;
 }
 
 .colourPicker {
@@ -58,6 +57,11 @@
 
 .button:hover {
     background-color: var(--foreground-faded);
+}
+
+.buttonFullscreen {
+    position: absolute;
+    z-index: 10;
 }
 
 .dragBarContainer {

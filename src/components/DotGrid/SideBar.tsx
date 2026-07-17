@@ -39,6 +39,7 @@ export default function SideBar({
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [width, setWidth] = useState<number>(MIN_WIDTH);
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
     const [backgroundColour, setBackgroundColour] = useState<CSSProperties>(
         defaultBackgroundColour,
@@ -63,7 +64,9 @@ export default function SideBar({
         const nextWidth = e.clientX - parentRect.left;
         const maxWidth = parentRect.width * MAX_WIDTH_RATIO;
 
-        setWidth(Math.max(0, Math.min(nextWidth, maxWidth)));
+        const currWidth = Math.max(0, Math.min(nextWidth, maxWidth));
+        setWidth(currWidth);
+        // setTempWidth(currWidth);
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
@@ -93,237 +96,299 @@ export default function SideBar({
         onSelectStyle(nextColour);
     }
 
+    function handleFullScreen() {
+        setIsFullscreen((current) => !current);
+    }
+
     return (
         <>
-            <div
-                className={styles.container}
-                style={{ width: `${width}px`, minWidth: `${MIN_WIDTH}px` }}
-            >
-                <div className={styles.sideBarContainer}>
-                    <h1 className={styles.title}>Dot.</h1>
-                    <div className={styles.actionContainer}>
-                        {!activeTool && (
-                            <>
-                                <button
-                                    className={
-                                        activeTool === "text"
-                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
-                                            : styles.button
-                                    }
-                                    onClick={() => onSelectTool("text")}
-                                >
-                                    Text
-                                </button>
-                                <button
-                                    className={
-                                        activeTool === "image"
-                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
-                                            : styles.button
-                                    }
-                                    onClick={() => onSelectTool("image")}
-                                >
-                                    Image
-                                </button>
-                                <button
-                                    className={
-                                        activeTool === "component"
-                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
-                                            : styles.button
-                                    }
-                                    onClick={() => onSelectTool("component")}
-                                >
-                                    Component
-                                </button>
-                                <button
-                                    className={
-                                        activeTool === "describe"
-                                            ? `${styles[activeTool]} ${styles.active} ${styles.button}`
-                                            : styles.button
-                                    }
-                                    onClick={() => onSelectTool("describe")}
-                                >
-                                    Describe
-                                </button>
-                            </>
-                        )}
+            {!isFullscreen && (
+                <div
+                    className={styles.container}
+                    style={{ width: `${width}px`, minWidth: `${MIN_WIDTH}px` }}
+                >
+                    <div className={styles.sideBarContainer}>
+                        <h1 className={styles.title}>Dot.</h1>
+                        <div className={styles.controlsContainer}>
+                            {!activeTool && (
+                                <div className={styles.controlContainer}>
+                                    <button
+                                        className={
+                                            activeTool === "text"
+                                                ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                                : styles.button
+                                        }
+                                        onClick={() => onSelectTool("text")}
+                                    >
+                                        Text
+                                    </button>
+                                    <button
+                                        className={
+                                            activeTool === "image"
+                                                ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                                : styles.button
+                                        }
+                                        onClick={() => onSelectTool("image")}
+                                    >
+                                        Image
+                                    </button>
+                                    <button
+                                        className={
+                                            activeTool === "component"
+                                                ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                                : styles.button
+                                        }
+                                        onClick={() =>
+                                            onSelectTool("component")
+                                        }
+                                    >
+                                        Component
+                                    </button>
+                                    <button
+                                        className={
+                                            activeTool === "describe"
+                                                ? `${styles[activeTool]} ${styles.active} ${styles.button}`
+                                                : styles.button
+                                        }
+                                        onClick={() => onSelectTool("describe")}
+                                    >
+                                        Describe
+                                    </button>
+                                </div>
+                            )}
+                            {activeTool && (
+                                <h3 className={styles.toolTitle}>
+                                    {activeTool.toString().toUpperCase()}
+                                </h3>
+                            )}
+                        </div>
                         {activeTool && (
-                            <h3 className={styles.toolTitle}>
-                                {activeTool.toString().toUpperCase()}
-                            </h3>
-                        )}
-                    </div>
-                    <div className={styles.controlsContainer}>
-                        {activeTool === "text" && (
-                            <>
-                                <div className={styles.controlContainer}>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(variantTitle)
-                                        }
-                                    >
-                                        Title
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(variantSubTitle)
-                                        }
-                                    >
-                                        Subtitle
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(variantHeading)
-                                        }
-                                    >
-                                        Heading
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(variantSubHeading)
-                                        }
-                                    >
-                                        Subheading
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(variantBody)
-                                        }
-                                    >
-                                        Body
-                                    </button>
-                                </div>
-                                <div className={styles.controlContainer}>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(textAlignLeft)
-                                        }
-                                    >
-                                        Left
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(textAlignRight)
-                                        }
-                                    >
-                                        Right
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(textAlignCenter)
-                                        }
-                                    >
-                                        Center
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(textAlignJustify)
-                                        }
-                                    >
-                                        Justify
-                                    </button>
-                                </div>
-                                <div className={styles.controlContainer}>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(contentAlignStart)
-                                        }
-                                    >
-                                        Start
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(contentAlignCenter)
-                                        }
-                                    >
-                                        Center
-                                    </button>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() =>
-                                            onSelectStyle(contentAlignEnd)
-                                        }
-                                    >
-                                        End
-                                    </button>
-                                </div>
-                                <div className={styles.controlContainer}>
-                                    <div className={styles.colourPicker}>
-                                        <label
-                                            className={styles.button}
-                                            htmlFor="foregroundColour"
+                            <div className={styles.controlsContainer}>
+                                {activeTool === "text" && (
+                                    <>
+                                        <div
+                                            className={styles.controlContainer}
                                         >
-                                            Foreground
-                                        </label>
-                                        <input
-                                            type="color"
-                                            id="foregroundColour"
-                                            name="foregroundColour"
-                                            value={foregroundColour.color}
-                                            onChange={(e) => {
-                                                handleForegroundColourChange(e);
-                                            }}
-                                        />
-                                    </div>
-                                    <div className={styles.colourPicker}>
-                                        <label
-                                            className={styles.button}
-                                            htmlFor="backgroundColour"
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(variantTitle)
+                                                }
+                                            >
+                                                Title
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        variantSubTitle,
+                                                    )
+                                                }
+                                            >
+                                                Subtitle
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        variantHeading,
+                                                    )
+                                                }
+                                            >
+                                                Heading
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        variantSubHeading,
+                                                    )
+                                                }
+                                            >
+                                                Subheading
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(variantBody)
+                                                }
+                                            >
+                                                Body
+                                            </button>
+                                        </div>
+                                        <div
+                                            className={styles.controlContainer}
                                         >
-                                            Background
-                                        </label>
-                                        <input
-                                            type="color"
-                                            id="backgroundColour"
-                                            name="backgroundColour"
-                                            value={
-                                                backgroundColour.backgroundColor
-                                            }
-                                            onChange={(e) => {
-                                                handleBackgroundColourChange(e);
-                                            }}
-                                        />
-                                    </div>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(textAlignLeft)
+                                                }
+                                            >
+                                                Left
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        textAlignRight,
+                                                    )
+                                                }
+                                            >
+                                                Right
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        textAlignCenter,
+                                                    )
+                                                }
+                                            >
+                                                Center
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        textAlignJustify,
+                                                    )
+                                                }
+                                            >
+                                                Justify
+                                            </button>
+                                        </div>
+                                        <div
+                                            className={styles.controlContainer}
+                                        >
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        contentAlignStart,
+                                                    )
+                                                }
+                                            >
+                                                Start
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        contentAlignCenter,
+                                                    )
+                                                }
+                                            >
+                                                Center
+                                            </button>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    onSelectStyle(
+                                                        contentAlignEnd,
+                                                    )
+                                                }
+                                            >
+                                                End
+                                            </button>
+                                        </div>
+                                        <div
+                                            className={styles.controlContainer}
+                                        >
+                                            <div
+                                                className={styles.colourPicker}
+                                            >
+                                                <label
+                                                    className={styles.button}
+                                                    htmlFor="foregroundColour"
+                                                >
+                                                    Foreground
+                                                </label>
+                                                <input
+                                                    type="color"
+                                                    id="foregroundColour"
+                                                    name="foregroundColour"
+                                                    value={
+                                                        foregroundColour.color
+                                                    }
+                                                    onChange={(e) => {
+                                                        handleForegroundColourChange(
+                                                            e,
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                            <div
+                                                className={styles.colourPicker}
+                                            >
+                                                <label
+                                                    className={styles.button}
+                                                    htmlFor="backgroundColour"
+                                                >
+                                                    Background
+                                                </label>
+                                                <input
+                                                    type="color"
+                                                    id="backgroundColour"
+                                                    name="backgroundColour"
+                                                    value={
+                                                        backgroundColour.backgroundColor
+                                                    }
+                                                    onChange={(e) => {
+                                                        handleBackgroundColourChange(
+                                                            e,
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                                <div className={styles.controlContainer}>
+                                    <button
+                                        className={styles.button}
+                                        onClick={() => onGoBack(true)}
+                                    >
+                                        Back
+                                    </button>
+                                    <button
+                                        className={styles.button}
+                                        onClick={() => onSaveItem(true)}
+                                    >
+                                        Save
+                                    </button>
                                 </div>
-                            </>
-                        )}
-                        {activeTool && (
-                            <div className={styles.controlContainer}>
-                                <button
-                                    className={styles.button}
-                                    onClick={() => onGoBack(true)}
-                                >
-                                    Back
-                                </button>
-                                <button
-                                    className={styles.button}
-                                    onClick={() => onSaveItem(true)}
-                                >
-                                    Save
-                                </button>
                             </div>
                         )}
+                        <div className={styles.controlContainer}>
+                            <button
+                                className={styles.button}
+                                onClick={handleFullScreen}
+                            >
+                                Fullscreen
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        className={styles.dragBarContainer}
+                        onPointerDown={handlePointerDown}
+                        onPointerMove={handlePointerMove}
+                        onPointerUp={handlePointerUp}
+                    >
+                        <div className={styles.dragBar} />
                     </div>
                 </div>
-                <div
-                    className={styles.dragBarContainer}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                >
-                    <div className={styles.dragBar} />
+            )}
+            {isFullscreen && (
+                <div className={styles.controlContainer}>
+                    <button
+                        className={`${styles.button} ${styles.buttonFullscreen}`}
+                        onClick={handleFullScreen}
+                    >
+                        Fullscreen
+                    </button>
                 </div>
-            </div>
+            )}
         </>
     );
 }
