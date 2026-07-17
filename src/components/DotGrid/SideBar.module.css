@@ -1,5 +1,5 @@
 .container {
-    min-width: fit-content;
+    /* min-width: fit-content; */
     max-width: 85%;
     height: 100vh;
     display: flex;

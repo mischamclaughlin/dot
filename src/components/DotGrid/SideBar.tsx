@@ -2,7 +2,7 @@ import React, { type CSSProperties, type ReactElement, useState } from "react";
 
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
-import { MAX_WIDTH_RATIO } from "./DotGrid";
+import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
 import styles from "./SideBar.module.css";
 import {
@@ -26,7 +26,7 @@ export default function SideBar({
     onGoBack,
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [width, setWidth] = useState<number>(150);
+    const [width, setWidth] = useState<number>(MIN_WIDTH);
 
     const [backgroundColour, setBackgroundColour] = useState<CSSProperties>(
         defaultBackgroundColour,
@@ -61,7 +61,10 @@ export default function SideBar({
 
     return (
         <>
-            <div className={styles.container} style={{ width: `${width}px` }}>
+            <div
+                className={styles.container}
+                style={{ width: `${width}px`, minWidth: `${MIN_WIDTH}px` }}
+            >
                 <div className={styles.sideBarContainer}>
                     <h1 className={styles.title}>Dot.</h1>
                     <div className={styles.actionContainer}>

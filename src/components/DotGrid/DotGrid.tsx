@@ -13,6 +13,7 @@ import {
 } from "./styles/DotGridStyles";
 
 export const MAX_WIDTH_RATIO = 0.85;
+export const MIN_WIDTH = 185
 
 export default function DotGrid() {
     const [activeTool, setActiveTool] = useState<CanvasTool>(null);
