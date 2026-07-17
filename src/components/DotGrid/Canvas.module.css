@@ -60,3 +60,9 @@
 .savedElement {
     position: absolute;
 }
+
+.text,
+.savedElement {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}

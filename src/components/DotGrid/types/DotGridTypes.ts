@@ -9,16 +9,15 @@ export type SelectionArea = {
     height: number;
 };
 
-type Variant = "title" | "subTitle" | "heading" | "subHeading" | "body" | null;
-type AlignText = "left" | "right" | "center" | "justify" | null;
-
-export type AreaStyle = {
-    variant?: Variant;
-    textAlign?: AlignText;
-    contentAlign?: CSSProperties;
-    backgroundColour?: CSSProperties;
-    foregroundColour?: CSSProperties;
-};
+export type AreaStyle = Pick<
+    CSSProperties,
+    | "fontSize"
+    | "fontWeight"
+    | "textAlign"
+    | "alignContent"
+    | "color"
+    | "backgroundColor"
+>;
 
 export type CanvasTool = "text" | "image" | "component" | "describe" | null;
 

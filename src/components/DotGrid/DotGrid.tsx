@@ -5,15 +5,12 @@ import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 import Canvas from "./Canvas";
 import SideBar from "./SideBar";
 
+import { defaultStyle } from "./styles/DotGridStyles";
+
 import styles from "./DotGrid.module.css";
-import {
-    defaultBackgroundColour,
-    defaultContentAlign,
-    defaultForegroundColour,
-} from "./styles/DotGridStyles";
 
 export const MAX_WIDTH_RATIO = 0.85;
-export const MIN_WIDTH = 185
+export const MIN_WIDTH = 185;
 
 export default function DotGrid() {
     const [activeTool, setActiveTool] = useState<CanvasTool>(null);
@@ -28,14 +25,6 @@ export default function DotGrid() {
     }
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
-        const defaultStyle: AreaStyle = {
-            variant: "body",
-            textAlign: "left",
-            contentAlign: defaultContentAlign,
-            foregroundColour: defaultForegroundColour,
-            backgroundColour: defaultBackgroundColour,
-        };
-
         setActiveStyle((prev) => ({
             ...(prev ?? defaultStyle),
             ...style,

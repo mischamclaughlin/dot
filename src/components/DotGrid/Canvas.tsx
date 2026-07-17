@@ -7,14 +7,15 @@ import React, {
 
 import type {
     AreaStyle,
+    CanvasItem,
     CanvasTool,
     Dot,
-    CanvasItem,
     SelectionArea,
 } from "./types/DotGridTypes";
 
 import styles from "./Canvas.module.css";
 import { DotGridService } from "./services/DotGridService";
+import { defaultStyle } from "./styles/DotGridStyles";
 
 type CanvasProps = {
     activeTool: CanvasTool;
@@ -87,7 +88,7 @@ export default function Canvas({
                 id: crypto.randomUUID(),
                 type: activeTool,
                 text: text,
-                style: activeStyle,
+                style: activeStyle ?? defaultStyle,
                 area: toolArea,
             };
 
@@ -170,15 +171,13 @@ export default function Canvas({
 
     const displayItems =
         items?.map((item) => {
-            const props = service.createElementProps(item);
-
             return (
                 <div
                     key={item.id}
                     className={styles.savedElement}
-                    style={props.style}
+                    style={{ ...item.style, ...item.area }}
                 >
-                    {props.text}
+                    {item.text}
                 </div>
             );
         }) ?? null;
@@ -210,23 +209,13 @@ export default function Canvas({
                 {draftArea && (
                     <div
                         className={styles.draftArea}
-                        style={{
-                            left: draftArea.left,
-                            top: draftArea.top,
-                            width: draftArea.width,
-                            height: draftArea.height,
-                        }}
+                        style={{ ...draftArea }}
                     />
                 )}
                 {selectArea && (
                     <div
                         className={styles.selectArea}
-                        style={{
-                            left: selectArea.left,
-                            top: selectArea.top,
-                            width: selectArea.width,
-                            height: selectArea.height,
-                        }}
+                        style={{ ...selectArea }}
                     />
                 )}
                 {toolArea && activeTool === "text" && (
@@ -241,27 +230,9 @@ export default function Canvas({
                                 : undefined
                         }
                         style={{
-                            left: toolArea.left,
-                            top: toolArea.top,
-                            width: toolArea.width,
-                            height: toolArea.height,
-                            fontSize: activeStyle
-                                ? service.updateStyleVariant(activeStyle)
-                                      .fontSize
-                                : undefined,
-                            fontWeight: activeStyle
-                                ? service.updateStyleVariant(activeStyle)
-                                      .fontWeight
-                                : undefined,
-                            textAlign: activeStyle
-                                ? service.updateStyleAlign(activeStyle)
-                                      .textAlign
-                                : undefined,
-                            alignContent:
-                                activeStyle?.contentAlign?.alignContent,
-                            color: activeStyle?.foregroundColour?.color,
-                            backgroundColor:
-                                activeStyle?.backgroundColour?.backgroundColor,
+                            ...defaultStyle,
+                            ...(activeStyle ?? {}),
+                            ...(toolArea ?? {}),
                         }}
                     />
                 )}
@@ -272,12 +243,7 @@ export default function Canvas({
                                 ? `${styles[activeTool]} ${styles.activeTool}`
                                 : undefined
                         }
-                        style={{
-                            left: toolArea.left,
-                            top: toolArea.top,
-                            width: toolArea.width,
-                            height: toolArea.height,
-                        }}
+                        style={{ ...(toolArea ?? {}) }}
                     />
                 )}
                 {displayItems}

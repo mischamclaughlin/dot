@@ -1,21 +1,4 @@
-import type { CSSProperties } from "react";
-
-import type { AreaStyle, Dot, CanvasItem } from "../types/DotGridTypes";
-
-import {
-    alignCenter,
-    alignJustify,
-    alignLeft,
-    alignRight,
-    defaultBackgroundColour,
-    defaultContentAlign,
-    defaultForegroundColour,
-    variantBody,
-    variantHeading,
-    variantSubHeading,
-    variantSubTitle,
-    variantTitle,
-} from "../styles/DotGridStyles";
+import type { Dot } from "../types/DotGridTypes";
 
 export class DotGridService {
     gridSize: number;
@@ -73,46 +56,6 @@ export class DotGridService {
             top: top,
             width: width,
             height: height,
-        };
-    }
-
-    updateStyleVariant(style: AreaStyle) {
-        if (style.variant === "title") return variantTitle;
-        if (style.variant === "subTitle") return variantSubTitle;
-        if (style.variant === "heading") return variantHeading;
-        if (style.variant === "subHeading") return variantSubHeading;
-
-        return variantBody;
-    }
-
-    updateStyleAlign(style: AreaStyle) {
-        if (style.textAlign === "right") return alignRight;
-        if (style.textAlign === "center") return alignCenter;
-        if (style.textAlign === "justify") return alignJustify;
-
-        return alignLeft;
-    }
-
-    createElementProps(item: CanvasItem) {
-        const style: AreaStyle = {
-            variant: "body",
-            textAlign: "left",
-            contentAlign: defaultContentAlign,
-            foregroundColour: defaultForegroundColour,
-            backgroundColour: defaultBackgroundColour,
-            ...item.style,
-        };
-
-        return {
-            text: item.text,
-            style: {
-                ...(item.area ?? {}),
-                ...this.updateStyleVariant(style),
-                ...this.updateStyleAlign(style),
-                alignContent: style.contentAlign?.alignContent,
-                color: style.foregroundColour?.color,
-                backgroundColor: style.backgroundColour?.backgroundColor,
-            } satisfies CSSProperties,
         };
     }
 }

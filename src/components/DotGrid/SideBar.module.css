@@ -1,13 +1,14 @@
 .container {
-    /* min-width: fit-content; */
     max-width: 85%;
     height: 100vh;
     display: flex;
     justify-content: space-between;
+    z-index: 10;
 }
 
 .sideBarContainer {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     height: 100%;
     padding: 0.5rem;
 }
@@ -15,6 +16,11 @@
 .title {
     border: 1px solid var(--foreground);
     margin-bottom: 2rem;
+}
+
+.toolTitle {
+    border-bottom: 1px solid var(--foreground);
+    margin-bottom: 0.25rem;
 }
 
 .actionContainer,
@@ -59,13 +65,7 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    background-color: transparent;
     cursor: col-resize;
-}
-
-.toolTitle {
-    border-bottom: 1px solid var(--foreground);
-    margin-bottom: 0.25rem;
 }
 
 .dragBar {

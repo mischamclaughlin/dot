@@ -6,8 +6,20 @@ import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
 import styles from "./SideBar.module.css";
 import {
+    contentAlignCenter,
+    contentAlignEnd,
+    contentAlignStart,
     defaultBackgroundColour,
     defaultForegroundColour,
+    textAlignCenter,
+    textAlignJustify,
+    textAlignLeft,
+    textAlignRight,
+    variantBody,
+    variantHeading,
+    variantSubHeading,
+    variantSubTitle,
+    variantTitle,
 } from "./styles/DotGridStyles";
 
 type SideBarProps = {
@@ -57,6 +69,28 @@ export default function SideBar({
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
         e.currentTarget.releasePointerCapture(e.pointerId);
         setIsDragging(false);
+    }
+
+    function handleForegroundColourChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) {
+        const nextColour = {
+            color: e.target.value,
+        } satisfies AreaStyle;
+
+        setForegroundColour(nextColour);
+        onSelectStyle(nextColour);
+    }
+
+    function handleBackgroundColourChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) {
+        const nextColour = {
+            backgroundColor: e.target.value,
+        } satisfies AreaStyle;
+
+        setBackgroundColour(nextColour);
+        onSelectStyle(nextColour);
     }
 
     return (
@@ -125,7 +159,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({ variant: "title" })
+                                            onSelectStyle(variantTitle)
                                         }
                                     >
                                         Title
@@ -133,9 +167,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                variant: "subTitle",
-                                            })
+                                            onSelectStyle(variantSubTitle)
                                         }
                                     >
                                         Subtitle
@@ -143,9 +175,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                variant: "heading",
-                                            })
+                                            onSelectStyle(variantHeading)
                                         }
                                     >
                                         Heading
@@ -153,9 +183,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                variant: "subHeading",
-                                            })
+                                            onSelectStyle(variantSubHeading)
                                         }
                                     >
                                         Subheading
@@ -163,7 +191,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({ variant: "body" })
+                                            onSelectStyle(variantBody)
                                         }
                                     >
                                         Body
@@ -173,7 +201,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({ textAlign: "left" })
+                                            onSelectStyle(textAlignLeft)
                                         }
                                     >
                                         Left
@@ -181,9 +209,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                textAlign: "right",
-                                            })
+                                            onSelectStyle(textAlignRight)
                                         }
                                     >
                                         Right
@@ -191,9 +217,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                textAlign: "center",
-                                            })
+                                            onSelectStyle(textAlignCenter)
                                         }
                                     >
                                         Center
@@ -201,12 +225,36 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({
-                                                textAlign: "justify",
-                                            })
+                                            onSelectStyle(textAlignJustify)
                                         }
                                     >
                                         Justify
+                                    </button>
+                                </div>
+                                <div className={styles.controlContainer}>
+                                    <button
+                                        className={styles.button}
+                                        onClick={() =>
+                                            onSelectStyle(contentAlignStart)
+                                        }
+                                    >
+                                        Start
+                                    </button>
+                                    <button
+                                        className={styles.button}
+                                        onClick={() =>
+                                            onSelectStyle(contentAlignCenter)
+                                        }
+                                    >
+                                        Center
+                                    </button>
+                                    <button
+                                        className={styles.button}
+                                        onClick={() =>
+                                            onSelectStyle(contentAlignEnd)
+                                        }
+                                    >
+                                        End
                                     </button>
                                 </div>
                                 <div className={styles.controlContainer}>
@@ -223,13 +271,7 @@ export default function SideBar({
                                             name="foregroundColour"
                                             value={foregroundColour.color}
                                             onChange={(e) => {
-                                                setForegroundColour({
-                                                    color: e.target.value,
-                                                });
-                                                onSelectStyle({
-                                                    foregroundColour:
-                                                        foregroundColour,
-                                                });
+                                                handleForegroundColourChange(e);
                                             }}
                                         />
                                     </div>
@@ -248,14 +290,7 @@ export default function SideBar({
                                                 backgroundColour.backgroundColor
                                             }
                                             onChange={(e) => {
-                                                setBackgroundColour({
-                                                    backgroundColor:
-                                                        e.target.value,
-                                                });
-                                                onSelectStyle({
-                                                    backgroundColour:
-                                                        backgroundColour,
-                                                });
+                                                handleBackgroundColourChange(e);
                                             }}
                                         />
                                     </div>

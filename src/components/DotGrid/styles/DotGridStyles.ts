@@ -1,54 +1,76 @@
-import { type CSSProperties } from "react";
+import type { AreaStyle } from "../types/DotGridTypes";
 
-export const defaultContentAlign: CSSProperties = {
-    alignContent: "start",
-};
-
-export const defaultBackgroundColour: CSSProperties = {
-    backgroundColor: "#fbfcff",
-};
-
-export const defaultForegroundColour: CSSProperties = {
-    color: "#000000",
-};
-
-export const variantTitle: CSSProperties = {
+export const variantTitle = {
     fontSize: "2em",
     fontWeight: 700,
-};
+} satisfies AreaStyle;
 
-export const variantSubTitle: CSSProperties = {
+export const variantSubTitle = {
     fontSize: "1.17em",
     fontWeight: "bold",
-};
+} satisfies AreaStyle;
 
-export const variantHeading: CSSProperties = {
+export const variantHeading = {
     fontSize: "1.5em",
     fontWeight: "bold",
-};
+} satisfies AreaStyle;
 
-export const variantSubHeading: CSSProperties = {
+export const variantSubHeading = {
     fontSize: "1em",
     fontWeight: "bold",
-};
+} satisfies AreaStyle;
 
-export const variantBody: CSSProperties = {
+export const variantBody = {
     fontSize: "1em",
     fontWeight: 400,
-};
+} satisfies AreaStyle;
 
-export const alignLeft: CSSProperties = {
+export const textAlignLeft = {
     textAlign: "left",
-};
+} satisfies AreaStyle;
 
-export const alignRight: CSSProperties = {
+export const textAlignRight = {
     textAlign: "right",
-};
+} satisfies AreaStyle;
 
-export const alignCenter: CSSProperties = {
+export const textAlignCenter = {
     textAlign: "center",
-};
+} satisfies AreaStyle;
 
-export const alignJustify: CSSProperties = {
+export const textAlignJustify = {
     textAlign: "justify",
+} satisfies AreaStyle;
+
+export const contentAlignStart = {
+    alignContent: "start",
+} satisfies AreaStyle;
+
+export const contentAlignCenter = {
+    alignContent: "center",
+} satisfies AreaStyle;
+
+export const contentAlignEnd = {
+    alignContent: "end",
+} satisfies AreaStyle;
+
+//------------------------------------------------------------------------------
+// Defaults
+export const defaultVariant = variantBody;
+export const defaultTextAlign = textAlignLeft;
+export const defaultContentAlign = contentAlignStart;
+
+export const defaultBackgroundColour = {
+    backgroundColor: "#fbfcff",
+} satisfies AreaStyle;
+
+export const defaultForegroundColour = {
+    color: "#000000",
+} satisfies AreaStyle;
+
+export const defaultStyle: AreaStyle = {
+    ...defaultVariant,
+    ...defaultTextAlign,
+    ...defaultContentAlign,
+    ...defaultForegroundColour,
+    ...defaultBackgroundColour,
 };
