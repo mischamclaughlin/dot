@@ -222,8 +222,7 @@ export default function Canvas({
                     <textarea
                         value={text}
                         onChange={(e) => setText(e.target.value)}
-                        onMouseDown={(e) => e.stopPropagation()}
-                        onMouseUp={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
                         className={
                             activeTool
                                 ? `${styles[activeTool]} ${styles.activeTool}`
