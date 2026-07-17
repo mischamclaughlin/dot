@@ -38,8 +38,9 @@ export default function SideBar({
     onGoBack,
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [width, setWidth] = useState<number>(MIN_WIDTH);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+    const [width, setWidth] = useState<number>(MIN_WIDTH);
 
     const [backgroundColour, setBackgroundColour] = useState<CSSProperties>(
         defaultBackgroundColour,
@@ -66,7 +67,6 @@ export default function SideBar({
 
         const currWidth = Math.max(0, Math.min(nextWidth, maxWidth));
         setWidth(currWidth);
-        // setTempWidth(currWidth);
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
