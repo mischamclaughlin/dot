@@ -257,6 +257,11 @@ export default function Canvas({
                                 ? service.updateStyleAlign(activeStyle)
                                       .textAlign
                                 : undefined,
+                            alignContent:
+                                activeStyle?.contentAlign?.alignContent,
+                            color: activeStyle?.foregroundColour?.color,
+                            backgroundColor:
+                                activeStyle?.backgroundColour?.backgroundColor,
                         }}
                     />
                 )}

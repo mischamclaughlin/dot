@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export type Dot = { x: number; y: number };
 
 export type SelectionArea = {
@@ -8,11 +10,14 @@ export type SelectionArea = {
 };
 
 type Variant = "title" | "subTitle" | "heading" | "subHeading" | "body" | null;
-type Align = "left" | "right" | "center" | "justify" | null;
+type AlignText = "left" | "right" | "center" | "justify" | null;
 
 export type AreaStyle = {
     variant?: Variant;
-    align?: Align;
+    textAlign?: AlignText;
+    contentAlign?: CSSProperties;
+    backgroundColour?: CSSProperties;
+    foregroundColour?: CSSProperties;
 };
 
 export type CanvasTool = "text" | "image" | "component" | "describe" | null;

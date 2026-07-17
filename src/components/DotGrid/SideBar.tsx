@@ -1,10 +1,14 @@
-import React, { type ReactElement, useState } from "react";
+import React, { type CSSProperties, type ReactElement, useState } from "react";
 
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import { MAX_WIDTH_RATIO } from "./DotGrid";
 
 import styles from "./SideBar.module.css";
+import {
+    defaultBackgroundColour,
+    defaultForegroundColour,
+} from "./styles/DotGridStyles";
 
 type SideBarProps = {
     activeTool: CanvasTool;
@@ -23,6 +27,13 @@ export default function SideBar({
 }: SideBarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [width, setWidth] = useState<number>(150);
+
+    const [backgroundColour, setBackgroundColour] = useState<CSSProperties>(
+        defaultBackgroundColour,
+    );
+    const [foregroundColour, setForegroundColour] = useState<CSSProperties>(
+        defaultForegroundColour,
+    );
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -159,7 +170,7 @@ export default function SideBar({
                                     <button
                                         className={styles.button}
                                         onClick={() =>
-                                            onSelectStyle({ align: "left" })
+                                            onSelectStyle({ textAlign: "left" })
                                         }
                                     >
                                         Left
@@ -168,7 +179,7 @@ export default function SideBar({
                                         className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
-                                                align: "right",
+                                                textAlign: "right",
                                             })
                                         }
                                     >
@@ -178,7 +189,7 @@ export default function SideBar({
                                         className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
-                                                align: "center",
+                                                textAlign: "center",
                                             })
                                         }
                                     >
@@ -188,12 +199,63 @@ export default function SideBar({
                                         className={styles.button}
                                         onClick={() =>
                                             onSelectStyle({
-                                                align: "justify",
+                                                textAlign: "justify",
                                             })
                                         }
                                     >
                                         Justify
                                     </button>
+                                </div>
+                                <div className={styles.controlContainer}>
+                                    <div className={styles.colourPicker}>
+                                        <label
+                                            className={styles.button}
+                                            htmlFor="foregroundColour"
+                                        >
+                                            Foreground
+                                        </label>
+                                        <input
+                                            type="color"
+                                            id="foregroundColour"
+                                            name="foregroundColour"
+                                            value={foregroundColour.color}
+                                            onChange={(e) => {
+                                                setForegroundColour({
+                                                    color: e.target.value,
+                                                });
+                                                onSelectStyle({
+                                                    foregroundColour:
+                                                        foregroundColour,
+                                                });
+                                            }}
+                                        />
+                                    </div>
+                                    <div className={styles.colourPicker}>
+                                        <label
+                                            className={styles.button}
+                                            htmlFor="backgroundColour"
+                                        >
+                                            Background
+                                        </label>
+                                        <input
+                                            type="color"
+                                            id="backgroundColour"
+                                            name="backgroundColour"
+                                            value={
+                                                backgroundColour.backgroundColor
+                                            }
+                                            onChange={(e) => {
+                                                setBackgroundColour({
+                                                    backgroundColor:
+                                                        e.target.value,
+                                                });
+                                                onSelectStyle({
+                                                    backgroundColour:
+                                                        backgroundColour,
+                                                });
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </>
                         )}

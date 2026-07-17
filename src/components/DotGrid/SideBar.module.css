@@ -34,6 +34,26 @@
     gap: 1rem;
 }
 
+.colourPicker {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.active {
+    border-color: var(--background);
+}
+
+.button {
+    background: ButtonFace;
+    text-align: left;
+    font: inherit;
+}
+
+.button:hover {
+    background-color: var(--foreground-faded);
+}
+
 .dragBarContainer {
     width: 15px;
     height: 100%;
@@ -51,12 +71,4 @@
 .dragBar {
     width: 1px;
     background-color: var(--foreground);
-}
-
-.active {
-    border-color: var(--background);
-}
-
-.button:hover {
-    background-color: var(--foreground-faded);
 }

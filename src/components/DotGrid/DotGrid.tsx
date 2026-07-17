@@ -6,6 +6,11 @@ import Canvas from "./Canvas";
 import SideBar from "./SideBar";
 
 import styles from "./DotGrid.module.css";
+import {
+    defaultBackgroundColour,
+    defaultContentAlign,
+    defaultForegroundColour,
+} from "./styles/DotGridStyles";
 
 export const MAX_WIDTH_RATIO = 0.85;
 
@@ -24,7 +29,10 @@ export default function DotGrid() {
     function handleSelectStyle(style: Partial<AreaStyle>) {
         const defaultStyle: AreaStyle = {
             variant: "body",
-            align: "left",
+            textAlign: "left",
+            contentAlign: defaultContentAlign,
+            foregroundColour: defaultForegroundColour,
+            backgroundColour: defaultBackgroundColour,
         };
 
         setActiveStyle((prev) => ({
@@ -32,6 +40,7 @@ export default function DotGrid() {
             ...style,
         }));
     }
+
     function handleSaveElement(isSave: boolean) {
         setIsSaved(isSave);
     }

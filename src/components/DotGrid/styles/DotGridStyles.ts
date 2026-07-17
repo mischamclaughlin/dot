@@ -1,5 +1,17 @@
 import { type CSSProperties } from "react";
 
+export const defaultContentAlign: CSSProperties = {
+    alignContent: "start",
+};
+
+export const defaultBackgroundColour: CSSProperties = {
+    backgroundColor: "#fbfcff",
+};
+
+export const defaultForegroundColour: CSSProperties = {
+    color: "#000000",
+};
+
 export const variantTitle: CSSProperties = {
     fontSize: "2em",
     fontWeight: 700,

@@ -7,6 +7,9 @@ import {
     alignJustify,
     alignLeft,
     alignRight,
+    defaultBackgroundColour,
+    defaultContentAlign,
+    defaultForegroundColour,
     variantBody,
     variantHeading,
     variantSubHeading,
@@ -83,17 +86,21 @@ export class DotGridService {
     }
 
     updateStyleAlign(style: AreaStyle) {
-        if (style.align === "right") return alignRight;
-        if (style.align === "center") return alignCenter;
-        if (style.align === "justify") return alignJustify;
+        if (style.textAlign === "right") return alignRight;
+        if (style.textAlign === "center") return alignCenter;
+        if (style.textAlign === "justify") return alignJustify;
 
         return alignLeft;
     }
 
     createElementProps(item: CanvasItem) {
-        const style = item.style ?? {
+        const style: AreaStyle = {
             variant: "body",
-            align: "left",
+            textAlign: "left",
+            contentAlign: defaultContentAlign,
+            foregroundColour: defaultForegroundColour,
+            backgroundColour: defaultBackgroundColour,
+            ...item.style,
         };
 
         return {
@@ -102,6 +109,9 @@ export class DotGridService {
                 ...(item.area ?? {}),
                 ...this.updateStyleVariant(style),
                 ...this.updateStyleAlign(style),
+                alignContent: style.contentAlign?.alignContent,
+                color: style.foregroundColour?.color,
+                backgroundColor: style.backgroundColour?.backgroundColor,
             } satisfies CSSProperties,
         };
     }
