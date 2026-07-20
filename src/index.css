@@ -13,6 +13,10 @@
     --c-highlight-m: #dfdad9;
     --c-highlight-h: #cecacd;
 
+    --c-success: #56949f;
+    --c-error: #b4637a;
+    --c-info: #907aa9;
+
     /* ---------------------------------------------------------------------- */
     --accent: var(--c-accent);
     --accent-1: var(--c-accent-1);
@@ -26,6 +30,10 @@
     --highlight-l: var(--c-highlight-l);
     --highlight-m: var(--c-highlight-m);
     --highlight-h: var(--c-highlight-h);
+
+    --sucess: var(--c-success);
+    --error: var(--c-error);
+    --info: var(--c-info);
 }
 
 * {

@@ -12,7 +12,11 @@ import styles from "./DotGrid.module.css";
 export const MAX_WIDTH_RATIO = 0.85;
 export const MIN_WIDTH = 185;
 
-export default function DotGrid() {
+type DotGridProps = {
+    onNotifications: (isSaved: boolean) => void;
+};
+
+export default function DotGrid({ onNotifications }: DotGridProps) {
     const [activeTool, setActiveTool] = useState<CanvasTool>(null);
 
     const [activeStyle, setActiveStyle] = useState<AreaStyle>(defaultStyle);
@@ -30,6 +34,7 @@ export default function DotGrid() {
 
     function handleSaveElement(isSave: boolean) {
         setIsSaved(isSave);
+        onNotifications(isSave);
     }
 
     function handleBack(isBack: boolean) {

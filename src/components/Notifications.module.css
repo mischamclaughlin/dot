@@ -1,0 +1,26 @@
+.container {
+    position: fixed;
+    z-index: 100;
+    top: 1rem;
+    left: 50%;
+}
+
+.notificationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 2rem;
+    color: var(--bg);
+}
+
+.success {
+    background-color: var(--sucess);
+}
+
+.error {
+    background-color: var(--error);
+}
+
+.info {
+    background-color: var(--info);
+}

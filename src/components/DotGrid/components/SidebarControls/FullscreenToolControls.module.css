@@ -5,7 +5,7 @@
 .fullscreenContainer {
     position: absolute;
     left: 7.5px;
-    bottom: 7.5px;
+    bottom: 1rem;
     backdrop-filter: blur(3px);
     z-index: 10;
 }
