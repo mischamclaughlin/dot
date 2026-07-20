@@ -6,5 +6,6 @@
     position: absolute;
     left: 7.5px;
     bottom: 7.5px;
+    backdrop-filter: blur(3px);
     z-index: 10;
 }
