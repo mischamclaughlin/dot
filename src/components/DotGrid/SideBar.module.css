@@ -7,7 +7,7 @@
     background-color: var(--surface);
 }
 
-.sideBarContainer {
+.sidebarContainer {
     flex: 1;
     min-width: 0;
     height: 100%;

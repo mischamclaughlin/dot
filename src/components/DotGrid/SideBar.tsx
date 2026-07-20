@@ -4,14 +4,14 @@ import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
-import styles from "./SideBar.module.css";
+import styles from "./Sidebar.module.css";
 
-import TextToolControls from "./components/ToolControls/TextToolControls";
-import ToolSelectors from "./components/ToolControls/ToolSelectors";
-import FullscreenToolControls from "./components/ToolControls/FullscreenToolControls";
-import ToolActions from "./components/ToolControls/ToolActions";
+import TextToolControls from "./components/SidebarControls/TextToolControls";
+import ToolSelectors from "./components/SidebarControls/ToolSelectors";
+import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
+import ToolActions from "./components/SidebarControls/ToolActions";
 
-type SideBarProps = {
+type SidebarProps = {
     activeTool: CanvasTool;
     activeStyle: AreaStyle;
     onSelectTool: (tool: CanvasTool) => void;
@@ -20,14 +20,14 @@ type SideBarProps = {
     onGoBack: (isBack: boolean) => void;
 };
 
-export default function SideBar({
+export default function Sidebar({
     activeTool,
     activeStyle,
     onSelectTool,
     onSelectStyle,
     onSaveItem,
     onGoBack,
-}: SideBarProps): ReactElement {
+}: SidebarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
@@ -69,7 +69,7 @@ export default function SideBar({
                     className={styles.container}
                     style={{ width: `${width}px`, minWidth: `${MIN_WIDTH}px` }}
                 >
-                    <div className={styles.sideBarContainer}>
+                    <div className={styles.sidebarContainer}>
                         <h1 className={styles.title}>Dot.</h1>
                         <h3 className={styles.toolTitle}>
                             {activeTool ? activeTool.toUpperCase() : "TOOLS"}

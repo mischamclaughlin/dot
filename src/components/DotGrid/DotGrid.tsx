@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import Canvas from "./Canvas";
-import SideBar from "./SideBar";
+import Sidebar from "./Sidebar";
 
 import { defaultStyle } from "./styles/DotGridStyles";
 
@@ -38,7 +38,7 @@ export default function DotGrid() {
 
     return (
         <div className={styles.container}>
-            <SideBar
+            <Sidebar
                 activeTool={activeTool}
                 activeStyle={activeStyle}
                 onSelectTool={handleSelectTool}
