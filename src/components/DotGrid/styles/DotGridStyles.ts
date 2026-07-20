@@ -60,11 +60,11 @@ export const defaultTextAlign = textAlignLeft;
 export const defaultContentAlign = contentAlignStart;
 
 export const defaultBackgroundColour = {
-    backgroundColor: "#fbfcff",
+    backgroundColor: "#faf4ed",
 } satisfies AreaStyle;
 
 export const defaultForegroundColour = {
-    color: "#000000",
+    color: "#464261",
 } satisfies AreaStyle;
 
 export const defaultStyle: AreaStyle = {

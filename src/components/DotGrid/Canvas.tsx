@@ -184,7 +184,10 @@ export default function Canvas({
 
     return (
         <div
-            className={styles.container}
+            className={`
+                ${styles.container}
+                ${toolArea ? styles.focusToolArea : styles.focusContainer}
+                `}
             onPointerMove={handlePointerMove}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
