@@ -4,6 +4,7 @@
     display: flex;
     justify-content: space-between;
     z-index: 10;
+    background-color: var(--bg);
 }
 
 .sideBarContainer {
@@ -17,11 +18,11 @@
 }
 
 .toolTitle {
-    border-bottom: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--fg);
 }
 
 .title {
-    border: 1px solid var(--foreground);
+    border: 1px solid var(--fg);
 }
 
 .dragBarContainer {
@@ -34,5 +35,5 @@
 
 .dragBar {
     width: 1px;
-    background-color: var(--foreground);
+    background-color: var(--fg);
 }

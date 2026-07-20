@@ -13,14 +13,16 @@ import ToolActions from "./components/ToolControls/ToolActions";
 
 type SideBarProps = {
     activeTool: CanvasTool;
+    activeStyle: AreaStyle;
     onSelectTool: (tool: CanvasTool) => void;
-    onSelectStyle: (style: AreaStyle) => void;
+    onSelectStyle: (style: Partial<AreaStyle>) => void;
     onSaveItem: (isSave: boolean) => void;
     onGoBack: (isBack: boolean) => void;
 };
 
 export default function SideBar({
     activeTool,
+    activeStyle,
     onSelectTool,
     onSelectStyle,
     onSaveItem,
@@ -83,6 +85,7 @@ export default function SideBar({
                                 />
                                 {activeTool === "text" && (
                                     <TextToolControls
+                                        activeStyle={activeStyle}
                                         onSelectStyle={onSelectStyle}
                                     />
                                 )}

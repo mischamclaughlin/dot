@@ -6,8 +6,8 @@
     overflow: hidden;
     background-image: radial-gradient(
         circle,
-        var(--foreground-faded) 2px,
-        transparent 1px
+        var(--highlight-l) 2px,
+        var(--bg) 1px
     );
     cursor: crosshair;
 }
@@ -17,7 +17,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--background);
+    background-color: var(--accent);
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition:
@@ -30,21 +30,22 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: green;
+    background-color: var(--accent-1);
     transform: translate(-50%, -50%);
 }
 
 .draftArea {
     position: absolute;
-    background-color: var(--background-faded);
-    border: 1px solid var(--background);
+    background-color: transparent;
+    border: 1px solid var(--highlight-h);
+    backdrop-filter: blur(1.5px);
     pointer-events: none;
 }
 
 .selectArea {
     position: absolute;
     background-color: transparent;
-    border: 1px solid var(--background);
+    border: 1px solid var(--accent);
     backdrop-filter: blur(3px);
     pointer-events: none;
 }

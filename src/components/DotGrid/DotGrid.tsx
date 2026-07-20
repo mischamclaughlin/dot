@@ -15,7 +15,7 @@ export const MIN_WIDTH = 185;
 export default function DotGrid() {
     const [activeTool, setActiveTool] = useState<CanvasTool>(null);
 
-    const [activeStyle, setActiveStyle] = useState<AreaStyle | null>(null);
+    const [activeStyle, setActiveStyle] = useState<AreaStyle>(defaultStyle);
 
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const [isGoBack, setIsGoBack] = useState<boolean>(false);
@@ -25,10 +25,7 @@ export default function DotGrid() {
     }
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
-        setActiveStyle((prev) => ({
-            ...(prev ?? defaultStyle),
-            ...style,
-        }));
+        setActiveStyle((prev) => ({ ...prev, ...style }));
     }
 
     function handleSaveElement(isSave: boolean) {
@@ -43,6 +40,7 @@ export default function DotGrid() {
         <div className={styles.container}>
             <SideBar
                 activeTool={activeTool}
+                activeStyle={activeStyle}
                 onSelectTool={handleSelectTool}
                 onSelectStyle={handleSelectStyle}
                 onSaveItem={handleSaveElement}

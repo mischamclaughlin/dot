@@ -6,16 +6,14 @@
 }
 
 .button {
+    background-color: var(--highlight-l);
+    color: var(--fg);
     width: 100%;
-    background: ButtonFace;
     text-align: left;
     font: inherit;
 }
 
 .button:hover {
-    background-color: var(--foreground-faded);
-}
-
-.active {
-    border: 1px solid var(--accent);
+    background-color: var(--highlight-h);
+    color: var(--accent);
 }

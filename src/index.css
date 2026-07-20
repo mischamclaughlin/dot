@@ -1,12 +1,31 @@
 :root {
-    --text: #000000;
-    --text-faded: #00000030;
-    --accent: #ff0000;
-    --accent-faded: #ff000030;
-    --background: var(--accent);
-    --background-faded: var(--accent-faded);
-    --foreground: var(--text);
-    --foreground-faded: var(--text-faded);
+    /* ---------------------------------------------------------------------- */
+    --c-accent: #286983;
+    --c-accent-1: #d7827e;
+
+    --c-fg: #464261;
+    --c-bg: #faf4ed;
+
+    --c-surface: #fffaf3;
+    --c-overlay: #f2e9e1;
+
+    --c-highlight-l: #f4ede8;
+    --c-highlight-m: #dfdad9;
+    --c-highlight-h: #cecacd;
+
+    /* ---------------------------------------------------------------------- */
+    --accent: var(--c-accent);
+    --accent-1: var(--c-accent-1);
+
+    --fg: var(--c-fg);
+    --bg: var(--c-bg);
+
+    --surface: var(--c-surface);
+    --overlay: var(--c-overlay);
+
+    --highlight-l: var(--c-highlight-l);
+    --highlight-m: var(--c-highlight-m);
+    --highlight-h: var(--c-highlight-h);
 }
 
 * {

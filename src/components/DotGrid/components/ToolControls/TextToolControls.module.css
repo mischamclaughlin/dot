@@ -11,3 +11,13 @@
     align-items: center;
     gap: 0.25rem;
 }
+
+.active.button {
+    background-color: var(--highlight-m);
+    color: var(--accent);
+}
+
+.active.button:hover {
+    background-color: var(--highlight-h);
+    color: var(--accent-1);
+}
