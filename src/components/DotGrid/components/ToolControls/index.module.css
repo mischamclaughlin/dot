@@ -6,6 +6,7 @@
 }
 
 .button {
+    width: 100%;
     background: ButtonFace;
     text-align: left;
     font: inherit;

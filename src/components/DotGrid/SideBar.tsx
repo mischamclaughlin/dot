@@ -101,7 +101,7 @@ export default function SideBar({
             )}
             <FullscreenToolControls
                 onToggleFullscreen={handleFullScreen}
-                width={width}
+                width={isFullscreen ? MIN_WIDTH : width}
             />
         </>
     );
