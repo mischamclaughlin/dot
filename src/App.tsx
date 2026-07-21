@@ -3,15 +3,7 @@ import Notifications from "./components/Notifications";
 
 import "./App.css";
 import { useState } from "react";
-
-type NotificationType = "success" | "info" | "error";
-type NotificationSubtype = "saved" | "delted" | "edited" | "create";
-
-type Notification = {
-    type: NotificationType;
-    subtype: NotificationSubtype;
-    message: string;
-};
+import type { Notification } from "./components/DotGrid/types/DotGridTypes";
 
 export default function App() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -20,6 +12,7 @@ export default function App() {
         if (!isSaved) return;
 
         const notification = {
+            id: crypto.randomUUID(),
             type: "success",
             subtype: "saved",
             message: "Saved successfully.",
@@ -28,10 +21,19 @@ export default function App() {
         setNotifications((current) => [...current, notification]);
     }
 
+    function handleDeleteNotification(id: string) {
+        setNotifications((current) =>
+            current.filter((notif) => notif.id !== id),
+        );
+    }
+
     return (
         <>
             <div className="appContainer">
-                <Notifications notifications={notifications} />
+                <Notifications
+                    notifications={notifications}
+                    onDeleteNotification={handleDeleteNotification}
+                />
                 <DotGrid onNotifications={handleNotifications} />
             </div>
         </>

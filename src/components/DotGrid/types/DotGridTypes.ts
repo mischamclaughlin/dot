@@ -28,3 +28,13 @@ export type CanvasItem = {
     style: AreaStyle | null;
     area: SelectionArea | null;
 };
+
+export type NotificationType = "success" | "info" | "error";
+export type NotificationSubtype = "saved" | "delted" | "edited" | "create";
+
+export type Notification = {
+    id: string;
+    type: NotificationType;
+    subtype: NotificationSubtype;
+    message: string;
+};
