@@ -10,10 +10,12 @@ import TextToolControls from "./components/SidebarControls/TextToolControls";
 import ToolSelectors from "./components/SidebarControls/ToolSelectors";
 import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
 import ToolActions from "./components/SidebarControls/ToolActions";
+import { DotGridService } from "./services/DotGridService";
 
 type SidebarProps = {
     activeTool: CanvasTool;
     activeStyle: AreaStyle;
+    isSaveable: boolean;
     onSelectTool: (tool: CanvasTool) => void;
     onSelectStyle: (style: Partial<AreaStyle>) => void;
     onSaveItem: (isSave: boolean) => void;
@@ -23,6 +25,7 @@ type SidebarProps = {
 export default function Sidebar({
     activeTool,
     activeStyle,
+    isSaveable,
     onSelectTool,
     onSelectStyle,
     onSaveItem,
@@ -49,7 +52,8 @@ export default function Sidebar({
         const nextWidth = e.clientX - parentRect.left;
         const maxWidth = parentRect.width * MAX_WIDTH_RATIO;
 
-        const currWidth = Math.max(0, Math.min(nextWidth, maxWidth));
+        const service = new DotGridService();
+        const currWidth = service.snapToGrid(nextWidth, maxWidth);
         setWidth(currWidth);
     }
 
@@ -80,6 +84,7 @@ export default function Sidebar({
                         {activeTool && (
                             <>
                                 <ToolActions
+                                    isSaveable={isSaveable}
                                     onGoBack={onGoBack}
                                     onSaveItem={onSaveItem}
                                 />

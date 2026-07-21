@@ -25,7 +25,7 @@ export class DotGridService {
         return nextactiveDot;
     }
 
-    private snapToGrid(value: number, maxValue: number) {
+    snapToGrid(value: number, maxValue: number) {
         const offset = this.gridSize / 2;
         const snapped =
             Math.round((value - offset) / this.gridSize) * this.gridSize +

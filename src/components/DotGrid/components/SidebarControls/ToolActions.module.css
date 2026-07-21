@@ -5,3 +5,8 @@
 .button {
     composes: button from "./index.module.css";
 }
+
+.button:disabled {
+    color: var(--error);
+    background-color: var(--highlight-h);
+}

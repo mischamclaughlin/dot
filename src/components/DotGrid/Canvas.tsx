@@ -25,6 +25,7 @@ type CanvasProps = {
     onSelectTool: (tool: CanvasTool) => void;
     onSaveItem: (isSaved: boolean) => void;
     onGoBack: (isBack: boolean) => void;
+    onSaveable: (isSave: boolean) => void;
 };
 
 export default function Canvas({
@@ -35,6 +36,7 @@ export default function Canvas({
     onSelectTool,
     onSaveItem,
     onGoBack,
+    onSaveable,
 }: CanvasProps): ReactElement {
     const service = new DotGridService();
 
@@ -64,7 +66,9 @@ export default function Canvas({
             resetDrag();
 
             setSelectArea(null);
+
             setToolArea(null);
+            onSaveable(false);
 
             setText("");
 
@@ -74,7 +78,7 @@ export default function Canvas({
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [onSelectTool, resetDrag, setSelectArea]);
+    }, [onSelectTool, resetDrag, setSelectArea, onSaveable]);
 
     useEffect(() => {
         function handleElementSave() {
@@ -95,22 +99,34 @@ export default function Canvas({
             setItems((current) => [...(current ?? []), item]);
 
             setToolArea(null);
+            onSaveable(false);
+
             setText("");
         }
 
         handleElementSave();
-    }, [activeStyle, activeTool, isSaved, onSaveItem, text, toolArea]);
+    }, [
+        activeStyle,
+        activeTool,
+        isSaved,
+        onSaveItem,
+        text,
+        toolArea,
+        onSaveable,
+    ]);
 
     useEffect(() => {
         function handleToolArea() {
             if (!activeTool || !selectArea) return;
 
             setToolArea(selectArea);
+            onSaveable(true);
+
             setSelectArea(null);
         }
 
         handleToolArea();
-    }, [activeTool, selectArea]);
+    }, [activeTool, selectArea, onSaveable]);
 
     useEffect(() => {
         function handleGoBack() {
@@ -122,11 +138,13 @@ export default function Canvas({
             if (!toolArea) return;
 
             setSelectArea(toolArea);
+
             setToolArea(null);
+            onSaveable(false);
         }
 
         handleGoBack();
-    }, [isGoBack, onGoBack, onSelectTool, toolArea]);
+    }, [isGoBack, onGoBack, onSelectTool, toolArea, onSaveable]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -161,8 +179,10 @@ export default function Canvas({
 
         if (!area) return;
 
-        if (activeTool) setToolArea(area);
-        else setSelectArea(area);
+        if (activeTool) {
+            setToolArea(area);
+            onSaveable(true);
+        } else setSelectArea(area);
     }
 
     function handlePointerCancel() {
@@ -177,7 +197,12 @@ export default function Canvas({
                     className={styles.savedElement}
                     style={{ ...item.style, ...item.area }}
                 >
+                    <div
+                        className={styles.border}
+                        style={{ ...item.area?.height }}
+                    />
                     {item.text}
+                    <div className={styles.border} />
                 </div>
             );
         }) ?? null;

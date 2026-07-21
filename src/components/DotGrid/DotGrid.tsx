@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import Canvas from "./Canvas";
-import Sidebar from "./Sidebar";
+import Sidebar from "./SideBar";
 
 import { defaultStyle } from "./styles/DotGridStyles";
 
@@ -23,6 +23,7 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
 
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const [isGoBack, setIsGoBack] = useState<boolean>(false);
+    const [isSaveable, setIsSaveable] = useState<boolean>(false);
 
     function handleSelectTool(tool: CanvasTool) {
         setActiveTool(tool);
@@ -30,6 +31,10 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
         setActiveStyle((prev) => ({ ...prev, ...style }));
+    }
+
+    function handleSaveable(isSave: boolean) {
+        setIsSaveable(isSave);
     }
 
     function handleSaveElement(isSave: boolean) {
@@ -46,6 +51,7 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
             <Sidebar
                 activeTool={activeTool}
                 activeStyle={activeStyle}
+                isSaveable={isSaveable}
                 onSelectTool={handleSelectTool}
                 onSelectStyle={handleSelectStyle}
                 onSaveItem={handleSaveElement}
@@ -59,6 +65,7 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
                 onSelectTool={handleSelectTool}
                 onSaveItem={handleSaveElement}
                 onGoBack={handleBack}
+                onSaveable={handleSaveable}
             />
         </div>
     );
