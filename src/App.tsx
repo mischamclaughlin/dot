@@ -15,7 +15,7 @@ export default function App() {
             id: crypto.randomUUID(),
             type: "success",
             subtype: "saved",
-            message: "Saved successfully.",
+            message: "Saved.",
         } satisfies Notification;
 
         setNotifications((current) => [...current, notification]);

@@ -1,16 +1,13 @@
-import { type ReactElement } from "react";
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    type CSSProperties,
+    type ReactElement,
+} from "react";
 
 import styles from "./Notifications.module.css";
-
-type NotificationType = "success" | "info" | "error";
-type NotificationSubtype = "saved" | "delted" | "edited" | "create";
-
-type Notification = {
-    id: string;
-    type: NotificationType;
-    subtype: NotificationSubtype;
-    message: string;
-};
+import type { Notification } from "./DotGrid/types/DotGridTypes";
 
 type NotificationsProps = {
     notifications: Notification[];
@@ -21,50 +18,83 @@ export default function Notifications({
     notifications,
     onDeleteNotification,
 }: NotificationsProps): ReactElement {
+    const refs = useRef<(HTMLDivElement | null)[]>([]);
+    const [offsets, setOffsets] = useState<number[]>([]);
+
+    useLayoutEffect(() => {
+        refs.current = refs.current.slice(0, notifications.length);
+
+        let running = 0;
+        const nextOffsets = notifications.map((_, index) => {
+            const currentTop = running;
+            running += refs.current[index]?.offsetHeight ?? 0;
+
+            return currentTop;
+        });
+
+        setOffsets(nextOffsets);
+    }, [notifications]);
+
+    const zIndexMax = 1000;
+    const maxStackedNotifications = 70;
+
     if (notifications.length === 0) return <></>;
 
-    const notificationTypeStyle = (notif: Notification) =>
-        notif.type === "success"
+    const notificationTypeStyle = (type: Notification["type"]) =>
+        type === "success"
             ? styles.success
-            : notif.type === "error"
+            : type === "error"
               ? styles.error
-              : notif.type === "info"
+              : type === "info"
                 ? styles.info
                 : "";
 
+    const notificationStacked = (index: number) =>
+        index < maxStackedNotifications
+            ? ({
+                  position: "absolute",
+                  zIndex: zIndexMax - (index + 1),
+                  top: `${(offsets[index] ?? 0) - index * 15}px`,
+                  right: 0,
+                  filter: `${index === 0 ? "brightness(1)" : "brightness(0.9)"}`,
+              } satisfies CSSProperties)
+            : ({ display: "none" } satisfies CSSProperties);
+
     return (
-        <>
-            <div className={styles.container}>
-                {notifications.map((notif) => (
+        <div className={styles.container} style={{ zIndex: zIndexMax }}>
+            {notifications.map((notif, index) => (
+                <div
+                    key={notif.id}
+                    className={styles.notificationContainer}
+                    style={notificationStacked(index)}
+                    ref={(el) => {
+                        refs.current[index] = el;
+                    }}
+                >
                     <div
-                        key={notif.id}
-                        className={styles.notificationContainer}
+                        className={`
+                                ${styles.sectionContainer}
+                                ${notificationTypeStyle(notif.type)}
+                            `}
                     >
-                        <div
-                            className={`
-                                ${styles.sectionContainer}
-                                ${notificationTypeStyle(notif)}
-                            `}
-                        >
-                            <p className={styles.message}>{notif.message}</p>
-                        </div>
-                        <div
-                            className={`
-                                ${styles.sectionContainer}
-                                ${notificationTypeStyle(notif)}
-                            `}
-                        >
-                            <button
-                                data-id={notif.id}
-                                className={styles.button}
-                                onClick={() => onDeleteNotification(notif.id)}
-                            >
-                                X
-                            </button>
-                        </div>
+                        <p className={styles.message}>{notif.message}</p>
                     </div>
-                ))}
-            </div>
-        </>
+                    <div
+                        className={`
+                                ${styles.sectionContainer}
+                                ${notificationTypeStyle(notif.type)}
+                            `}
+                    >
+                        <button
+                            data-id={notif.id}
+                            className={styles.button}
+                            onClick={() => onDeleteNotification(notif.id)}
+                        >
+                            X
+                        </button>
+                    </div>
+                </div>
+            ))}
+        </div>
     );
 }

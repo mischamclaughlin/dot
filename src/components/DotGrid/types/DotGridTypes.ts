@@ -30,7 +30,7 @@ export type CanvasItem = {
 };
 
 export type NotificationType = "success" | "info" | "error";
-export type NotificationSubtype = "saved" | "delted" | "edited" | "create";
+export type NotificationSubtype = "saved" | "deleted" | "edited" | "create";
 
 export type Notification = {
     id: string;

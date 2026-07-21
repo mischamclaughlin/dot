@@ -1,19 +1,23 @@
 .container {
     position: fixed;
-    z-index: 100;
     top: 1rem;
-    left: 50%;
+    right: 1rem;
+    width: max-content;
+    transform: none;
 }
 
 .notificationContainer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 0.5rem;
+
+    pointer-events: none;
 }
 
 .sectionContainer {
     color: var(--bg);
+    animation: 500ms linear slide-in;
 }
 
 .success {
@@ -30,15 +34,32 @@
 
 .message {
     padding: 0.25rem 2rem;
+    min-width: fit-content;
+
+    pointer-events: auto;
 }
 
 .button {
     background-color: inherit;
     color: inherit;
     padding: 0.25rem 1rem;
+
+    pointer-events: auto;
 }
 
 .button:hover {
     background-color: inherit;
     filter: brightness(0.9);
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-50%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
