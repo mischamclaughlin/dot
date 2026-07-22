@@ -1,9 +1,10 @@
 .container {
+    flex: 0 0 auto;
     max-width: 85%;
     height: 100vh;
     display: flex;
     justify-content: space-between;
-    z-index: 10;
+    z-index: 900;
     background-color: var(--surface);
 }
 
@@ -30,7 +31,15 @@
     height: 100%;
     display: flex;
     justify-content: end;
+
     cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+}
+
+.dragBarContainer:hover {
+    background-color: var(--accent-1);
+    filter: opacity(0.25);
 }
 
 .dragBar {

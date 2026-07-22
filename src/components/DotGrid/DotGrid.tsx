@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import Canvas from "./Canvas";
-import Sidebar from "./SideBar";
+import Sidebar from "./Sidebar";
 
 import { defaultStyle } from "./styles/DotGridStyles";
 
@@ -63,9 +63,9 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
                 isSaved={isSaved}
                 isGoBack={isGoBack}
                 onSelectTool={handleSelectTool}
+                onSaveable={handleSaveable}
                 onSaveItem={handleSaveElement}
                 onGoBack={handleBack}
-                onSaveable={handleSaveable}
             />
         </div>
     );

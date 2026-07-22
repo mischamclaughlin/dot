@@ -38,3 +38,5 @@ export type Notification = {
     subtype: NotificationSubtype;
     message: string;
 };
+
+export type ResizeEdge = "left" | "right" | "top" | "bottom";

@@ -58,4 +58,30 @@ export class DotGridService {
             height: height,
         };
     }
+
+    updateItemWidth(start: Dot, end: Dot) {
+        const minX = Math.min(start.x, end.x);
+        const maxX = Math.max(start.x, end.x);
+
+        const left = minX - this.gridSize / 2;
+        const width = maxX - minX + this.gridSize;
+
+        return {
+            left: left,
+            width: width,
+        };
+    }
+
+    updateItemHeight(start: Dot, end: Dot) {
+        const minY = Math.min(start.y, end.y);
+        const maxY = Math.max(start.y, end.y);
+
+        const top = minY - this.gridSize / 2;
+        const height = maxY - minY + this.gridSize;
+
+        return {
+            top: top,
+            height: height,
+        };
+    }
 }

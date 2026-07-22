@@ -49,7 +49,7 @@
 .draftArea {
     position: absolute;
     background-color: transparent;
-    border: 1px solid var(--highlight-h);
+    border: 1px dashed var(--highlight-h);
     backdrop-filter: blur(1.5px);
     pointer-events: none;
 }
@@ -57,7 +57,7 @@
 .selectArea {
     position: absolute;
     background-color: transparent;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--highlight-h);
     backdrop-filter: blur(3px);
     pointer-events: none;
 }
@@ -84,8 +84,25 @@
     resize: none;
 }
 
-.border {
-    width: 1px;
-    height: 100%;
-    background-color: black;
+.dragBarContainer {
+    position: absolute;
+    border: 1px solid transparent;
+}
+
+.dragBarContainer:hover {
+    border: 1px solid var(--highlight-h);
+}
+
+.dragBar {
+    touch-action: none;
+    position: absolute;
+    background-color: none;
+    transition:
+        background-color 50ms ease-in,
+        filter 25ms ease-in;
+}
+
+.dragBar:hover {
+    background-color: var(--accent-1);
+    filter: opacity(0.25);
 }
