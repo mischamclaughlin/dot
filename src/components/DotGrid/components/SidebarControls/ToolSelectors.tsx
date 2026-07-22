@@ -22,19 +22,19 @@ export default function ToolSelectors({
                 className={styles.button}
                 onClick={() => onSelectTool("image")}
             >
-                Image
+                Coming soon.
             </button>
             <button
                 className={styles.button}
                 onClick={() => onSelectTool("component")}
             >
-                Component
+                Coming soon.
             </button>
             <button
                 className={styles.button}
                 onClick={() => onSelectTool("describe")}
             >
-                Describe
+                Coming soon.
             </button>
         </div>
     );
