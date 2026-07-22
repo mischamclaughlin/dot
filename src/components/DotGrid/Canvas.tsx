@@ -1,46 +1,29 @@
+import type { Dispatch, ReactElement } from "react";
 import React, {
     Fragment,
-    type ReactElement,
     useCallback,
     useEffect,
     useRef,
     useState,
 } from "react";
 
+import type { Action, State } from "./state/Reducer";
+
 import type {
-    AreaStyle,
     CanvasItem,
-    CanvasTool,
     Dot,
     ResizeEdge,
     SelectionArea,
 } from "./types/DotGridTypes";
 
-import styles from "./Canvas.module.css";
 import { DotGridService } from "./services/DotGridService";
 import { defaultStyle } from "./styles/DotGridStyles";
 
-type CanvasProps = {
-    activeTool: CanvasTool;
-    activeStyle: AreaStyle | null;
-    isSaved: boolean;
-    isGoBack: boolean;
-    onSelectTool: (tool: CanvasTool) => void;
-    onSaveable: (isSave: boolean) => void;
-    onSaveItem: (isSaved: boolean) => void;
-    onGoBack: (isBack: boolean) => void;
-};
+import styles from "./Canvas.module.css";
 
-export default function Canvas({
-    activeTool,
-    activeStyle,
-    isSaved,
-    isGoBack,
-    onSelectTool,
-    onSaveable,
-    onSaveItem,
-    onGoBack,
-}: CanvasProps): ReactElement {
+type CanvasProps = { state: State; dispatch: Dispatch<Action> };
+
+export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const service = new DotGridService();
     const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -74,83 +57,108 @@ export default function Canvas({
             setSelectArea(null);
 
             setToolArea(null);
-            onSaveable(false);
+
+            dispatch({
+                type: "save/valid",
+                payload: true,
+            });
 
             setText("");
 
-            onSelectTool(null);
+            dispatch({
+                type: "tool/selected",
+                payload: null,
+            });
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [onSelectTool, resetDrag, setSelectArea, onSaveable]);
+    }, [dispatch, resetDrag]);
 
     useEffect(() => {
         function handleElementSave() {
-            if (!isSaved) return;
+            if (!state.isSaved) return;
 
-            onSaveItem(false);
+            dispatch({
+                type: "save/saved",
+                payload: false,
+            });
 
-            if (!toolArea || !activeTool) return;
+            if (!toolArea || !state.tool) return;
 
             const item: CanvasItem = {
                 id: crypto.randomUUID(),
-                type: activeTool,
+                type: state.tool,
                 text: text,
-                style: activeStyle ?? defaultStyle,
+                style: state.activeStyle ?? defaultStyle,
                 area: toolArea,
             };
 
             setItems((current) => [...(current ?? []), item]);
 
             setToolArea(null);
-            onSaveable(false);
+            dispatch({
+                type: "save/valid",
+                payload: false,
+            });
 
             setText("");
         }
 
         handleElementSave();
     }, [
-        activeStyle,
-        activeTool,
-        isSaved,
-        onSaveItem,
+        dispatch,
+        state.activeStyle,
+        state.isSaved,
+        state.tool,
         text,
         toolArea,
-        onSaveable,
     ]);
 
     useEffect(() => {
         function handleToolArea() {
-            if (!activeTool || !selectArea) return;
+            if (!state.tool || !selectArea) return;
 
             setToolArea(selectArea);
-            onSaveable(true);
+            dispatch({
+                type: "save/valid",
+                payload: true,
+            });
 
             setSelectArea(null);
         }
 
         handleToolArea();
-    }, [activeTool, selectArea, onSaveable]);
+    }, [dispatch, selectArea, state.tool]);
 
     useEffect(() => {
         function handleGoBack() {
-            if (!isGoBack) return;
+            if (!state.isBack) return;
 
-            onGoBack(false);
-            onSelectTool(null);
+            dispatch({
+                type: "move/back",
+                payload: false,
+            });
+
+            dispatch({
+                type: "tool/selected",
+                payload: null,
+            });
 
             if (!toolArea) return;
 
             setSelectArea(toolArea);
 
             setToolArea(null);
-            onSaveable(false);
+            dispatch({
+                type: "save/valid",
+                payload: false,
+            });
         }
 
         handleGoBack();
-    }, [isGoBack, onGoBack, onSelectTool, toolArea, onSaveable]);
+    }, [dispatch, state.isBack, toolArea]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -185,9 +193,12 @@ export default function Canvas({
 
         if (!area) return;
 
-        if (activeTool) {
+        if (state.tool) {
             setToolArea(area);
-            onSaveable(true);
+            dispatch({
+                type: "save/valid",
+                payload: true,
+            });
         } else setSelectArea(area);
     }
 
@@ -401,28 +412,28 @@ export default function Canvas({
             {selectArea && (
                 <div className={styles.selectArea} style={{ ...selectArea }} />
             )}
-            {toolArea && activeTool === "text" && (
+            {toolArea && state.tool === "text" && (
                 <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     onPointerDown={(e) => e.stopPropagation()}
                     className={
-                        activeTool
-                            ? `${styles[activeTool]} ${styles.activeTool}`
+                        state.tool
+                            ? `${styles[state.tool]} ${styles.activeTool}`
                             : undefined
                     }
                     style={{
                         ...defaultStyle,
-                        ...(activeStyle ?? {}),
+                        ...(state.activeStyle ?? {}),
                         ...(toolArea ?? {}),
                     }}
                 />
             )}
-            {toolArea && activeTool === "image" && (
+            {toolArea && state.tool === "image" && (
                 <div
                     className={
-                        activeTool
-                            ? `${styles[activeTool]} ${styles.activeTool}`
+                        state.tool
+                            ? `${styles[state.tool]} ${styles.activeTool}`
                             : undefined
                     }
                     style={{ ...(toolArea ?? {}) }}

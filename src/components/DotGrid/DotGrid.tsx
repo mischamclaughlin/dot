@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useReducer } from "react";
+
+import { initialState, reducer } from "./state/Reducer";
 
 import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import Canvas from "./Canvas";
 import Sidebar from "./Sidebar";
-
-import { defaultStyle } from "./styles/DotGridStyles";
 
 import styles from "./DotGrid.module.css";
 
@@ -17,56 +17,50 @@ type DotGridProps = {
 };
 
 export default function DotGrid({ onNotifications }: DotGridProps) {
-    const [activeTool, setActiveTool] = useState<CanvasTool>(null);
-
-    const [activeStyle, setActiveStyle] = useState<AreaStyle>(defaultStyle);
-
-    const [isSaved, setIsSaved] = useState<boolean>(false);
-    const [isGoBack, setIsGoBack] = useState<boolean>(false);
-    const [isSaveable, setIsSaveable] = useState<boolean>(false);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     function handleSelectTool(tool: CanvasTool) {
-        setActiveTool(tool);
+        dispatch({
+            type: "tool/selected",
+            payload: tool,
+        });
     }
 
     function handleSelectStyle(style: Partial<AreaStyle>) {
-        setActiveStyle((prev) => ({ ...prev, ...style }));
-    }
-
-    function handleSaveable(isSave: boolean) {
-        setIsSaveable(isSave);
+        dispatch({
+            type: "style/active",
+            payload: { ...style },
+        });
     }
 
     function handleSaveElement(isSave: boolean) {
-        setIsSaved(isSave);
+        dispatch({
+            type: "save/saved",
+            payload: isSave,
+        });
+
         onNotifications(isSave);
     }
 
     function handleBack(isBack: boolean) {
-        setIsGoBack(isBack);
+        dispatch({
+            type: "move/back",
+            payload: isBack,
+        });
     }
 
     return (
         <div className={styles.container}>
             <Sidebar
-                activeTool={activeTool}
-                activeStyle={activeStyle}
-                isSaveable={isSaveable}
+                activeTool={state.tool}
+                activeStyle={state.activeStyle}
+                isSaveValid={state.isSaveValid}
                 onSelectTool={handleSelectTool}
                 onSelectStyle={handleSelectStyle}
                 onSaveItem={handleSaveElement}
                 onGoBack={handleBack}
             />
-            <Canvas
-                activeTool={activeTool}
-                activeStyle={activeStyle}
-                isSaved={isSaved}
-                isGoBack={isGoBack}
-                onSelectTool={handleSelectTool}
-                onSaveable={handleSaveable}
-                onSaveItem={handleSaveElement}
-                onGoBack={handleBack}
-            />
+            <Canvas state={state} dispatch={dispatch} />
         </div>
     );
 }

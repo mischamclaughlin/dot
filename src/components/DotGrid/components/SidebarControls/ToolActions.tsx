@@ -3,13 +3,13 @@ import type { ReactElement } from "react";
 import styles from "./ToolActions.module.css";
 
 type ToolActionsProps = {
-    isSaveable: boolean;
+    isSaveValid: boolean;
     onGoBack: (isBack: boolean) => void;
     onSaveItem: (isSave: boolean) => void;
 };
 
 export default function ToolActions({
-    isSaveable,
+    isSaveValid,
     onGoBack,
     onSaveItem,
 }: ToolActionsProps): ReactElement {
@@ -18,7 +18,7 @@ export default function ToolActions({
             <button className={styles.button} onClick={() => onGoBack(true)}>
                 Back
             </button>
-            {isSaveable ? (
+            {isSaveValid ? (
                 <button
                     className={styles.button}
                     onClick={() => onSaveItem(true)}

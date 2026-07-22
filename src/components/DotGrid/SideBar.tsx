@@ -15,7 +15,7 @@ import { DotGridService } from "./services/DotGridService";
 type SidebarProps = {
     activeTool: CanvasTool;
     activeStyle: AreaStyle;
-    isSaveable: boolean;
+    isSaveValid: boolean;
     onSelectTool: (tool: CanvasTool) => void;
     onSelectStyle: (style: Partial<AreaStyle>) => void;
     onSaveItem: (isSave: boolean) => void;
@@ -25,7 +25,7 @@ type SidebarProps = {
 export default function Sidebar({
     activeTool,
     activeStyle,
-    isSaveable,
+    isSaveValid,
     onSelectTool,
     onSelectStyle,
     onSaveItem,
@@ -89,7 +89,7 @@ export default function Sidebar({
                         {activeTool && (
                             <>
                                 <ToolActions
-                                    isSaveable={isSaveable}
+                                    isSaveValid={isSaveValid}
                                     onGoBack={onGoBack}
                                     onSaveItem={onSaveItem}
                                 />
