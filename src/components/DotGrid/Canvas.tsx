@@ -152,18 +152,6 @@ export default function Canvas({
         handleGoBack();
     }, [isGoBack, onGoBack, onSelectTool, toolArea, onSaveable]);
 
-    function getCanvasDot(e: React.PointerEvent<HTMLDivElement>): Dot | null {
-        const canvas = canvasRef.current;
-        if (!canvas) return null;
-
-        const rect = canvas.getBoundingClientRect();
-
-        return {
-            x: service.snapToGrid(e.clientX - rect.left, rect.width),
-            y: service.snapToGrid(e.clientY - rect.top, rect.height),
-        };
-    }
-
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
 
@@ -223,7 +211,7 @@ export default function Canvas({
 
         if (!resizeEdge || !item.area) return;
 
-        const nextDot = getCanvasDot(e);
+        const nextDot = service.getCanvasDot(e, canvasRef);
         if (!nextDot) return;
 
         const offset = service.gridSize / 2;

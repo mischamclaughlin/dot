@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import type { Dot } from "../types/DotGridTypes";
 
 export class DotGridService {
@@ -82,6 +83,21 @@ export class DotGridService {
         return {
             top: top,
             height: height,
+        };
+    }
+
+    getCanvasDot(
+        e: React.PointerEvent<HTMLDivElement>,
+        canvasRef: RefObject<HTMLDivElement | null>,
+    ): Dot | null {
+        const canvas = canvasRef.current;
+        if (!canvas) return null;
+
+        const rect = canvas.getBoundingClientRect();
+
+        return {
+            x: this.snapToGrid(e.clientX - rect.left, rect.width),
+            y: this.snapToGrid(e.clientY - rect.top, rect.height),
         };
     }
 }
