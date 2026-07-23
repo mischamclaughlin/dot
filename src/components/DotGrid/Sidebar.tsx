@@ -14,6 +14,8 @@ import ToolSelectors from "./components/SidebarControls/ToolSelectors";
 
 import styles from "./Sidebar.module.css";
 
+const service = new DotGridService();
+
 type SidebarProps = {
     state: State;
     dispatch: Dispatch<Action>;
@@ -46,7 +48,6 @@ export default function Sidebar({
         );
         const nextWidth = e.clientX - parentRect.left;
 
-        const service = new DotGridService();
         const snappedWidth = service.snapToGrid(nextWidth, maxWidth);
 
         setWidth(Math.max(MIN_WIDTH, snappedWidth));

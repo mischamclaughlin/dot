@@ -25,7 +25,7 @@ export type Action =
     | { type: "item/style"; payload: Partial<AreaStyle> }
     | { type: "item/text"; payload: string }
     | { type: "area/selected"; payload: SelectionArea | null }
-    | { type: "area/tool"; payload: SelectionArea | null }
+    | { type: "area/tool"; payload: SelectionArea }
     | { type: "tool/selected"; payload: CanvasTool }
     | {
           type: "canvas/resize";

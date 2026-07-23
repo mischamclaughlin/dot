@@ -14,11 +14,11 @@ import { defaultStyle } from "./styles/DotGridStyles";
 
 import styles from "./Canvas.module.css";
 
+const service = new DotGridService();
+
 type CanvasProps = { state: State; dispatch: Dispatch<Action> };
 
 export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
-    const service = new DotGridService();
-
     const canvasRef = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -47,15 +47,15 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     }, [dispatch]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
-        const nextactiveDot = service.getNextActiveDot(e);
+        const nextActiveDot = service.getNextActiveDot(e);
 
-        if (!service.isSameDot(hoverDot, nextactiveDot)) {
-            setHoverDot(nextactiveDot);
+        if (!service.isSameDot(hoverDot, nextActiveDot)) {
+            setHoverDot(nextActiveDot);
         }
 
         if (!isDragging || !dragStartDot) return;
 
-        setDraftArea(service.updateTempArea(dragStartDot, nextactiveDot));
+        setDraftArea(service.updateTempArea(dragStartDot, nextActiveDot));
     }
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -171,100 +171,84 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         setResizeEdge(null);
     }
 
-    const displayItems = state.canvasItems
-        ? state.canvasItems.map((item) => {
-              const { width, height } = item.area;
-              const dragBarSize = 7.5;
+    const displayItems = state.canvasItems.map((item) => {
+        const { width, height } = item.area;
+        const dragBarSize = 7.5;
 
-              return (
-                  <Fragment key={item.id}>
-                      <div
-                          key={item.id}
-                          className={styles.savedElement}
-                          style={{ ...item.style, ...item.area }}
-                          onPointerDown={(e) => e.stopPropagation()}
-                      >
-                          {item.text}
-                      </div>
-                      <div
-                          className={styles.dragBarContainer}
-                          style={{ ...item.area }}
-                          onPointerDown={(e) => e.stopPropagation()}
-                          onPointerMove={(e) => e.stopPropagation()}
-                      >
-                          <div
-                              className={styles.dragBar}
-                              style={{
-                                  top: 0,
-                                  width: width - 2,
-                                  height: dragBarSize,
-                                  cursor: "row-resize",
-                              }}
-                              onPointerDown={(e) =>
-                                  handleItemResizeStart(e, "top")
-                              }
-                              onPointerMove={(e) =>
-                                  handleItemResizeMove(e, item)
-                              }
-                              onPointerUp={handleItemResizeEnd}
-                              onPointerCancel={handleItemResizeEnd}
-                          />
-                          <div
-                              className={styles.dragBar}
-                              style={{
-                                  bottom: 0,
-                                  width: width - 2,
-                                  height: dragBarSize,
-                                  cursor: "row-resize",
-                              }}
-                              onPointerDown={(e) =>
-                                  handleItemResizeStart(e, "bottom")
-                              }
-                              onPointerMove={(e) =>
-                                  handleItemResizeMove(e, item)
-                              }
-                              onPointerUp={handleItemResizeEnd}
-                              onPointerCancel={handleItemResizeEnd}
-                          />
-                          <div
-                              className={styles.dragBar}
-                              style={{
-                                  left: 0,
-                                  height: height - 2,
-                                  width: dragBarSize,
-                                  cursor: "col-resize",
-                              }}
-                              onPointerDown={(e) =>
-                                  handleItemResizeStart(e, "left")
-                              }
-                              onPointerMove={(e) =>
-                                  handleItemResizeMove(e, item)
-                              }
-                              onPointerUp={handleItemResizeEnd}
-                              onPointerCancel={handleItemResizeEnd}
-                          />
-                          <div
-                              className={styles.dragBar}
-                              style={{
-                                  right: 0,
-                                  height: height - 2,
-                                  width: dragBarSize,
-                                  cursor: "col-resize",
-                              }}
-                              onPointerDown={(e) =>
-                                  handleItemResizeStart(e, "right")
-                              }
-                              onPointerMove={(e) =>
-                                  handleItemResizeMove(e, item)
-                              }
-                              onPointerUp={handleItemResizeEnd}
-                              onPointerCancel={handleItemResizeEnd}
-                          />
-                      </div>
-                  </Fragment>
-              );
-          })
-        : null;
+        return (
+            <Fragment key={item.id}>
+                <div
+                    key={item.id}
+                    className={styles.savedElement}
+                    style={{ ...item.style, ...item.area }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                >
+                    {item.text}
+                </div>
+                <div
+                    className={styles.dragBarContainer}
+                    style={{ ...item.area }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onPointerMove={(e) => e.stopPropagation()}
+                >
+                    <div
+                        className={styles.dragBar}
+                        style={{
+                            top: 0,
+                            width: width - 2,
+                            height: dragBarSize,
+                            cursor: "row-resize",
+                        }}
+                        onPointerDown={(e) => handleItemResizeStart(e, "top")}
+                        onPointerMove={(e) => handleItemResizeMove(e, item)}
+                        onPointerUp={handleItemResizeEnd}
+                        onPointerCancel={handleItemResizeEnd}
+                    />
+                    <div
+                        className={styles.dragBar}
+                        style={{
+                            bottom: 0,
+                            width: width - 2,
+                            height: dragBarSize,
+                            cursor: "row-resize",
+                        }}
+                        onPointerDown={(e) =>
+                            handleItemResizeStart(e, "bottom")
+                        }
+                        onPointerMove={(e) => handleItemResizeMove(e, item)}
+                        onPointerUp={handleItemResizeEnd}
+                        onPointerCancel={handleItemResizeEnd}
+                    />
+                    <div
+                        className={styles.dragBar}
+                        style={{
+                            left: 0,
+                            height: height - 2,
+                            width: dragBarSize,
+                            cursor: "col-resize",
+                        }}
+                        onPointerDown={(e) => handleItemResizeStart(e, "left")}
+                        onPointerMove={(e) => handleItemResizeMove(e, item)}
+                        onPointerUp={handleItemResizeEnd}
+                        onPointerCancel={handleItemResizeEnd}
+                    />
+                    <div
+                        className={styles.dragBar}
+                        style={{
+                            right: 0,
+                            height: height - 2,
+                            width: dragBarSize,
+                            cursor: "col-resize",
+                        }}
+                        onPointerDown={(e) => handleItemResizeStart(e, "right")}
+                        onPointerMove={(e) => handleItemResizeMove(e, item)}
+                        onPointerUp={handleItemResizeEnd}
+                        onPointerCancel={handleItemResizeEnd}
+                    />
+                </div>
+            </Fragment>
+        );
+    });
 
     return (
         <div
