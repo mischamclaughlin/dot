@@ -21,8 +21,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [hoverDot, setHoverDot] = useState<Dot | null>(null);
     const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
 
-    const [text, setText] = useState<string>("");
-
     const [resizeEdge, setResizeEdge] = useState<ResizeEdge | null>(null);
 
     useEffect(() => {
@@ -32,75 +30,13 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             setIsDragging(false);
             setDragStartDot(null);
 
-            dispatch({
-                type: "area/draft",
-                payload: null,
-            });
-
-            dispatch({
-                type: "area/active",
-                payload: null,
-            });
-
-            dispatch({
-                type: "area/tool",
-                payload: null,
-            });
-
-            setText("");
-
-            dispatch({
-                type: "tool/active",
-                payload: null,
-            });
+            dispatch({ type: "key/escape" });
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
     }, [dispatch]);
-
-    useEffect(() => {
-        function handleElementSave() {
-            if (!state.isSaved) return;
-
-            dispatch({
-                type: "save/confirm",
-                payload: false,
-            });
-
-            if (!state.toolArea || !state.tool) return;
-
-            const item: CanvasItem = {
-                id: crypto.randomUUID(),
-                type: state.tool,
-                text: text,
-                style: state.activeStyle ?? defaultStyle,
-                area: state.toolArea,
-            };
-
-            dispatch({
-                type: "canvas/items",
-                payload: item,
-            });
-
-            dispatch({
-                type: "area/tool",
-                payload: null,
-            });
-
-            setText("");
-        }
-
-        handleElementSave();
-    }, [
-        dispatch,
-        state.toolArea,
-        state.activeStyle,
-        state.isSaved,
-        state.tool,
-        text,
-    ]);
 
     useEffect(() => {
         function handleToolArea() {
@@ -119,36 +55,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
         handleToolArea();
     }, [dispatch, state.activeArea, state.tool]);
-
-    useEffect(() => {
-        function handleGoBack() {
-            if (!state.isBack) return;
-
-            dispatch({
-                type: "move/back",
-                payload: false,
-            });
-
-            dispatch({
-                type: "tool/active",
-                payload: null,
-            });
-
-            if (!state.toolArea) return;
-
-            dispatch({
-                type: "area/active",
-                payload: state.toolArea,
-            });
-
-            dispatch({
-                type: "area/tool",
-                payload: null,
-            });
-        }
-
-        handleGoBack();
-    }, [dispatch, state.isBack, state.toolArea]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -424,8 +330,13 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             )}
             {state.toolArea && state.tool === "text" && (
                 <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={state.itemText}
+                    onChange={(e) =>
+                        dispatch({
+                            type: "item/text",
+                            payload: e.target.value,
+                        })
+                    }
                     onPointerDown={(e) => e.stopPropagation()}
                     className={
                         state.tool
@@ -434,7 +345,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     }
                     style={{
                         ...defaultStyle,
-                        ...(state.activeStyle ?? {}),
+                        ...(state.itemStyle ?? {}),
                         ...(state.toolArea ?? {}),
                     }}
                 />

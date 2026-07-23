@@ -14,24 +14,14 @@ export default function ToolActions({
         <div className={styles.controlContainer}>
             <button
                 className={styles.button}
-                onClick={() =>
-                    dispatch({
-                        type: "move/back",
-                        payload: true,
-                    })
-                }
+                onClick={() => dispatch({ type: "move/back" })}
             >
                 Back
             </button>
             <button
                 className={styles.button}
                 disabled={!state.toolArea}
-                onClick={() =>
-                    dispatch({
-                        type: "save/confirm",
-                        payload: true,
-                    })
-                }
+                onClick={() => dispatch({ type: "item/save-requested" })}
             >
                 Save
             </button>

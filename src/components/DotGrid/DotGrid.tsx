@@ -13,7 +13,7 @@ export const MAX_WIDTH_RATIO = 0.85;
 export const MIN_WIDTH = 185;
 
 type DotGridProps = {
-    onNotifications: (isSaved: boolean) => void;
+    onNotifications: (isSaved: string | null) => void;
 };
 
 export default function DotGrid({
@@ -22,8 +22,8 @@ export default function DotGrid({
     const [state, dispatch] = useReducer(dotGridReducer, initialState);
 
     useEffect(() => {
-        onNotifications(state.isSaved);
-    });
+        onNotifications(state.lastSavedItemId);
+    }, [state.lastSavedItemId, onNotifications]);
 
     return (
         <div className={styles.container}>

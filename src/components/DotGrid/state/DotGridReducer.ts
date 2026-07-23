@@ -10,23 +10,25 @@ import { defaultStyle } from "../styles/DotGridStyles";
 
 export type State = {
     tool: CanvasTool;
-    activeStyle: AreaStyle;
-    isSaved: boolean;
-    isBack: boolean;
+    itemStyle: AreaStyle;
+    lastSavedItemId: string | null;
     draftArea: SelectionArea | null;
     activeArea: SelectionArea | null;
     toolArea: SelectionArea | null;
     canvasItems: CanvasItem[];
+    itemText: string;
 };
 
 export type Action =
-    | { type: "tool/active"; payload: CanvasTool }
-    | { type: "style/active"; payload: Partial<AreaStyle> }
-    | { type: "save/confirm"; payload: boolean }
-    | { type: "move/back"; payload: boolean }
+    | { type: "key/escape" }
+    | { type: "item/save-requested" }
+    | { type: "item/style"; payload: Partial<AreaStyle> }
+    | { type: "item/text"; payload: string }
+    | { type: "move/back" }
     | { type: "area/draft"; payload: SelectionArea | null }
     | { type: "area/active"; payload: SelectionArea | null }
     | { type: "area/tool"; payload: SelectionArea | null }
+    | { type: "tool/active"; payload: CanvasTool }
     | { type: "canvas/items"; payload: CanvasItem }
     | {
           type: "canvas/item-resize";
@@ -38,9 +40,9 @@ export type Action =
 
 export const initialState: State = {
     tool: null,
-    activeStyle: defaultStyle,
-    isSaved: false,
-    isBack: false,
+    itemStyle: defaultStyle,
+    itemText: "",
+    lastSavedItemId: null,
     draftArea: null,
     activeArea: null,
     toolArea: null,
@@ -53,6 +55,53 @@ export function dotGridReducer(
 ): State {
     switch (action.type) {
         // ---------------------------------------------------------------------
+        // Key
+        case "key/escape": {
+            return {
+                ...state,
+                tool: null,
+                draftArea: null,
+                activeArea: null,
+                toolArea: null,
+                itemText: "",
+            };
+        }
+
+        // ---------------------------------------------------------------------
+        // Item
+        case "item/save-requested": {
+            if (!state.toolArea || !state.tool) return state;
+
+            const item: CanvasItem = {
+                id: crypto.randomUUID(),
+                type: state.tool,
+                text: state.itemText,
+                style: state.itemStyle,
+                area: state.toolArea,
+            };
+
+            return {
+                ...state,
+                canvasItems: [...state.canvasItems, item],
+                toolArea: null,
+                lastSavedItemId: item.id,
+                itemText: "",
+            };
+        }
+        case "item/style":
+            return {
+                ...state,
+                itemStyle: {
+                    ...state.itemStyle,
+                    ...action.payload,
+                },
+            };
+        case "item/text":
+            return {
+                ...state,
+                itemText: action.payload,
+            };
+        // ---------------------------------------------------------------------
         // Tool
         case "tool/active":
             return {
@@ -61,30 +110,15 @@ export function dotGridReducer(
             };
 
         // ---------------------------------------------------------------------
-        // Style
-        case "style/active":
-            return {
-                ...state,
-                activeStyle: {
-                    ...state.activeStyle,
-                    ...action.payload,
-                },
-            };
-
-        // ---------------------------------------------------------------------
-        // Save
-        case "save/confirm":
-            return {
-                ...state,
-                isSaved: action.payload,
-            };
-
-        // ---------------------------------------------------------------------
         // Move
         case "move/back":
             return {
                 ...state,
-                isBack: action.payload,
+                tool: null,
+                draftArea: null,
+                activeArea: null,
+                toolArea: null,
+                itemText: "",
             };
 
         // ---------------------------------------------------------------------
