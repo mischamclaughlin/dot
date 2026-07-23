@@ -12,7 +12,6 @@ export type State = {
     tool: CanvasTool | null;
     itemStyle: AreaStyle;
     lastSavedItemId: string | null;
-    draftArea: SelectionArea | null;
     activeArea: SelectionArea | null;
     toolArea: SelectionArea | null;
     canvasItems: CanvasItem[];
@@ -25,7 +24,6 @@ export type Action =
     | { type: "item/save"; payload: string }
     | { type: "item/style"; payload: Partial<AreaStyle> }
     | { type: "item/text"; payload: string }
-    | { type: "area/draft"; payload: SelectionArea | null }
     | { type: "area/selected"; payload: SelectionArea | null }
     | { type: "area/tool"; payload: SelectionArea | null }
     | { type: "tool/selected"; payload: CanvasTool }
@@ -42,7 +40,6 @@ export const initialState: State = {
     itemStyle: defaultStyle,
     itemText: "",
     lastSavedItemId: null,
-    draftArea: null,
     activeArea: null,
     toolArea: null,
     canvasItems: [],
@@ -63,7 +60,6 @@ export function dotGridReducer(
             return {
                 ...state,
                 tool: null,
-                draftArea: null,
                 activeArea: null,
                 toolArea: null,
                 itemText: "",
@@ -127,16 +123,10 @@ export function dotGridReducer(
 
         // ---------------------------------------------------------------------
         // Area
-        case "area/draft":
-            return {
-                ...state,
-                draftArea: action.payload,
-            };
         case "area/selected":
             return {
                 ...state,
                 activeArea: action.payload,
-                draftArea: null,
             };
         case "area/tool":
             return {

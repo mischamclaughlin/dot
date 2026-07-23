@@ -2,7 +2,12 @@ import type { Dispatch, ReactElement } from "react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import type { Action, State } from "./state/DotGridReducer";
-import type { CanvasItem, Dot, ResizeEdge } from "./types/DotGridTypes";
+import type {
+    CanvasItem,
+    Dot,
+    ResizeEdge,
+    SelectionArea,
+} from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
 import { defaultStyle } from "./styles/DotGridStyles";
@@ -21,6 +26,8 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [hoverDot, setHoverDot] = useState<Dot | null>(null);
     const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
 
+    const [draftArea, setDraftArea] = useState<SelectionArea | null>(null);
+
     const [resizeEdge, setResizeEdge] = useState<ResizeEdge | null>(null);
 
     useEffect(() => {
@@ -29,6 +36,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
             setIsDragging(false);
             setDragStartDot(null);
+            setDraftArea(null);
 
             dispatch({ type: "editing/cancel" });
         }
@@ -47,10 +55,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
         if (!isDragging || !dragStartDot) return;
 
-        dispatch({
-            type: "area/draft",
-            payload: service.updateTempArea(dragStartDot, nextactiveDot),
-        });
+        setDraftArea(service.updateTempArea(dragStartDot, nextactiveDot));
     }
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -69,7 +74,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
-        const area = state.draftArea;
+        const area = draftArea;
 
         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
             e.currentTarget.releasePointerCapture(e.pointerId);
@@ -77,11 +82,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
         setIsDragging(false);
         setDragStartDot(null);
-
-        dispatch({
-            type: "area/draft",
-            payload: null,
-        });
+        setDraftArea(null);
 
         if (!area) return;
 
@@ -101,11 +102,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     function handlePointerCancel() {
         setIsDragging(false);
         setDragStartDot(null);
-
-        dispatch({
-            type: "area/draft",
-            payload: null,
-        });
+        setDraftArea(null);
     }
 
     function handleItemResizeStart(
@@ -296,11 +293,8 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     style={{ left: dragStartDot.x, top: dragStartDot.y }}
                 />
             )}
-            {state.draftArea && (
-                <div
-                    className={styles.draftArea}
-                    style={{ ...state.draftArea }}
-                />
+            {draftArea && (
+                <div className={styles.draftArea} style={{ ...draftArea }} />
             )}
             {state.activeArea && (
                 <div
