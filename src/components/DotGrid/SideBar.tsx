@@ -1,15 +1,18 @@
-import React, { type Dispatch, type ReactElement, useState } from "react";
+import type { Dispatch, ReactElement } from "react";
+import React, { useState } from "react";
 
 import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
-import styles from "./Sidebar.module.css";
+import type { Action, State } from "./state/DotGridReducer";
 
-import TextToolControls from "./components/SidebarControls/TextToolControls";
-import ToolSelectors from "./components/SidebarControls/ToolSelectors";
-import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
-import ToolActions from "./components/SidebarControls/ToolActions";
 import { DotGridService } from "./services/DotGridService";
-import type { Action, State } from "./state/Reducer";
+
+import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
+import TextToolControls from "./components/SidebarControls/TextToolControls";
+import ToolActions from "./components/SidebarControls/ToolActions";
+import ToolSelectors from "./components/SidebarControls/ToolSelectors";
+
+import styles from "./Sidebar.module.css";
 
 type SidebarProps = {
     state: State;

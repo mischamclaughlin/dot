@@ -1,7 +1,8 @@
 import type { Dispatch, ReactElement } from "react";
 
+import type { Action, State } from "../../state/DotGridReducer";
+
 import styles from "./ToolActions.module.css";
-import type { Action, State } from "../../state/Reducer";
 
 type ToolActionsProps = { state: State; dispatch: Dispatch<Action> };
 

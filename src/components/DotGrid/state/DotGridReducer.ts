@@ -47,7 +47,10 @@ export const initialState: State = {
     canvasItems: [],
 };
 
-export function reducer(state: State = initialState, action: Action): State {
+export function dotGridReducer(
+    state: State = initialState,
+    action: Action,
+): State {
     switch (action.type) {
         // ---------------------------------------------------------------------
         // Tool

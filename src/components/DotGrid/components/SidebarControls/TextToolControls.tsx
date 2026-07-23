@@ -1,5 +1,6 @@
-import { type Dispatch, type ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
 
+import type { Action, State } from "../../state/DotGridReducer";
 import type { AreaStyle } from "../../types/DotGridTypes";
 
 import {
@@ -20,7 +21,6 @@ import {
 } from "../../styles/DotGridStyles";
 
 import styles from "./TextToolControls.module.css";
-import type { Action, State } from "../../state/Reducer";
 
 type TextToolControlsProps = {
     state: State;

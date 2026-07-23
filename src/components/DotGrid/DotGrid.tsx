@@ -1,6 +1,8 @@
+import type { ReactElement } from "react";
+
 import { useEffect, useReducer } from "react";
 
-import { initialState, reducer } from "./state/Reducer";
+import { dotGridReducer, initialState } from "./state/DotGridReducer";
 
 import Canvas from "./Canvas";
 import Sidebar from "./Sidebar";
@@ -14,38 +16,10 @@ type DotGridProps = {
     onNotifications: (isSaved: boolean) => void;
 };
 
-export default function DotGrid({ onNotifications }: DotGridProps) {
-    const [state, dispatch] = useReducer(reducer, initialState);
-
-    // function handleSelectTool(tool: CanvasTool) {
-    //     dispatch({
-    //         type: "tool/active",
-    //         payload: tool,
-    //     });
-    // }
-
-    // function handleSelectStyle(style: Partial<AreaStyle>) {
-    //     dispatch({
-    //         type: "style/active",
-    //         payload: { ...style },
-    //     });
-    // }
-
-    // function handleSaveElement(isSave: boolean) {
-    //     dispatch({
-    //         type: "save/confirm",
-    //         payload: isSave,
-    //     });
-
-    //     onNotifications(isSave);
-    // }
-
-    // function handleBack(isBack: boolean) {
-    //     dispatch({
-    //         type: "move/back",
-    //         payload: isBack,
-    //     });
-    // }
+export default function DotGrid({
+    onNotifications,
+}: DotGridProps): ReactElement {
+    const [state, dispatch] = useReducer(dotGridReducer, initialState);
 
     useEffect(() => {
         onNotifications(state.isSaved);

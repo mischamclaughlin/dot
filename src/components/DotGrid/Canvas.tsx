@@ -1,8 +1,7 @@
 import type { Dispatch, ReactElement } from "react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import type { Action, State } from "./state/Reducer";
-
+import type { Action, State } from "./state/DotGridReducer";
 import type { CanvasItem, Dot, ResizeEdge } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";

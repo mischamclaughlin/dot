@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 import DotGrid from "./components/DotGrid/DotGrid";
 import Notifications from "./components/Notifications";
 
@@ -5,7 +7,7 @@ import "./App.css";
 import { useState } from "react";
 import type { Notification } from "./components/DotGrid/types/DotGridTypes";
 
-export default function App() {
+export default function App(): ReactElement {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     function handleNotifications(isSaved: boolean) {
