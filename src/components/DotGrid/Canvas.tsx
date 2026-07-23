@@ -57,10 +57,9 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             setSelectArea(null);
 
             setToolArea(null);
-
             dispatch({
                 type: "save/valid",
-                payload: true,
+                payload: false,
             });
 
             setText("");

@@ -1,39 +1,39 @@
-import type { ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
 
 import styles from "./ToolActions.module.css";
+import type { Action, State } from "../../state/Reducer";
 
-type ToolActionsProps = {
-    isSaveValid: boolean;
-    onGoBack: (isBack: boolean) => void;
-    onSaveItem: (isSave: boolean) => void;
-};
+type ToolActionsProps = { state: State; dispatch: Dispatch<Action> };
 
 export default function ToolActions({
-    isSaveValid,
-    onGoBack,
-    onSaveItem,
+    state,
+    dispatch,
 }: ToolActionsProps): ReactElement {
     return (
         <div className={styles.controlContainer}>
-            <button className={styles.button} onClick={() => onGoBack(true)}>
+            <button
+                className={styles.button}
+                onClick={() =>
+                    dispatch({
+                        type: "move/back",
+                        payload: true,
+                    })
+                }
+            >
                 Back
             </button>
-            {isSaveValid ? (
-                <button
-                    className={styles.button}
-                    onClick={() => onSaveItem(true)}
-                >
-                    Save
-                </button>
-            ) : (
-                <button
-                    className={styles.button}
-                    disabled
-                    onClick={() => onSaveItem(true)}
-                >
-                    Save
-                </button>
-            )}
+            <button
+                className={styles.button}
+                disabled={!state.isSaveValid}
+                onClick={() =>
+                    dispatch({
+                        type: "save/saved",
+                        payload: true,
+                    })
+                }
+            >
+                Save
+            </button>
         </div>
     );
 }

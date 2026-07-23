@@ -1,6 +1,4 @@
-import React, { type ReactElement, useState } from "react";
-
-import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
+import React, { type Dispatch, type ReactElement, useState } from "react";
 
 import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
@@ -11,25 +9,16 @@ import ToolSelectors from "./components/SidebarControls/ToolSelectors";
 import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
 import ToolActions from "./components/SidebarControls/ToolActions";
 import { DotGridService } from "./services/DotGridService";
+import type { Action, State } from "./state/Reducer";
 
 type SidebarProps = {
-    activeTool: CanvasTool;
-    activeStyle: AreaStyle;
-    isSaveValid: boolean;
-    onSelectTool: (tool: CanvasTool) => void;
-    onSelectStyle: (style: Partial<AreaStyle>) => void;
-    onSaveItem: (isSave: boolean) => void;
-    onGoBack: (isBack: boolean) => void;
+    state: State;
+    dispatch: Dispatch<Action>;
 };
 
 export default function Sidebar({
-    activeTool,
-    activeStyle,
-    isSaveValid,
-    onSelectTool,
-    onSelectStyle,
-    onSaveItem,
-    onGoBack,
+    state,
+    dispatch,
 }: SidebarProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -81,22 +70,19 @@ export default function Sidebar({
                     <div className={styles.sidebarContainer}>
                         <h1 className={styles.title}>Dot.</h1>
                         <h3 className={styles.toolTitle}>
-                            {activeTool ? activeTool.toUpperCase() : "TOOLS"}
+                            {state.tool ? state.tool.toUpperCase() : "TOOLS"}
                         </h3>
-                        {!activeTool && (
-                            <ToolSelectors onSelectTool={onSelectTool} />
-                        )}
-                        {activeTool && (
+                        {!state.tool && <ToolSelectors dispatch={dispatch} />}
+                        {state.tool && (
                             <>
                                 <ToolActions
-                                    isSaveValid={isSaveValid}
-                                    onGoBack={onGoBack}
-                                    onSaveItem={onSaveItem}
+                                    state={state}
+                                    dispatch={dispatch}
                                 />
-                                {activeTool === "text" && (
+                                {state.tool === "text" && (
                                     <TextToolControls
-                                        activeStyle={activeStyle}
-                                        onSelectStyle={onSelectStyle}
+                                        state={state}
+                                        dispatch={dispatch}
                                     />
                                 )}
                             </>

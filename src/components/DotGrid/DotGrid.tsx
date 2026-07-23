@@ -1,8 +1,8 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import { initialState, reducer } from "./state/Reducer";
 
-import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
+// import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
 
 import Canvas from "./Canvas";
 import Sidebar from "./Sidebar";
@@ -19,47 +19,43 @@ type DotGridProps = {
 export default function DotGrid({ onNotifications }: DotGridProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    function handleSelectTool(tool: CanvasTool) {
-        dispatch({
-            type: "tool/selected",
-            payload: tool,
-        });
-    }
+    // function handleSelectTool(tool: CanvasTool) {
+    //     dispatch({
+    //         type: "tool/selected",
+    //         payload: tool,
+    //     });
+    // }
 
-    function handleSelectStyle(style: Partial<AreaStyle>) {
-        dispatch({
-            type: "style/active",
-            payload: { ...style },
-        });
-    }
+    // function handleSelectStyle(style: Partial<AreaStyle>) {
+    //     dispatch({
+    //         type: "style/active",
+    //         payload: { ...style },
+    //     });
+    // }
 
-    function handleSaveElement(isSave: boolean) {
-        dispatch({
-            type: "save/saved",
-            payload: isSave,
-        });
+    // function handleSaveElement(isSave: boolean) {
+    //     dispatch({
+    //         type: "save/saved",
+    //         payload: isSave,
+    //     });
 
-        onNotifications(isSave);
-    }
+    //     onNotifications(isSave);
+    // }
 
-    function handleBack(isBack: boolean) {
-        dispatch({
-            type: "move/back",
-            payload: isBack,
-        });
-    }
+    // function handleBack(isBack: boolean) {
+    //     dispatch({
+    //         type: "move/back",
+    //         payload: isBack,
+    //     });
+    // }
+
+    useEffect(() => {
+        onNotifications(state.isSaved);
+    });
 
     return (
         <div className={styles.container}>
-            <Sidebar
-                activeTool={state.tool}
-                activeStyle={state.activeStyle}
-                isSaveValid={state.isSaveValid}
-                onSelectTool={handleSelectTool}
-                onSelectStyle={handleSelectStyle}
-                onSaveItem={handleSaveElement}
-                onGoBack={handleBack}
-            />
+            <Sidebar state={state} dispatch={dispatch} />
             <Canvas state={state} dispatch={dispatch} />
         </div>
     );
