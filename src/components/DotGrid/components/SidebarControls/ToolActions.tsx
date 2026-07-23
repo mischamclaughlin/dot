@@ -24,7 +24,7 @@ export default function ToolActions({
             </button>
             <button
                 className={styles.button}
-                disabled={!state.isSavePossible}
+                disabled={!state.toolArea}
                 onClick={() =>
                     dispatch({
                         type: "save/confirm",

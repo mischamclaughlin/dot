@@ -1,11 +1,5 @@
 import type { Dispatch, ReactElement } from "react";
-import React, {
-    Fragment,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import type { Action, State } from "./state/Reducer";
 
@@ -20,6 +14,7 @@ type CanvasProps = { state: State; dispatch: Dispatch<Action> };
 
 export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const service = new DotGridService();
+
     const canvasRef = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -27,26 +22,21 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [hoverDot, setHoverDot] = useState<Dot | null>(null);
     const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
 
-    const [text, setText] = useState("");
-
-    const [items, setItems] = useState<CanvasItem[] | null>(null);
+    const [text, setText] = useState<string>("");
 
     const [resizeEdge, setResizeEdge] = useState<ResizeEdge | null>(null);
-
-    const resetDrag = useCallback(() => {
-        setIsDragging(false);
-        setDragStartDot(null);
-        dispatch({
-            type: "area/draft",
-            payload: null,
-        });
-    }, [dispatch]);
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
             if (e.key !== "Escape") return;
 
-            resetDrag();
+            setIsDragging(false);
+            setDragStartDot(null);
+
+            dispatch({
+                type: "area/draft",
+                payload: null,
+            });
 
             dispatch({
                 type: "area/active",
@@ -56,11 +46,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             dispatch({
                 type: "area/tool",
                 payload: null,
-            });
-
-            dispatch({
-                type: "save/possible",
-                payload: false,
             });
 
             setText("");
@@ -74,7 +59,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
-    }, [dispatch, resetDrag]);
+    }, [dispatch]);
 
     useEffect(() => {
         function handleElementSave() {
@@ -95,16 +80,14 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                 area: state.toolArea,
             };
 
-            setItems((current) => [...(current ?? []), item]);
+            dispatch({
+                type: "canvas/items",
+                payload: item,
+            });
 
             dispatch({
                 type: "area/tool",
                 payload: null,
-            });
-
-            dispatch({
-                type: "save/possible",
-                payload: false,
             });
 
             setText("");
@@ -127,11 +110,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             dispatch({
                 type: "area/tool",
                 payload: state.activeArea,
-            });
-
-            dispatch({
-                type: "save/possible",
-                payload: true,
             });
 
             dispatch({
@@ -167,11 +145,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             dispatch({
                 type: "area/tool",
                 payload: null,
-            });
-
-            dispatch({
-                type: "save/possible",
-                payload: false,
             });
         }
 
@@ -215,7 +188,13 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             e.currentTarget.releasePointerCapture(e.pointerId);
         }
 
-        resetDrag();
+        setIsDragging(false);
+        setDragStartDot(null);
+
+        dispatch({
+            type: "area/draft",
+            payload: null,
+        });
 
         if (!area) return;
 
@@ -223,11 +202,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             dispatch({
                 type: "area/tool",
                 payload: area,
-            });
-
-            dispatch({
-                type: "save/possible",
-                payload: true,
             });
         } else {
             dispatch({
@@ -238,7 +212,13 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     }
 
     function handlePointerCancel() {
-        resetDrag();
+        setIsDragging(false);
+        setDragStartDot(null);
+
+        dispatch({
+            type: "area/draft",
+            payload: null,
+        });
     }
 
     function handleItemResizeStart(
@@ -291,20 +271,10 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     ? service.updateItemHeight(nextDot, bottomDot)
                     : service.updateItemHeight(topDot, nextDot);
 
-        setItems(
-            (current) =>
-                current?.map((currentItem) =>
-                    currentItem.id === item.id && currentItem.area
-                        ? {
-                              ...currentItem,
-                              area: {
-                                  ...currentItem.area,
-                                  ...nextArea,
-                              },
-                          }
-                        : currentItem,
-                ) ?? null,
-        );
+        dispatch({
+            type: "canvas/item-resize",
+            payload: { item: item, nextArea: nextArea },
+        });
     }
 
     function handleItemResizeEnd(e: React.PointerEvent<HTMLDivElement>) {
@@ -317,8 +287,8 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         setResizeEdge(null);
     }
 
-    const displayItems = items
-        ? items.map((item) => {
+    const displayItems = state.canvasItems
+        ? state.canvasItems.map((item) => {
               if (!item.area) return undefined;
 
               const { width, height } = item.area;

@@ -40,3 +40,7 @@ export type Notification = {
 };
 
 export type ResizeEdge = "left" | "right" | "top" | "bottom";
+
+export type NextArea =
+    | { left: number; width: number }
+    | { top: number; height: number };
