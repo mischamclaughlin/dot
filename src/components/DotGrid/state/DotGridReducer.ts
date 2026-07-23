@@ -9,7 +9,7 @@ import type {
 import { defaultStyle } from "../styles/DotGridStyles";
 
 export type State = {
-    tool: CanvasTool;
+    tool: CanvasTool | null;
     itemStyle: AreaStyle;
     lastSavedItemId: string | null;
     draftArea: SelectionArea | null;
@@ -20,20 +20,19 @@ export type State = {
 };
 
 export type Action =
-    | { type: "key/escape" }
-    | { type: "item/save-requested" }
+    | { type: "editing/cancel" }
+    | { type: "editing/back" }
+    | { type: "item/save"; payload: string }
     | { type: "item/style"; payload: Partial<AreaStyle> }
     | { type: "item/text"; payload: string }
-    | { type: "move/back" }
     | { type: "area/draft"; payload: SelectionArea | null }
-    | { type: "area/active"; payload: SelectionArea | null }
+    | { type: "area/selected"; payload: SelectionArea | null }
     | { type: "area/tool"; payload: SelectionArea | null }
-    | { type: "tool/active"; payload: CanvasTool }
-    | { type: "canvas/items"; payload: CanvasItem }
+    | { type: "tool/selected"; payload: CanvasTool }
     | {
-          type: "canvas/item-resize";
+          type: "canvas/resize";
           payload: {
-              item: CanvasItem;
+              id: string;
               nextArea: NextArea;
           };
       };
@@ -49,6 +48,10 @@ export const initialState: State = {
     canvasItems: [],
 };
 
+function assertNever(action: never): never {
+    throw new Error(`Unhandled reducer action ${JSON.stringify(action)}`);
+}
+
 export function dotGridReducer(
     state: State = initialState,
     action: Action,
@@ -56,7 +59,7 @@ export function dotGridReducer(
     switch (action.type) {
         // ---------------------------------------------------------------------
         // Key
-        case "key/escape": {
+        case "editing/cancel": {
             return {
                 ...state,
                 tool: null,
@@ -69,11 +72,11 @@ export function dotGridReducer(
 
         // ---------------------------------------------------------------------
         // Item
-        case "item/save-requested": {
+        case "item/save": {
             if (!state.toolArea || !state.tool) return state;
 
             const item: CanvasItem = {
-                id: crypto.randomUUID(),
+                id: action.payload,
                 type: state.tool,
                 text: state.itemText,
                 style: state.itemStyle,
@@ -103,21 +106,22 @@ export function dotGridReducer(
             };
         // ---------------------------------------------------------------------
         // Tool
-        case "tool/active":
+        case "tool/selected":
             return {
                 ...state,
                 tool: action.payload,
+                toolArea: state.activeArea,
+                activeArea: null,
             };
 
         // ---------------------------------------------------------------------
         // Move
-        case "move/back":
+        case "editing/back":
             return {
                 ...state,
-                tool: null,
-                draftArea: null,
-                activeArea: null,
+                activeArea: state.toolArea,
                 toolArea: null,
+                tool: null,
                 itemText: "",
             };
 
@@ -128,7 +132,7 @@ export function dotGridReducer(
                 ...state,
                 draftArea: action.payload,
             };
-        case "area/active":
+        case "area/selected":
             return {
                 ...state,
                 activeArea: action.payload,
@@ -143,17 +147,11 @@ export function dotGridReducer(
 
         // ---------------------------------------------------------------------
         // Canvas
-        case "canvas/items":
-            return {
-                ...state,
-                canvasItems: [...state.canvasItems, action.payload],
-            };
-        case "canvas/item-resize":
+        case "canvas/resize":
             return {
                 ...state,
                 canvasItems: state.canvasItems.map((currentItem) =>
-                    currentItem.id === action.payload.item.id &&
-                    currentItem.area
+                    currentItem.id === action.payload.id
                         ? {
                               ...currentItem,
                               area: {
@@ -168,6 +166,6 @@ export function dotGridReducer(
         // ---------------------------------------------------------------------
         // Default
         default:
-            return state;
+            return assertNever(action);
     }
 }

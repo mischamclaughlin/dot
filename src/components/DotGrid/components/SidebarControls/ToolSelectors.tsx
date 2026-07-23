@@ -15,7 +15,7 @@ export default function ToolSelectors({
                 className={styles.button}
                 onClick={() =>
                     dispatch({
-                        type: "tool/active",
+                        type: "tool/selected",
                         payload: "text",
                     })
                 }
@@ -26,7 +26,7 @@ export default function ToolSelectors({
                 className={styles.button}
                 onClick={() =>
                     dispatch({
-                        type: "tool/active",
+                        type: "tool/selected",
                         payload: "image",
                     })
                 }
@@ -37,7 +37,7 @@ export default function ToolSelectors({
                 className={styles.button}
                 onClick={() =>
                     dispatch({
-                        type: "tool/active",
+                        type: "tool/selected",
                         payload: "component",
                     })
                 }
@@ -48,7 +48,7 @@ export default function ToolSelectors({
                 className={styles.button}
                 onClick={() =>
                     dispatch({
-                        type: "tool/active",
+                        type: "tool/selected",
                         payload: "describe",
                     })
                 }

@@ -30,31 +30,13 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             setIsDragging(false);
             setDragStartDot(null);
 
-            dispatch({ type: "key/escape" });
+            dispatch({ type: "editing/cancel" });
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
 
         return () => window.removeEventListener("keydown", handleWindowKeyDown);
     }, [dispatch]);
-
-    useEffect(() => {
-        function handleToolArea() {
-            if (!state.tool || !state.activeArea) return;
-
-            dispatch({
-                type: "area/tool",
-                payload: state.activeArea,
-            });
-
-            dispatch({
-                type: "area/active",
-                payload: null,
-            });
-        }
-
-        handleToolArea();
-    }, [dispatch, state.activeArea, state.tool]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -79,7 +61,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         setIsDragging(true);
 
         dispatch({
-            type: "area/active",
+            type: "area/selected",
             payload: null,
         });
 
@@ -110,7 +92,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             });
         } else {
             dispatch({
-                type: "area/active",
+                type: "area/selected",
                 payload: area,
             });
         }
@@ -140,7 +122,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     ) {
         e.stopPropagation();
 
-        if (!resizeEdge || !item.area) return;
+        if (!resizeEdge) return;
 
         const nextDot = service.getCanvasDot(e, canvasRef);
         if (!nextDot) return;
@@ -177,8 +159,8 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     : service.updateItemHeight(topDot, nextDot);
 
         dispatch({
-            type: "canvas/item-resize",
-            payload: { item: item, nextArea: nextArea },
+            type: "canvas/resize",
+            payload: { id: item.id, nextArea: nextArea },
         });
     }
 
@@ -194,8 +176,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
     const displayItems = state.canvasItems
         ? state.canvasItems.map((item) => {
-              if (!item.area) return undefined;
-
               const { width, height } = item.area;
               const dragBarSize = 7.5;
 
@@ -338,26 +318,18 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                         })
                     }
                     onPointerDown={(e) => e.stopPropagation()}
-                    className={
-                        state.tool
-                            ? `${styles[state.tool]} ${styles.activeTool}`
-                            : undefined
-                    }
+                    className={`${styles[state.tool]} ${styles.activeTool}`}
                     style={{
                         ...defaultStyle,
-                        ...(state.itemStyle ?? {}),
-                        ...(state.toolArea ?? {}),
+                        ...state.itemStyle,
+                        ...state.toolArea,
                     }}
                 />
             )}
             {state.toolArea && state.tool === "image" && (
                 <div
-                    className={
-                        state.tool
-                            ? `${styles[state.tool]} ${styles.activeTool}`
-                            : undefined
-                    }
-                    style={{ ...(state.toolArea ?? {}) }}
+                    className={`${styles[state.tool]} ${styles.activeTool}`}
+                    style={{ ...state.toolArea }}
                 />
             )}
             {displayItems}
