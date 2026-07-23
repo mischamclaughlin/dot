@@ -9,12 +9,7 @@ import React, {
 
 import type { Action, State } from "./state/Reducer";
 
-import type {
-    CanvasItem,
-    Dot,
-    ResizeEdge,
-    SelectionArea,
-} from "./types/DotGridTypes";
+import type { CanvasItem, Dot, ResizeEdge } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
 import { defaultStyle } from "./styles/DotGridStyles";
@@ -32,10 +27,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [hoverDot, setHoverDot] = useState<Dot | null>(null);
     const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
 
-    const [draftArea, setDraftArea] = useState<SelectionArea | null>(null);
-    const [selectArea, setSelectArea] = useState<SelectionArea | null>(null);
-    const [toolArea, setToolArea] = useState<SelectionArea | null>(null);
-
     const [text, setText] = useState("");
 
     const [items, setItems] = useState<CanvasItem[] | null>(null);
@@ -45,8 +36,11 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const resetDrag = useCallback(() => {
         setIsDragging(false);
         setDragStartDot(null);
-        setDraftArea(null);
-    }, []);
+        dispatch({
+            type: "area/draft",
+            payload: null,
+        });
+    }, [dispatch]);
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -54,18 +48,25 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
             resetDrag();
 
-            setSelectArea(null);
-
-            setToolArea(null);
             dispatch({
-                type: "save/valid",
+                type: "area/active",
+                payload: null,
+            });
+
+            dispatch({
+                type: "area/tool",
+                payload: null,
+            });
+
+            dispatch({
+                type: "save/possible",
                 payload: false,
             });
 
             setText("");
 
             dispatch({
-                type: "tool/selected",
+                type: "tool/active",
                 payload: null,
             });
         }
@@ -80,25 +81,29 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             if (!state.isSaved) return;
 
             dispatch({
-                type: "save/saved",
+                type: "save/confirm",
                 payload: false,
             });
 
-            if (!toolArea || !state.tool) return;
+            if (!state.toolArea || !state.tool) return;
 
             const item: CanvasItem = {
                 id: crypto.randomUUID(),
                 type: state.tool,
                 text: text,
                 style: state.activeStyle ?? defaultStyle,
-                area: toolArea,
+                area: state.toolArea,
             };
 
             setItems((current) => [...(current ?? []), item]);
 
-            setToolArea(null);
             dispatch({
-                type: "save/valid",
+                type: "area/tool",
+                payload: null,
+            });
+
+            dispatch({
+                type: "save/possible",
                 payload: false,
             });
 
@@ -108,28 +113,35 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         handleElementSave();
     }, [
         dispatch,
+        state.toolArea,
         state.activeStyle,
         state.isSaved,
         state.tool,
         text,
-        toolArea,
     ]);
 
     useEffect(() => {
         function handleToolArea() {
-            if (!state.tool || !selectArea) return;
+            if (!state.tool || !state.activeArea) return;
 
-            setToolArea(selectArea);
             dispatch({
-                type: "save/valid",
+                type: "area/tool",
+                payload: state.activeArea,
+            });
+
+            dispatch({
+                type: "save/possible",
                 payload: true,
             });
 
-            setSelectArea(null);
+            dispatch({
+                type: "area/active",
+                payload: null,
+            });
         }
 
         handleToolArea();
-    }, [dispatch, selectArea, state.tool]);
+    }, [dispatch, state.activeArea, state.tool]);
 
     useEffect(() => {
         function handleGoBack() {
@@ -141,23 +153,30 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             });
 
             dispatch({
-                type: "tool/selected",
+                type: "tool/active",
                 payload: null,
             });
 
-            if (!toolArea) return;
+            if (!state.toolArea) return;
 
-            setSelectArea(toolArea);
-
-            setToolArea(null);
             dispatch({
-                type: "save/valid",
+                type: "area/active",
+                payload: state.toolArea,
+            });
+
+            dispatch({
+                type: "area/tool",
+                payload: null,
+            });
+
+            dispatch({
+                type: "save/possible",
                 payload: false,
             });
         }
 
         handleGoBack();
-    }, [dispatch, state.isBack, toolArea]);
+    }, [dispatch, state.isBack, state.toolArea]);
 
     function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         const nextactiveDot = service.getNextActiveDot(e);
@@ -168,7 +187,10 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
         if (!isDragging || !dragStartDot) return;
 
-        setDraftArea(service.updateTempArea(dragStartDot, nextactiveDot));
+        dispatch({
+            type: "area/draft",
+            payload: service.updateTempArea(dragStartDot, nextactiveDot),
+        });
     }
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
@@ -177,12 +199,17 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         const nextActiveDot = service.getNextActiveDot(e);
 
         setIsDragging(true);
-        setSelectArea(null);
+
+        dispatch({
+            type: "area/active",
+            payload: null,
+        });
+
         setDragStartDot(nextActiveDot);
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
-        const area = draftArea;
+        const area = state.draftArea;
 
         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
             e.currentTarget.releasePointerCapture(e.pointerId);
@@ -193,12 +220,21 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         if (!area) return;
 
         if (state.tool) {
-            setToolArea(area);
             dispatch({
-                type: "save/valid",
+                type: "area/tool",
+                payload: area,
+            });
+
+            dispatch({
+                type: "save/possible",
                 payload: true,
             });
-        } else setSelectArea(area);
+        } else {
+            dispatch({
+                type: "area/active",
+                payload: area,
+            });
+        }
     }
 
     function handlePointerCancel() {
@@ -383,7 +419,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
             ref={canvasRef}
             className={`
                 ${styles.container}
-                ${toolArea ? styles.focusToolArea : styles.focusContainer}
+                ${state.toolArea ? styles.focusToolArea : styles.focusContainer}
                 `}
             onPointerMove={handlePointerMove}
             onPointerDown={handlePointerDown}
@@ -405,13 +441,19 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     style={{ left: dragStartDot.x, top: dragStartDot.y }}
                 />
             )}
-            {draftArea && (
-                <div className={styles.draftArea} style={{ ...draftArea }} />
+            {state.draftArea && (
+                <div
+                    className={styles.draftArea}
+                    style={{ ...state.draftArea }}
+                />
             )}
-            {selectArea && (
-                <div className={styles.selectArea} style={{ ...selectArea }} />
+            {state.activeArea && (
+                <div
+                    className={styles.selectArea}
+                    style={{ ...state.activeArea }}
+                />
             )}
-            {toolArea && state.tool === "text" && (
+            {state.toolArea && state.tool === "text" && (
                 <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
@@ -424,18 +466,18 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     style={{
                         ...defaultStyle,
                         ...(state.activeStyle ?? {}),
-                        ...(toolArea ?? {}),
+                        ...(state.toolArea ?? {}),
                     }}
                 />
             )}
-            {toolArea && state.tool === "image" && (
+            {state.toolArea && state.tool === "image" && (
                 <div
                     className={
                         state.tool
                             ? `${styles[state.tool]} ${styles.activeTool}`
                             : undefined
                     }
-                    style={{ ...(toolArea ?? {}) }}
+                    style={{ ...(state.toolArea ?? {}) }}
                 />
             )}
             {displayItems}

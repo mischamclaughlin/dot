@@ -2,8 +2,6 @@ import { useEffect, useReducer } from "react";
 
 import { initialState, reducer } from "./state/Reducer";
 
-// import type { AreaStyle, CanvasTool } from "./types/DotGridTypes";
-
 import Canvas from "./Canvas";
 import Sidebar from "./Sidebar";
 
@@ -21,7 +19,7 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
 
     // function handleSelectTool(tool: CanvasTool) {
     //     dispatch({
-    //         type: "tool/selected",
+    //         type: "tool/active",
     //         payload: tool,
     //     });
     // }
@@ -35,7 +33,7 @@ export default function DotGrid({ onNotifications }: DotGridProps) {
 
     // function handleSaveElement(isSave: boolean) {
     //     dispatch({
-    //         type: "save/saved",
+    //         type: "save/confirm",
     //         payload: isSave,
     //     });
 
