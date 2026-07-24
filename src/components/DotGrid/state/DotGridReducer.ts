@@ -9,13 +9,15 @@ import type {
 import { defaultStyle } from "../styles/DotGridStyles";
 
 export type State = {
-    tool: CanvasTool | null;
-    itemStyle: AreaStyle;
-    lastSavedItemId: string | null;
     activeArea: SelectionArea | null;
-    toolArea: SelectionArea | null;
     canvasItems: CanvasItem[];
+    editedCanvasItems: CanvasItem[];
+    itemEdit: CanvasItem | null;
+    itemStyle: AreaStyle;
     itemText: string;
+    lastSavedItemId: string | null;
+    tool: CanvasTool | null;
+    toolArea: SelectionArea | null;
 };
 
 export type Action =
@@ -23,6 +25,7 @@ export type Action =
     | { type: "area/tool"; payload: SelectionArea }
     | { type: "editing/back" }
     | { type: "editing/cancel" }
+    | { type: "editing/item"; payload: string }
     | {
           type: "item/resize";
           payload: {
@@ -36,13 +39,15 @@ export type Action =
     | { type: "tool/selected"; payload: CanvasTool };
 
 export const initialState: State = {
-    tool: null,
+    activeArea: null,
+    canvasItems: [],
+    editedCanvasItems: [],
+    itemEdit: null,
     itemStyle: defaultStyle,
     itemText: "",
     lastSavedItemId: null,
-    activeArea: null,
+    tool: null,
     toolArea: null,
-    canvasItems: [],
 };
 
 function assertNever(action: never): never {
@@ -77,6 +82,7 @@ export function dotGridReducer(
                 activeArea: state.toolArea,
                 toolArea: null,
                 tool: null,
+                itemEdit: null,
                 itemText: "",
             };
 
@@ -86,7 +92,28 @@ export function dotGridReducer(
                 tool: null,
                 activeArea: null,
                 toolArea: null,
+                itemEdit: null,
                 itemText: "",
+            };
+        }
+
+        case "editing/item": {
+            const item = state.canvasItems.find((i) => i.id === action.payload);
+            if (!item) return state;
+
+            const filteredItems = state.canvasItems.filter(
+                (i) => i.id !== action.payload,
+            );
+            const editedItems = [...state.editedCanvasItems, item];
+
+            return {
+                ...state,
+                canvasItems: filteredItems,
+                editedCanvasItems: editedItems,
+                itemEdit: item,
+                tool: item.type,
+                toolArea: item.area,
+                itemText: item.text,
             };
         }
 
@@ -123,6 +150,7 @@ export function dotGridReducer(
                 ...state,
                 canvasItems: [...state.canvasItems, item],
                 toolArea: null,
+                itemEdit: null,
                 lastSavedItemId: item.id,
                 itemText: "",
             };

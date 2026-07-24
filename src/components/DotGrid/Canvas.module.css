@@ -87,10 +87,28 @@
 .dragBarContainer {
     position: absolute;
     border: 1px solid transparent;
+
+    .button {
+        display: none;
+    }
 }
 
 .dragBarContainer:hover {
     border: 1px solid var(--highlight-h);
+
+    .button {
+        display: inline;
+        position: absolute;
+        left: 0.1rem;
+        bottom: 0.1rem;
+        padding: 0.1rem;
+        background-color: var(--highlight-l);
+        filter: opacity(0.5);
+    }
+    .button:hover {
+        background-color: var(--highlight-l);
+        filter: opacity(1);
+    }
 }
 
 .dragBar {
@@ -104,5 +122,5 @@
 
 .dragBar:hover {
     background-color: var(--accent-1);
-    filter: opacity(0.25);
+    filter: opacity(0.5);
 }
