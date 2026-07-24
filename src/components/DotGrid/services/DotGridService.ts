@@ -8,36 +8,18 @@ export class DotGridService {
         this.gridSize = gridSize;
     }
 
-    isSameDot(dot: Dot | null, nextDot: Dot) {
-        return dot?.x === nextDot.x && dot.y === nextDot.y;
-    }
-
-    getNextActiveDot(e: React.PointerEvent<HTMLDivElement>) {
-        const rect = e.currentTarget.getBoundingClientRect();
-
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const nextActiveDot: Dot = {
-            x: this.snapToGrid(x, rect.width),
-            y: this.snapToGrid(y, rect.height),
-        };
-
-        return nextActiveDot;
-    }
-
     snapToGrid(value: number, maxValue: number) {
         const offset = this.gridSize / 2;
         const snapped =
             Math.round((value - offset) / this.gridSize) * this.gridSize +
             offset;
-        const maxGridactiveDot =
+        const maxGridActiveDot =
             Math.floor((maxValue - offset) / this.gridSize) * this.gridSize +
             offset;
 
         return Math.min(
             Math.max(snapped, offset),
-            Math.max(offset, maxGridactiveDot),
+            Math.max(offset, maxGridActiveDot),
         );
     }
 
@@ -58,6 +40,10 @@ export class DotGridService {
             width: width,
             height: height,
         };
+    }
+
+    isSameDot(dot: Dot | null, nextDot: Dot) {
+        return dot?.x === nextDot.x && dot.y === nextDot.y;
     }
 
     updateItemWidth(start: Dot, end: Dot) {
@@ -99,5 +85,19 @@ export class DotGridService {
             x: this.snapToGrid(e.clientX - rect.left, rect.width),
             y: this.snapToGrid(e.clientY - rect.top, rect.height),
         };
+    }
+
+    getNextActiveDot(e: React.PointerEvent<HTMLDivElement>) {
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const nextActiveDot: Dot = {
+            x: this.snapToGrid(x, rect.width),
+            y: this.snapToGrid(y, rect.height),
+        };
+
+        return nextActiveDot;
     }
 }
