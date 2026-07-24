@@ -19,21 +19,21 @@ export type State = {
 };
 
 export type Action =
-    | { type: "editing/cancel" }
-    | { type: "editing/back" }
-    | { type: "item/save"; payload: string }
-    | { type: "item/style"; payload: Partial<AreaStyle> }
-    | { type: "item/text"; payload: string }
     | { type: "area/selected"; payload: SelectionArea | null }
     | { type: "area/tool"; payload: SelectionArea }
-    | { type: "tool/selected"; payload: CanvasTool }
+    | { type: "editing/back" }
+    | { type: "editing/cancel" }
     | {
-          type: "canvas/resize";
+          type: "item/resize";
           payload: {
               id: string;
               nextArea: NextArea;
           };
-      };
+      }
+    | { type: "item/save"; payload: string }
+    | { type: "item/style"; payload: Partial<AreaStyle> }
+    | { type: "item/text"; payload: string }
+    | { type: "tool/selected"; payload: CanvasTool };
 
 export const initialState: State = {
     tool: null,
@@ -55,7 +55,31 @@ export function dotGridReducer(
 ): State {
     switch (action.type) {
         // ---------------------------------------------------------------------
-        // Key
+        // Area
+        case "area/selected":
+            return {
+                ...state,
+                activeArea: action.payload,
+            };
+
+        case "area/tool":
+            return {
+                ...state,
+                toolArea: action.payload,
+                activeArea: null,
+            };
+
+        // ---------------------------------------------------------------------
+        // Editing
+        case "editing/back":
+            return {
+                ...state,
+                activeArea: state.toolArea,
+                toolArea: null,
+                tool: null,
+                itemText: "",
+            };
+
         case "editing/cancel": {
             return {
                 ...state,
@@ -68,6 +92,22 @@ export function dotGridReducer(
 
         // ---------------------------------------------------------------------
         // Item
+        case "item/resize":
+            return {
+                ...state,
+                canvasItems: state.canvasItems.map((currentItem) =>
+                    currentItem.id === action.payload.id
+                        ? {
+                              ...currentItem,
+                              area: {
+                                  ...currentItem.area,
+                                  ...action.payload.nextArea,
+                              },
+                          }
+                        : currentItem,
+                ),
+            };
+
         case "item/save": {
             if (!state.toolArea || !state.tool) return state;
 
@@ -87,6 +127,7 @@ export function dotGridReducer(
                 itemText: "",
             };
         }
+
         case "item/style":
             return {
                 ...state,
@@ -95,11 +136,13 @@ export function dotGridReducer(
                     ...action.payload,
                 },
             };
+
         case "item/text":
             return {
                 ...state,
                 itemText: action.payload,
             };
+
         // ---------------------------------------------------------------------
         // Tool
         case "tool/selected":
@@ -108,49 +151,6 @@ export function dotGridReducer(
                 tool: action.payload,
                 toolArea: state.activeArea,
                 activeArea: null,
-            };
-
-        // ---------------------------------------------------------------------
-        // Move
-        case "editing/back":
-            return {
-                ...state,
-                activeArea: state.toolArea,
-                toolArea: null,
-                tool: null,
-                itemText: "",
-            };
-
-        // ---------------------------------------------------------------------
-        // Area
-        case "area/selected":
-            return {
-                ...state,
-                activeArea: action.payload,
-            };
-        case "area/tool":
-            return {
-                ...state,
-                toolArea: action.payload,
-                activeArea: null,
-            };
-
-        // ---------------------------------------------------------------------
-        // Canvas
-        case "canvas/resize":
-            return {
-                ...state,
-                canvasItems: state.canvasItems.map((currentItem) =>
-                    currentItem.id === action.payload.id
-                        ? {
-                              ...currentItem,
-                              area: {
-                                  ...currentItem.area,
-                                  ...action.payload.nextArea,
-                              },
-                          }
-                        : currentItem,
-                ),
             };
 
         // ---------------------------------------------------------------------
