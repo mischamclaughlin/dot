@@ -1,38 +1,57 @@
-import type { ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
+
+import type { Action } from "../../state/DotGridReducer";
 
 import styles from "./ToolSelectors.module.css";
-import type { CanvasTool } from "../../types/DotGridTypes";
 
-type ToolSelectorsProps = {
-    onSelectTool: (tool: CanvasTool) => void;
-};
+type ToolSelectorsProps = { dispatch: Dispatch<Action> };
 
 export default function ToolSelectors({
-    onSelectTool,
+    dispatch,
 }: ToolSelectorsProps): ReactElement {
     return (
         <div className={styles.controlContainer}>
             <button
                 className={styles.button}
-                onClick={() => onSelectTool("text")}
+                onClick={() =>
+                    dispatch({
+                        type: "tool/selected",
+                        payload: "text",
+                    })
+                }
             >
                 Text
             </button>
             <button
                 className={styles.button}
-                onClick={() => onSelectTool("image")}
+                onClick={() =>
+                    dispatch({
+                        type: "tool/selected",
+                        payload: "image",
+                    })
+                }
             >
                 Coming soon.
             </button>
             <button
                 className={styles.button}
-                onClick={() => onSelectTool("component")}
+                onClick={() =>
+                    dispatch({
+                        type: "tool/selected",
+                        payload: "component",
+                    })
+                }
             >
                 Coming soon.
             </button>
             <button
                 className={styles.button}
-                onClick={() => onSelectTool("describe")}
+                onClick={() =>
+                    dispatch({
+                        type: "tool/selected",
+                        payload: "describe",
+                    })
+                }
             >
                 Coming soon.
             </button>

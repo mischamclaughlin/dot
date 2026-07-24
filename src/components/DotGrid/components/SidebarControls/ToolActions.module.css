@@ -6,7 +6,9 @@
     composes: button from "./index.module.css";
 }
 
-.button:disabled {
+.button:disabled,
+.button:disabled:hover {
     color: var(--error);
     background-color: var(--highlight-h);
+    cursor: default;
 }

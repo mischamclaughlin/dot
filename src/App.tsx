@@ -1,25 +1,32 @@
+import type { ReactElement } from "react";
+import { useCallback, useState } from "react";
+
+import type { Notification } from "./components/DotGrid/types/DotGridTypes";
+
 import DotGrid from "./components/DotGrid/DotGrid";
 import Notifications from "./components/Notifications";
 
 import "./App.css";
-import { useState } from "react";
-import type { Notification } from "./components/DotGrid/types/DotGridTypes";
 
-export default function App() {
+export default function App(): ReactElement {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    function handleNotifications(isSaved: boolean) {
-        if (!isSaved) return;
+    const handleNotifications = useCallback(
+        (lastSavedItemId: string | null) => {
+            if (!lastSavedItemId) return;
 
-        const notification = {
-            id: crypto.randomUUID(),
-            type: "success",
-            subtype: "saved",
-            message: "Saved.",
-        } satisfies Notification;
-
-        setNotifications((current) => [...current, notification]);
-    }
+            setNotifications((current) => [
+                ...current,
+                {
+                    id: crypto.randomUUID(),
+                    type: "success",
+                    subtype: "saved",
+                    message: "Saved.",
+                },
+            ]);
+        },
+        [],
+    );
 
     function handleDeleteNotification(id: string) {
         setNotifications((current) =>
@@ -28,14 +35,12 @@ export default function App() {
     }
 
     return (
-        <>
-            <div className="appContainer">
-                <Notifications
-                    notifications={notifications}
-                    onDeleteNotification={handleDeleteNotification}
-                />
-                <DotGrid onNotifications={handleNotifications} />
-            </div>
-        </>
+        <div className="appContainer">
+            <Notifications
+                notifications={notifications}
+                onDeleteNotification={handleDeleteNotification}
+            />
+            <DotGrid onNotifications={handleNotifications} />
+        </div>
     );
 }

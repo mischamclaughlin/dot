@@ -19,14 +19,14 @@ export type AreaStyle = Pick<
     | "backgroundColor"
 >;
 
-export type CanvasTool = "text" | "image" | "component" | "describe" | null;
+export type CanvasTool = "text" | "image" | "component" | "describe";
 
 export type CanvasItem = {
     id: string;
     type: CanvasTool;
     text: string;
-    style: AreaStyle | null;
-    area: SelectionArea | null;
+    style: AreaStyle;
+    area: SelectionArea;
 };
 
 export type NotificationType = "success" | "info" | "error";
@@ -40,3 +40,7 @@ export type Notification = {
 };
 
 export type ResizeEdge = "left" | "right" | "top" | "bottom";
+
+export type NextArea =
+    | { left: number; width: number }
+    | { top: number; height: number };

@@ -1,13 +1,9 @@
-import {
-    useLayoutEffect,
-    useRef,
-    useState,
-    type CSSProperties,
-    type ReactElement,
-} from "react";
+import type { CSSProperties, ReactElement } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+
+import type { Notification } from "./DotGrid/types/DotGridTypes";
 
 import styles from "./Notifications.module.css";
-import type { Notification } from "./DotGrid/types/DotGridTypes";
 
 type NotificationsProps = {
     notifications: Notification[];

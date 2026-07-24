@@ -1,5 +1,6 @@
-import { type ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
 
+import type { Action, State } from "../../state/DotGridReducer";
 import type { AreaStyle } from "../../types/DotGridTypes";
 
 import {
@@ -22,21 +23,21 @@ import {
 import styles from "./TextToolControls.module.css";
 
 type TextToolControlsProps = {
-    activeStyle: AreaStyle;
-    onSelectStyle: (style: Partial<AreaStyle>) => void;
+    state: State;
+    dispatch: Dispatch<Action>;
 };
 
 export default function TextToolControls({
-    activeStyle,
-    onSelectStyle,
+    state,
+    dispatch,
 }: TextToolControlsProps): ReactElement {
     function matchesStyle(
-        activeStyle: AreaStyle,
+        itemStyle: AreaStyle,
         optionStyle: Partial<AreaStyle>,
     ) {
         return Object.entries(optionStyle).every(
             ([proprety, value]) =>
-                activeStyle[proprety as keyof AreaStyle] === value,
+                itemStyle[proprety as keyof AreaStyle] === value,
         );
     }
 
@@ -46,45 +47,70 @@ export default function TextToolControls({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, variantTitle) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, variantTitle) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(variantTitle)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...variantTitle },
+                        })
+                    }
                 >
                     Title
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, variantSubTitle) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, variantSubTitle) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(variantSubTitle)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...variantSubTitle },
+                        })
+                    }
                 >
                     Subtitle
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, variantHeading) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, variantHeading) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(variantHeading)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...variantHeading },
+                        })
+                    }
                 >
                     Heading
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, variantSubHeading) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, variantSubHeading) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(variantSubHeading)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...variantSubHeading },
+                        })
+                    }
                 >
                     Subheading
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, variantBody) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, variantBody) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(variantBody)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...variantBody },
+                        })
+                    }
                 >
                     Body
                 </button>
@@ -93,36 +119,56 @@ export default function TextToolControls({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, textAlignLeft) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, textAlignLeft) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(textAlignLeft)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...textAlignLeft },
+                        })
+                    }
                 >
                     Left
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, textAlignRight) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, textAlignRight) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(textAlignRight)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...textAlignRight },
+                        })
+                    }
                 >
                     Right
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, textAlignCenter) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, textAlignCenter) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(textAlignCenter)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...textAlignCenter },
+                        })
+                    }
                 >
                     Center
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, textAlignJustify) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, textAlignJustify) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(textAlignJustify)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...textAlignJustify },
+                        })
+                    }
                 >
                     Justify
                 </button>
@@ -131,27 +177,42 @@ export default function TextToolControls({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, contentAlignStart) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, contentAlignStart) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(contentAlignStart)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...contentAlignStart },
+                        })
+                    }
                 >
                     Start
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, contentAlignCenter) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, contentAlignCenter) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(contentAlignCenter)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...contentAlignCenter },
+                        })
+                    }
                 >
                     Center
                 </button>
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(activeStyle, contentAlignEnd) ? styles.active : ""}
+                        ${matchesStyle(state.itemStyle, contentAlignEnd) ? styles.active : ""}
                         `}
-                    onClick={() => onSelectStyle(contentAlignEnd)}
+                    onClick={() =>
+                        dispatch({
+                            type: "item/style",
+                            payload: { ...contentAlignEnd },
+                        })
+                    }
                 >
                     End
                 </button>
@@ -166,11 +227,15 @@ export default function TextToolControls({
                         id="foregroundColour"
                         name="foregroundColour"
                         value={
-                            activeStyle.color ?? defaultForegroundColour.color
+                            state.itemStyle.color ??
+                            defaultForegroundColour.color
                         }
-                        onChange={(e) => {
-                            onSelectStyle({ color: e.target.value });
-                        }}
+                        onChange={(e) =>
+                            dispatch({
+                                type: "item/style",
+                                payload: { ...{ color: e.target.value } },
+                            })
+                        }
                     />
                 </div>
                 <div className={styles.colourPicker}>
@@ -182,12 +247,17 @@ export default function TextToolControls({
                         id="backgroundColour"
                         name="backgroundColour"
                         value={
-                            activeStyle.backgroundColor ??
+                            state.itemStyle.backgroundColor ??
                             defaultBackgroundColour.backgroundColor
                         }
-                        onChange={(e) => {
-                            onSelectStyle({ backgroundColor: e.target.value });
-                        }}
+                        onChange={(e) =>
+                            dispatch({
+                                type: "item/style",
+                                payload: {
+                                    ...{ backgroundColor: e.target.value },
+                                },
+                            })
+                        }
                     />
                 </div>
             </div>

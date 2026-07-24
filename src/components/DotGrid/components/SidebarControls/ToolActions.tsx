@@ -1,39 +1,35 @@
-import type { ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
+
+import type { Action, State } from "../../state/DotGridReducer";
 
 import styles from "./ToolActions.module.css";
 
-type ToolActionsProps = {
-    isSaveable: boolean;
-    onGoBack: (isBack: boolean) => void;
-    onSaveItem: (isSave: boolean) => void;
-};
+type ToolActionsProps = { state: State; dispatch: Dispatch<Action> };
 
 export default function ToolActions({
-    isSaveable,
-    onGoBack,
-    onSaveItem,
+    state,
+    dispatch,
 }: ToolActionsProps): ReactElement {
     return (
         <div className={styles.controlContainer}>
-            <button className={styles.button} onClick={() => onGoBack(true)}>
+            <button
+                className={styles.button}
+                onClick={() => dispatch({ type: "editing/back" })}
+            >
                 Back
             </button>
-            {isSaveable ? (
-                <button
-                    className={styles.button}
-                    onClick={() => onSaveItem(true)}
-                >
-                    Save
-                </button>
-            ) : (
-                <button
-                    className={styles.button}
-                    disabled
-                    onClick={() => onSaveItem(true)}
-                >
-                    Save
-                </button>
-            )}
+            <button
+                className={styles.button}
+                disabled={!state.toolArea}
+                onClick={() =>
+                    dispatch({
+                        type: "item/save",
+                        payload: crypto.randomUUID(),
+                    })
+                }
+            >
+                Save
+            </button>
         </div>
     );
 }

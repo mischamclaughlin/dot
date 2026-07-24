@@ -2,7 +2,7 @@ import type { RefObject } from "react";
 import type { Dot } from "../types/DotGridTypes";
 
 export class DotGridService {
-    gridSize: number;
+    readonly gridSize: number;
 
     constructor(gridSize: number = 15) {
         this.gridSize = gridSize;
@@ -12,18 +12,18 @@ export class DotGridService {
         return dot?.x === nextDot.x && dot.y === nextDot.y;
     }
 
-    getNextActiveDot(e: React.MouseEvent<HTMLDivElement>) {
+    getNextActiveDot(e: React.PointerEvent<HTMLDivElement>) {
         const rect = e.currentTarget.getBoundingClientRect();
 
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        const nextactiveDot: Dot = {
+        const nextActiveDot: Dot = {
             x: this.snapToGrid(x, rect.width),
             y: this.snapToGrid(y, rect.height),
         };
 
-        return nextactiveDot;
+        return nextActiveDot;
     }
 
     snapToGrid(value: number, maxValue: number) {
