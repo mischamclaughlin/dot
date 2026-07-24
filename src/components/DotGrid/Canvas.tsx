@@ -156,7 +156,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     : service.updateItemHeight(topDot, nextDot);
 
         dispatch({
-            type: "canvas/resize",
+            type: "item/resize",
             payload: { id: item.id, nextArea: nextArea },
         });
     }
