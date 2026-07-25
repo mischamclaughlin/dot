@@ -10,7 +10,7 @@ import type {
 } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
-import { defaultStyle } from "./styles/DotGridStyles";
+import { defaultStyle } from "./tool/TextTool/TextStyles";
 
 import styles from "./Canvas.module.css";
 // -----------------------------------------------------------------------------

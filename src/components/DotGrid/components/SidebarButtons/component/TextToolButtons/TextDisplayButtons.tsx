@@ -8,7 +8,7 @@ import {
     variantSubHeading,
     variantSubTitle,
     variantTitle,
-} from "../../../../styles/DotGridStyles";
+} from "../../../../tool/TextTool/TextStyles";
 import { matchesStyle } from "./shared/helpers";
 
 import styles from "./_index.module.css";

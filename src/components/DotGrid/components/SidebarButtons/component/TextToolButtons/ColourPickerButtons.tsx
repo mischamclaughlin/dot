@@ -5,7 +5,7 @@ import type { DotGridProps } from "../../../../types/DotGridProps";
 import {
     defaultBackgroundColour,
     defaultForegroundColour,
-} from "../../../../styles/DotGridStyles";
+} from "../../../../tool/TextTool/TextStyles";
 
 import styles from "./_index.module.css";
 // -----------------------------------------------------------------------------

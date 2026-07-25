@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import type { DotGridProps } from "../../../../types/DotGridProps";
 
-import styles from "./_index.module.css";
+import styles from "./PaddingButtons.module.css";
 // -----------------------------------------------------------------------------
 
 export default function PaddingButtons({

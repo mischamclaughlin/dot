@@ -26,3 +26,15 @@
     background-color: var(--highlight-h);
     color: var(--accent);
 }
+
+.active.button,
+.active.buttonCentered {
+    background-color: var(--highlight-m);
+    color: var(--accent);
+}
+
+.active.button:hover,
+.active.buttonCentered:hover {
+    background-color: var(--highlight-h);
+    color: var(--accent-1);
+}

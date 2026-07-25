@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { CanvasTool, AreaStyle } from "../types/DotGridTypes";
 
 import { dotGridReducer, initialState } from "./DotGridReducer";
-import { contentAlignCenter, defaultStyle } from "../styles/DotGridStyles";
+import { contentAlignCenter, defaultStyle } from "../tool/TextTool/TextStyles";
 
 describe("dotGridReducer", () => {
     const area = {

@@ -6,7 +6,7 @@ import type {
     AreaStyle,
 } from "../types/DotGridTypes";
 
-import { defaultStyle } from "../styles/DotGridStyles";
+import { defaultStyle } from "../tool/TextTool/TextStyles";
 
 export type State = {
     activeArea: AreaStyle | null;
