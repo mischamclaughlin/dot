@@ -13,7 +13,7 @@ import {
 } from "../../../../styles/DotGridStyles";
 import { matchesStyle } from "./shared/helpers";
 
-import styles from "../../TextToolButtons.module.css";
+import styles from "./_index.module.css";
 // -----------------------------------------------------------------------------
 
 export default function AlignButtons({
