@@ -1,7 +1,7 @@
 import type { Dispatch, ReactElement } from "react";
 
 import type { Action, State } from "../../state/DotGridReducer";
-import type { AreaStyle } from "../../types/DotGridTypes";
+import type { ItemStyle } from "../../types/DotGridTypes";
 
 import {
     contentAlignCenter,
@@ -32,12 +32,12 @@ export default function TextToolControls({
     dispatch,
 }: TextToolControlsProps): ReactElement {
     function matchesStyle(
-        itemStyle: AreaStyle,
-        optionStyle: Partial<AreaStyle>,
+        itemStyle: ItemStyle,
+        optionStyle: Partial<ItemStyle>,
     ) {
         return Object.entries(optionStyle).every(
             ([proprety, value]) =>
-                itemStyle[proprety as keyof AreaStyle] === value,
+                itemStyle[proprety as keyof ItemStyle] === value,
         );
     }
 

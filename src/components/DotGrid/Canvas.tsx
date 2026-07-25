@@ -4,9 +4,9 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import type { Action, State } from "./state/DotGridReducer";
 import type {
     Dot,
-    NextArea,
-    ResizeEdge,
-    SelectionArea,
+    AreaResize,
+    EdgeResize,
+    AreaStyle,
 } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
@@ -26,11 +26,11 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [hoverDot, setHoverDot] = useState<Dot | null>(null);
     const [dragStartDot, setDragStartDot] = useState<Dot | null>(null);
 
-    const [draftArea, setDraftArea] = useState<SelectionArea | null>(null);
+    const [draftArea, setDraftArea] = useState<AreaStyle | null>(null);
 
-    const [resizeArea, setResizeArea] = useState<NextArea | null>(null);
+    const [resizeArea, setResizeArea] = useState<AreaResize | null>(null);
 
-    const [resizeEdge, setResizeEdge] = useState<ResizeEdge | null>(null);
+    const [resizeEdge, setResizeEdge] = useState<EdgeResize | null>(null);
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -109,7 +109,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
 
     function handleItemResizeStart(
         e: React.PointerEvent<HTMLDivElement>,
-        edge: ResizeEdge,
+        edge: EdgeResize,
     ) {
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -118,7 +118,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     function handleItemResizeMove(
         e: React.PointerEvent<HTMLDivElement>,
         id: string | null,
-        area: SelectionArea,
+        area: AreaStyle,
     ) {
         e.stopPropagation();
 
@@ -201,7 +201,7 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
         );
     });
 
-    function dragBox(id: string, area: SelectionArea) {
+    function dragBox(id: string, area: AreaStyle) {
         const { width, height } = area;
         const dragBarSize = 7.5;
 

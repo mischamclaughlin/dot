@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { SelectionArea } from "../types/DotGridTypes";
+import type { AreaStyle } from "../types/DotGridTypes";
 
 import { DotGridService } from "./DotGridService";
 import type React from "react";
@@ -41,8 +41,8 @@ describe("DotGridService", () => {
                 width: 45,
             });
         });
-        it("returns a SelectionArea type object", () => {
-            expectTypeOf(result).toEqualTypeOf<SelectionArea>();
+        it("returns a AreaStyle type object", () => {
+            expectTypeOf(result).toEqualTypeOf<AreaStyle>();
         });
     });
 

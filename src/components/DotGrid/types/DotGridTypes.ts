@@ -2,14 +2,14 @@ import type { CSSProperties } from "react";
 
 export type Dot = { x: number; y: number };
 
-export type SelectionArea = {
+export type AreaStyle = {
     left: number;
     top: number;
     width: number;
     height: number;
 };
 
-export type AreaStyle = Pick<
+export type ItemStyle = Pick<
     CSSProperties,
     | "fontSize"
     | "fontWeight"
@@ -20,27 +20,15 @@ export type AreaStyle = Pick<
 >;
 
 export type CanvasTool = "text" | "image" | "component" | "describe";
-
 export type CanvasItem = {
     id: string;
     type: CanvasTool;
     text: string;
-    style: AreaStyle;
-    area: SelectionArea;
+    style: ItemStyle;
+    area: AreaStyle;
 };
 
-export type NotificationType = "success" | "info" | "error";
-export type NotificationSubtype = "saved" | "deleted" | "edited" | "create";
-
-export type Notification = {
-    id: string;
-    type: NotificationType;
-    subtype: NotificationSubtype;
-    message: string;
-};
-
-export type ResizeEdge = "left" | "right" | "top" | "bottom";
-
-export type NextArea =
+export type EdgeResize = "left" | "right" | "top" | "bottom";
+export type AreaResize =
     | { left: number; width: number }
     | { top: number; height: number };

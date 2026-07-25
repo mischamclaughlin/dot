@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { useCallback, useState } from "react";
 
-import type { Notification } from "./components/DotGrid/types/DotGridTypes";
+import type { Notification } from "./components/types/NotificationTypes";
 
 import DotGrid from "./components/DotGrid/DotGrid";
 import Notifications from "./components/Notifications";

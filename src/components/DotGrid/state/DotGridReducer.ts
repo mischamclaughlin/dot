@@ -1,28 +1,28 @@
 import type {
-    AreaStyle,
+    ItemStyle,
     CanvasItem,
     CanvasTool,
-    NextArea,
-    SelectionArea,
+    AreaResize,
+    AreaStyle,
 } from "../types/DotGridTypes";
 
 import { defaultStyle } from "../styles/DotGridStyles";
 
 export type State = {
-    activeArea: SelectionArea | null;
+    activeArea: AreaStyle | null;
     canvasItems: CanvasItem[];
     editedCanvasItems: CanvasItem[];
     itemEdit: CanvasItem | null;
-    itemStyle: AreaStyle;
+    itemStyle: ItemStyle;
     itemText: string;
     lastSavedItemId: string | null;
     tool: CanvasTool | null;
-    toolArea: SelectionArea | null;
+    toolArea: AreaStyle | null;
 };
 
 export type Action =
-    | { type: "area/selected"; payload: SelectionArea | null }
-    | { type: "area/tool"; payload: SelectionArea }
+    | { type: "area/selected"; payload: AreaStyle | null }
+    | { type: "area/tool"; payload: AreaStyle }
     | { type: "editing/back" }
     | { type: "editing/cancel" }
     | { type: "editing/item"; payload: string }
@@ -30,11 +30,11 @@ export type Action =
           type: "item/resize";
           payload: {
               id: string;
-              nextArea: NextArea;
+              nextArea: AreaResize;
           };
       }
     | { type: "item/save"; payload: string }
-    | { type: "item/style"; payload: Partial<AreaStyle> }
+    | { type: "item/style"; payload: Partial<ItemStyle> }
     | { type: "item/text"; payload: string }
     | { type: "tool/selected"; payload: CanvasTool };
 
@@ -113,6 +113,7 @@ export function dotGridReducer(
                 itemEdit: item,
                 tool: item.type,
                 toolArea: item.area,
+                itemStyle: item.style,
                 itemText: item.text,
             };
         }

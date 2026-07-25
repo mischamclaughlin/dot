@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { CanvasTool, SelectionArea } from "../types/DotGridTypes";
+import type { CanvasTool, AreaStyle } from "../types/DotGridTypes";
 
 import { dotGridReducer, initialState } from "./DotGridReducer";
 import { contentAlignCenter, defaultStyle } from "../styles/DotGridStyles";
@@ -11,7 +11,7 @@ describe("dotGridReducer", () => {
         top: 0,
         width: 30,
         height: 30,
-    } as SelectionArea;
+    } as AreaStyle;
     const id = crypto.randomUUID();
     const text = "hello" as string;
     const tool = "text" as CanvasTool;

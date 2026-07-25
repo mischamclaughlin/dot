@@ -1,57 +1,61 @@
-import type { AreaStyle } from "../types/DotGridTypes";
+import type { ItemStyle } from "../types/DotGridTypes";
 
 export const variantTitle = {
     fontSize: "2em",
     fontWeight: 700,
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const variantSubTitle = {
     fontSize: "1.17em",
     fontWeight: "bold",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const variantHeading = {
     fontSize: "1.5em",
     fontWeight: "bold",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const variantSubHeading = {
     fontSize: "1em",
     fontWeight: "bold",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const variantBody = {
     fontSize: "1em",
     fontWeight: 400,
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const textAlignLeft = {
     textAlign: "left",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const textAlignRight = {
     textAlign: "right",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const textAlignCenter = {
     textAlign: "center",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const textAlignJustify = {
     textAlign: "justify",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const contentAlignStart = {
     alignContent: "start",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const contentAlignCenter = {
     alignContent: "center",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const contentAlignEnd = {
     alignContent: "end",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
+
+export const paddingTop = {
+    paddingTop: "0",
+} satisfies ItemStyle;
 
 //------------------------------------------------------------------------------
 // Defaults
@@ -61,13 +65,13 @@ export const defaultContentAlign = contentAlignStart;
 
 export const defaultBackgroundColour = {
     backgroundColor: "#faf4ed",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
 export const defaultForegroundColour = {
     color: "#464261",
-} satisfies AreaStyle;
+} satisfies ItemStyle;
 
-export const defaultStyle: AreaStyle = {
+export const defaultStyle: ItemStyle = {
     ...defaultVariant,
     ...defaultTextAlign,
     ...defaultContentAlign,
