@@ -7,10 +7,10 @@ import type { Action, State } from "./state/DotGridReducer";
 
 import { DotGridService } from "./services/DotGridService";
 
-import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
-import TextToolControls from "./components/SidebarControls/TextTool";
-import ToolActions from "./components/SidebarControls/ToolActions";
-import ToolSelectors from "./components/SidebarControls/ToolSelectors";
+import FullscreenButtons from "./components/SidebarButtons/FullscreenButtons";
+import TextToolButtons from "./components/SidebarButtons/TextToolButtons";
+import ActionButtons from "./components/SidebarButtons/ActionButtons";
+import ToolSelectorButtons from "./components/SidebarButtons/ToolSelectorButtons";
 
 import styles from "./Sidebar.module.css";
 
@@ -76,15 +76,17 @@ export default function Sidebar({
                         <h3 className={styles.toolTitle}>
                             {state.tool ? state.tool.toUpperCase() : "TOOLS"}
                         </h3>
-                        {!state.tool && <ToolSelectors dispatch={dispatch} />}
+                        {!state.tool && (
+                            <ToolSelectorButtons dispatch={dispatch} />
+                        )}
                         {state.tool && (
                             <>
-                                <ToolActions
+                                <ActionButtons
                                     state={state}
                                     dispatch={dispatch}
                                 />
                                 {state.tool === "text" && (
-                                    <TextToolControls
+                                    <TextToolButtons
                                         state={state}
                                         dispatch={dispatch}
                                     />
@@ -102,7 +104,7 @@ export default function Sidebar({
                     </div>
                 </div>
             )}
-            <FullscreenToolControls
+            <FullscreenButtons
                 onToggleFullscreen={handleFullScreen}
                 width={isFullscreen ? MIN_WIDTH : width}
             />

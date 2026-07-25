@@ -2,14 +2,14 @@ import type { ReactElement } from "react";
 
 import { MIN_WIDTH } from "../../DotGrid";
 
-import styles from "./FullscreenToolControls.module.css";
+import styles from "./FullscreenButtons.module.css";
 
 type FullscreenToolControlsProps = {
     onToggleFullscreen: () => void;
     width: number;
 };
 
-export default function FullscreenToolControls({
+export default function FullscreenButtons({
     onToggleFullscreen,
     width,
 }: FullscreenToolControlsProps): ReactElement {

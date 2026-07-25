@@ -20,14 +20,14 @@ import {
     variantTitle,
 } from "../../styles/DotGridStyles";
 
-import styles from "./TextTool.module.css";
+import styles from "./TextToolButtons.module.css";
 
 type TextToolControlsProps = {
     state: State;
     dispatch: Dispatch<Action>;
 };
 
-export default function TextToolControls({
+export default function TextToolButtons({
     state,
     dispatch,
 }: TextToolControlsProps): ReactElement {

@@ -1,5 +1,5 @@
 .button {
-    composes: button from "./index.module.css";
+    composes: button from "./_index.module.css";
 }
 
 .fullscreenContainer {

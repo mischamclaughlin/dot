@@ -2,11 +2,11 @@ import type { Dispatch, ReactElement } from "react";
 
 import type { Action } from "../../state/DotGridReducer";
 
-import styles from "./ToolSelectors.module.css";
+import styles from "./ToolSelectorButtons.module.css";
 
 type ToolSelectorsProps = { dispatch: Dispatch<Action> };
 
-export default function ToolSelectors({
+export default function ToolSelectorButtons({
     dispatch,
 }: ToolSelectorsProps): ReactElement {
     return (

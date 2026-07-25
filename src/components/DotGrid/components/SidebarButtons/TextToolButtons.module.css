@@ -1,14 +1,14 @@
 .controlContainer {
-    composes: controlContainer from "./index.module.css";
+    composes: controlContainer from "./_index.module.css";
     width: 100%;
 }
 
 .button {
-    composes: button from "./index.module.css";
+    composes: button from "./_index.module.css";
 }
 
 .buttonCentered {
-    composes: buttonCentered from "./index.module.css";
+    composes: buttonCentered from "./_index.module.css";
     min-width: 1.5rem;
     width: 100%;
 }

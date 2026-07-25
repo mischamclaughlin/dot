@@ -1,7 +1,0 @@
-.controlContainer {
-    composes: controlContainer from "./index.module.css";
-}
-
-.button {
-    composes: button from "./index.module.css";
-}
