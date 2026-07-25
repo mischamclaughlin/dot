@@ -1,15 +1,14 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-import type { Action, State } from "../../state/DotGridReducer";
+import type { DotGridProps } from "../../types/DotGridProps";
 
 import styles from "./ActionButtons.module.css";
-
-type ToolActionsProps = { state: State; dispatch: Dispatch<Action> };
+// -----------------------------------------------------------------------------
 
 export default function ActionButtons({
     state,
     dispatch,
-}: ToolActionsProps): ReactElement {
+}: DotGridProps): ReactElement {
     return (
         <div className={styles.controlContainer}>
             <button

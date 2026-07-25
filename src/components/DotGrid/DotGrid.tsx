@@ -1,5 +1,4 @@
 import type { ReactElement } from "react";
-
 import { useEffect, useReducer } from "react";
 
 import { dotGridReducer, initialState } from "./state/DotGridReducer";
@@ -8,6 +7,7 @@ import Canvas from "./Canvas";
 import Sidebar from "./Sidebar";
 
 import styles from "./DotGrid.module.css";
+// -----------------------------------------------------------------------------
 
 export const MAX_WIDTH_RATIO = 0.85;
 export const MIN_WIDTH = 185;

@@ -1,30 +1,26 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 import React, { useState } from "react";
+
+import type { DotGridProps } from "./types/DotGridProps";
 
 import { MAX_WIDTH_RATIO, MIN_WIDTH } from "./DotGrid";
 
-import type { Action, State } from "./state/DotGridReducer";
-
 import { DotGridService } from "./services/DotGridService";
 
+import ActionButtons from "./components/SidebarButtons/ActionButtons";
 import FullscreenButtons from "./components/SidebarButtons/FullscreenButtons";
 import TextToolButtons from "./components/SidebarButtons/TextToolButtons";
-import ActionButtons from "./components/SidebarButtons/ActionButtons";
 import ToolSelectorButtons from "./components/SidebarButtons/ToolSelectorButtons";
 
 import styles from "./Sidebar.module.css";
+// -----------------------------------------------------------------------------
 
 const service = new DotGridService();
-
-type SidebarProps = {
-    state: State;
-    dispatch: Dispatch<Action>;
-};
 
 export default function Sidebar({
     state,
     dispatch,
-}: SidebarProps): ReactElement {
+}: DotGridProps): ReactElement {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 

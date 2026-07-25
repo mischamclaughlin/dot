@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { Notification } from "./types/NotificationTypes";
 
 import styles from "./Notifications.module.css";
+// -----------------------------------------------------------------------------
 
 type NotificationsProps = {
     notifications: Notification[];

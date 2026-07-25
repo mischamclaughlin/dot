@@ -1,19 +1,15 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { useState } from "react";
 
-import type { Action, State } from "../../../../state/DotGridReducer";
+import type { DotGridProps } from "../../../../types/DotGridProps";
 
-import styles from "./PaddingButtons.module.css";
-
-type PaddingButtonsProps = {
-    state: State;
-    dispatch: Dispatch<Action>;
-};
+import styles from "../../TextToolButtons.module.css";
+// -----------------------------------------------------------------------------
 
 export default function PaddingButtons({
     state,
     dispatch,
-}: PaddingButtonsProps): ReactElement {
+}: DotGridProps): ReactElement {
     const [heightJoined, setHeightJoined] = useState<boolean>(false);
     const [widthJoined, setWidthJoined] = useState<boolean>(false);
     const [allJoined, setAllJoined] = useState<boolean>(false);

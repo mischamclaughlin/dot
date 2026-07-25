@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+// -----------------------------------------------------------------------------
 
 export type Dot = { x: number; y: number };
 

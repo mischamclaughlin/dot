@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import { MIN_WIDTH } from "../../DotGrid";
 
 import styles from "./FullscreenButtons.module.css";
+// -----------------------------------------------------------------------------
 
 type FullscreenToolControlsProps = {
     onToggleFullscreen: () => void;

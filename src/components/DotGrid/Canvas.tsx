@@ -1,24 +1,26 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import type { Action, State } from "./state/DotGridReducer";
+import type { DotGridProps } from "./types/DotGridProps";
 import type {
-    Dot,
     AreaResize,
-    EdgeResize,
     AreaStyle,
+    Dot,
+    EdgeResize,
 } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
 import { defaultStyle } from "./styles/DotGridStyles";
 
 import styles from "./Canvas.module.css";
+// -----------------------------------------------------------------------------
 
 const service = new DotGridService();
 
-type CanvasProps = { state: State; dispatch: Dispatch<Action> };
-
-export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
+export default function Canvas({
+    state,
+    dispatch,
+}: DotGridProps): ReactElement {
     const canvasRef = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState<boolean>(false);

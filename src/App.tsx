@@ -7,6 +7,7 @@ import DotGrid from "./components/DotGrid/DotGrid";
 import Notifications from "./components/Notifications";
 
 import "./App.css";
+// -----------------------------------------------------------------------------
 
 export default function App(): ReactElement {
     const [notifications, setNotifications] = useState<Notification[]>([]);
