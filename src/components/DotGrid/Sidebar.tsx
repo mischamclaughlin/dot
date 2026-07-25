@@ -8,7 +8,7 @@ import type { Action, State } from "./state/DotGridReducer";
 import { DotGridService } from "./services/DotGridService";
 
 import FullscreenToolControls from "./components/SidebarControls/FullscreenToolControls";
-import TextToolControls from "./components/SidebarControls/TextToolControls";
+import TextToolControls from "./components/SidebarControls/TextTool";
 import ToolActions from "./components/SidebarControls/ToolActions";
 import ToolSelectors from "./components/SidebarControls/ToolSelectors";
 
