@@ -26,6 +26,10 @@ export type Action =
     | { type: "editing/back" }
     | { type: "editing/cancel" }
     | { type: "editing/item"; payload: string }
+    | { type: "item/paddingTop"; payload: "down" | "up" }
+    | { type: "item/paddingBottom"; payload: "down" | "up" }
+    | { type: "item/paddingLeft"; payload: "down" | "up" }
+    | { type: "item/paddingRight"; payload: "down" | "up" }
     | {
           type: "item/resize";
           payload: {
@@ -115,6 +119,94 @@ export function dotGridReducer(
                 toolArea: item.area,
                 itemStyle: item.style,
                 itemText: item.text,
+            };
+        }
+
+        case "item/paddingTop": {
+            const rawPadding = state.itemStyle.paddingTop;
+
+            const currentPadding =
+                typeof rawPadding === "number"
+                    ? rawPadding
+                    : Number.parseFloat(rawPadding ?? "0");
+
+            const nextPadding =
+                action.payload === "up"
+                    ? currentPadding + 1
+                    : Math.max(0, currentPadding - 1);
+
+            return {
+                ...state,
+                itemStyle: {
+                    ...state.itemStyle,
+                    paddingTop: nextPadding,
+                },
+            };
+        }
+
+        case "item/paddingBottom": {
+            const rawPadding = state.itemStyle.paddingBottom;
+
+            const currentPadding =
+                typeof rawPadding === "number"
+                    ? rawPadding
+                    : Number.parseFloat(rawPadding ?? "0");
+
+            const nextPadding =
+                action.payload === "up"
+                    ? currentPadding + 1
+                    : Math.max(0, currentPadding - 1);
+
+            return {
+                ...state,
+                itemStyle: {
+                    ...state.itemStyle,
+                    paddingBottom: nextPadding,
+                },
+            };
+        }
+
+        case "item/paddingLeft": {
+            const rawPadding = state.itemStyle.paddingLeft;
+
+            const currentPadding =
+                typeof rawPadding === "number"
+                    ? rawPadding
+                    : Number.parseFloat(rawPadding ?? "0");
+
+            const nextPadding =
+                action.payload === "up"
+                    ? currentPadding + 1
+                    : Math.max(0, currentPadding - 1);
+
+            return {
+                ...state,
+                itemStyle: {
+                    ...state.itemStyle,
+                    paddingLeft: nextPadding,
+                },
+            };
+        }
+
+        case "item/paddingRight": {
+            const rawPadding = state.itemStyle.paddingRight;
+
+            const currentPadding =
+                typeof rawPadding === "number"
+                    ? rawPadding
+                    : Number.parseFloat(rawPadding ?? "0");
+
+            const nextPadding =
+                action.payload === "up"
+                    ? currentPadding + 1
+                    : Math.max(0, currentPadding - 1);
+
+            return {
+                ...state,
+                itemStyle: {
+                    ...state.itemStyle,
+                    paddingRight: nextPadding,
+                },
             };
         }
 

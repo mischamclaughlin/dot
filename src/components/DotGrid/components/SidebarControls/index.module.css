@@ -5,15 +5,24 @@
     gap: 0.25rem;
 }
 
-.button {
+.button,
+.buttonCentered {
     background-color: var(--highlight-l);
     color: var(--fg);
     width: 100%;
-    text-align: left;
     font: inherit;
 }
 
-.button:hover {
+.button {
+    text-align: left;
+}
+
+.buttonCentered {
+    text-align: center;
+}
+
+.button:hover,
+.buttonCentered:hover {
     background-color: var(--highlight-h);
     color: var(--accent);
 }

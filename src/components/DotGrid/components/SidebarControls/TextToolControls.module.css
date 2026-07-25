@@ -1,23 +1,54 @@
 .controlContainer {
     composes: controlContainer from "./index.module.css";
+    width: 100%;
 }
 
 .button {
     composes: button from "./index.module.css";
 }
 
+.buttonCentered {
+    composes: buttonCentered from "./index.module.css";
+    min-width: 1.5rem;
+    width: 100%;
+}
+
+.buttonSmall {
+    max-width: 1.5rem;
+}
+
+.rowContainer {
+    display: flex;
+    justify-content: start;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.toolTitle,
+.paddingAmount {
+    min-width: 1rem;
+}
+
+.paddingAmount {
+    text-align: right;
+    margin-right: 0.25rem;
+}
+
 .colourPicker {
     display: flex;
     align-items: center;
+    justify-content: start;
     gap: 0.25rem;
 }
 
-.active.button {
+.active.button,
+.active.buttonCentered {
     background-color: var(--highlight-m);
     color: var(--accent);
 }
 
-.active.button:hover {
+.active.button:hover,
+.active.buttonCentered:hover {
     background-color: var(--highlight-h);
     color: var(--accent-1);
 }

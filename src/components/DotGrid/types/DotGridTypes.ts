@@ -17,6 +17,10 @@ export type ItemStyle = Pick<
     | "alignContent"
     | "color"
     | "backgroundColor"
+    | "paddingTop"
+    | "paddingRight"
+    | "paddingBottom"
+    | "paddingLeft"
 >;
 
 export type CanvasTool = "text" | "image" | "component" | "describe";

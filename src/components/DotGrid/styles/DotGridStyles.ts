@@ -57,11 +57,30 @@ export const paddingTop = {
     paddingTop: "0",
 } satisfies ItemStyle;
 
+export const paddingRight = {
+    paddingRight: "0",
+} satisfies ItemStyle;
+
+export const paddingBottom = {
+    paddingBottom: "0",
+} satisfies ItemStyle;
+
+export const paddingLeft = {
+    paddingLeft: "0",
+} satisfies ItemStyle;
+
 //------------------------------------------------------------------------------
 // Defaults
 export const defaultVariant = variantBody;
 export const defaultTextAlign = textAlignLeft;
 export const defaultContentAlign = contentAlignStart;
+
+export const defaultPadding = {
+    ...paddingTop,
+    ...paddingRight,
+    ...paddingBottom,
+    ...paddingLeft,
+};
 
 export const defaultBackgroundColour = {
     backgroundColor: "#faf4ed",
@@ -77,4 +96,5 @@ export const defaultStyle: ItemStyle = {
     ...defaultContentAlign,
     ...defaultForegroundColour,
     ...defaultBackgroundColour,
+    ...defaultPadding,
 };
