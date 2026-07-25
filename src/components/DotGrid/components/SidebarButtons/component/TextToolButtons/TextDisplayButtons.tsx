@@ -1,7 +1,6 @@
 import type { ReactElement } from "react";
 
 import type { DotGridProps } from "../../../../types/DotGridProps";
-import type { ItemStyle } from "../../../../types/DotGridTypes";
 
 import {
     variantBody,
@@ -10,6 +9,7 @@ import {
     variantSubTitle,
     variantTitle,
 } from "../../../../styles/DotGridStyles";
+import { matchesStyle } from "./shared/helpers";
 
 import styles from "../../TextToolButtons.module.css";
 // -----------------------------------------------------------------------------
@@ -18,15 +18,6 @@ export default function TextDisplayButtons({
     state,
     dispatch,
 }: DotGridProps): ReactElement {
-    function matchesStyle(
-        itemStyle: ItemStyle,
-        optionStyle: Partial<ItemStyle>,
-    ) {
-        return Object.entries(optionStyle).every(
-            ([proprety, value]) =>
-                itemStyle[proprety as keyof ItemStyle] === value,
-        );
-    }
     return (
         <div className={styles.controlContainer}>
             <button
