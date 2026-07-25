@@ -8,7 +8,7 @@
 }
 
 .buttonCentered {
-    composes: buttonCentered from "./index.module.css";
+    composes: buttonCentered from "./_index.module.css";
     min-width: 1.5rem;
     width: 100%;
 }

@@ -27,6 +27,13 @@
     color: var(--accent);
 }
 
+.button:disabled,
+.button:disabled:hover {
+    color: var(--error);
+    background-color: var(--highlight-h);
+    cursor: default;
+}
+
 .active.button,
 .active.buttonCentered {
     background-color: var(--highlight-m);
