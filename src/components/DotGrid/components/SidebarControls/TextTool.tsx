@@ -20,7 +20,7 @@ import {
     variantTitle,
 } from "../../styles/DotGridStyles";
 
-import styles from "./TextToolControls.module.css";
+import styles from "./TextTool.module.css";
 
 type TextToolControlsProps = {
     state: State;
