@@ -1,9 +1,10 @@
+import type React from "react";
 import { describe, expect, it } from "vitest";
 
 import type { AreaStyle } from "../types/DotGridTypes";
 
 import { DotGridService } from "./DotGridService";
-import type React from "react";
+// -----------------------------------------------------------------------------
 
 describe("DotGridService", () => {
     const dot = { x: 22.5, y: 35.5 };

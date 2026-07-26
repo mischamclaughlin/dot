@@ -1,12 +1,13 @@
 import type {
-    ItemStyle,
-    CanvasItem,
-    CanvasTool,
     AreaResize,
     AreaStyle,
+    CanvasItem,
+    CanvasTool,
+    ItemStyle,
 } from "../types/DotGridTypes";
 
 import { defaultStyle } from "../tool/TextTool/TextStyles";
+// -----------------------------------------------------------------------------
 
 export type State = {
     activeArea: AreaStyle | null;

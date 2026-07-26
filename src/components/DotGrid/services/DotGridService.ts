@@ -1,5 +1,7 @@
 import type { RefObject } from "react";
+
 import type { Dot } from "../types/DotGridTypes";
+// -----------------------------------------------------------------------------
 
 export class DotGridService {
     readonly gridSize: number;

@@ -1,4 +1,5 @@
 import type { ItemStyle } from "../../types/DotGridTypes";
+// -----------------------------------------------------------------------------
 
 export const variantTitle = {
     fontSize: "2em",

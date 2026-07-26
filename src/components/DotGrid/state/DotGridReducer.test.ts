@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import type { CanvasTool, AreaStyle } from "../types/DotGridTypes";
+import type { AreaStyle, CanvasTool } from "../types/DotGridTypes";
 
-import { dotGridReducer, initialState } from "./DotGridReducer";
 import { contentAlignCenter, defaultStyle } from "../tool/TextTool/TextStyles";
+import { dotGridReducer, initialState } from "./DotGridReducer";
+// -----------------------------------------------------------------------------
 
 describe("dotGridReducer", () => {
     const area = {
