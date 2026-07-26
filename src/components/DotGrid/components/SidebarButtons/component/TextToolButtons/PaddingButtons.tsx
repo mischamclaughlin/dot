@@ -1,113 +1,17 @@
-import { Fragment, useState } from "react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement } from "react";
+import { useState } from "react";
 
 import type { DotGridProps } from "../../../../types/DotGridProps";
+import type {
+    PaddingAxis,
+    PaddingAxisGroup,
+    PaddingGroup,
+} from "./types/PaddingButtonTypes";
+
+import AxisControl from "./components/PaddingButton/AxisControl";
 
 import styles from "./PaddingButtons.module.css";
 // -----------------------------------------------------------------------------
-
-type PaddingDirection = "down" | "up";
-type PaddingAxis = "height" | "width";
-
-type PaddingItem = {
-    id: "top" | "bottom" | "left" | "right";
-    label: "T" | "B" | "L" | "R";
-    name: string;
-    value: ReactNode;
-    onChange: (direction: PaddingDirection) => void;
-};
-
-type PaddingGroup = {
-    name: string;
-    items: PaddingItem[];
-};
-
-type PaddingAxisGroup = PaddingGroup & {
-    id: PaddingAxis;
-};
-
-type StepButtonsProps = {
-    items: PaddingItem[];
-    joined?: boolean;
-};
-
-function StepButtons({
-    items,
-    joined = false,
-}: StepButtonsProps): ReactElement {
-    const itemNames = items.map((item) => item.name).join(" and ");
-
-    function updateItems(direction: PaddingDirection) {
-        items.forEach((item) => item.onChange(direction));
-    }
-
-    return (
-        <div
-            className={`${styles.buttonRow} ${joined ? styles.joinedButtonRow : ""}`}
-        >
-            <button
-                type="button"
-                className={styles.buttonCentered}
-                aria-label={`Decrease ${itemNames} padding`}
-                onClick={() => updateItems("down")}
-            >
-                -
-            </button>
-            <button
-                type="button"
-                className={styles.buttonCentered}
-                aria-label={`Increase ${itemNames} padding`}
-                onClick={() => updateItems("up")}
-            >
-                +
-            </button>
-        </div>
-    );
-}
-
-type AxisControlProps = {
-    group: PaddingGroup;
-    joined: boolean;
-    onToggle?: () => void;
-};
-
-function AxisControl({
-    group,
-    joined,
-    onToggle,
-}: AxisControlProps): ReactElement {
-    const hasJoinButton = onToggle !== undefined;
-
-    return (
-        <div
-            className={`${styles.axisGrid} ${hasJoinButton ? "" : styles.allAxisGrid}`}
-        >
-            {group.items.map((item) => (
-                <Fragment key={item.id}>
-                    <div className={styles.valueRow}>
-                        <p>{item.label}</p>
-                        <p className={styles.paddingAmount}>{item.value}</p>
-                    </div>
-                    {!joined && <StepButtons items={[item]} />}
-                </Fragment>
-            ))}
-
-            {joined && <StepButtons items={group.items} joined />}
-
-            {hasJoinButton && (
-                <button
-                    type="button"
-                    className={`${styles.buttonCentered} ${styles.buttonSmall} ${joined ? styles.active : ""} ${styles.axisJoin}`}
-                    aria-label={`Join ${group.name} padding`}
-                    aria-pressed={joined}
-                    onClick={onToggle}
-                >
-                    {"]"}
-                </button>
-            )}
-        </div>
-    );
-}
 
 export default function PaddingButtons({
     state,
