@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import type { AreaStyle, CanvasTool } from "../types/DotGridTypes";
 
-import { contentAlignCenter, defaultStyle } from "../tool/TextTool/TextStyles";
+import {
+    contentAlignCenter,
+    defaultStyle,
+    paddingTop,
+} from "../tool/TextTool/TextStyles";
 import { dotGridReducer, initialState } from "./DotGridReducer";
 // -----------------------------------------------------------------------------
 
@@ -93,9 +97,213 @@ describe("dotGridReducer", () => {
                 itemText: "",
             });
         });
+
+        describe("editing/item", () => {
+            it("moves the selected canvas item into edit mode", () => {
+                const selectedItem = canvasItems[0];
+                const remainingItem = {
+                    ...selectedItem,
+                    id: crypto.randomUUID(),
+                    text: "another item",
+                };
+
+                const state = {
+                    ...initialState,
+                    canvasItems: [selectedItem, remainingItem],
+                };
+
+                const result = dotGridReducer(state, {
+                    type: "editing/item",
+                    payload: selectedItem.id,
+                });
+
+                expect(result).toStrictEqual({
+                    ...state,
+                    canvasItems: [remainingItem],
+                    editedCanvasItems: [selectedItem],
+                    itemEdit: selectedItem,
+                    tool: selectedItem.type,
+                    toolArea: selectedItem.area,
+                    itemStyle: selectedItem.style,
+                    itemText: selectedItem.text,
+                });
+            });
+
+            it("returns the current state when the selected item does not exist", () => {
+                const state = {
+                    ...initialState,
+                    canvasItems,
+                };
+
+                const result = dotGridReducer(state, {
+                    type: "editing/item",
+                    payload: crypto.randomUUID(),
+                });
+
+                expect(result).toBe(state);
+            });
+        });
     });
 
     describe("item/", () => {
+        describe("item/padding*", () => {
+            describe("item/paddingTop", () => {
+                const state = {
+                    ...initialState,
+                    itemStyle: {
+                        ...initialState.itemStyle,
+                        paddingTop: 5,
+                    },
+                };
+
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingTop",
+                        payload: "up",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingTop: 6,
+                        },
+                    });
+                });
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingTop",
+                        payload: "down",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingTop: 4,
+                        },
+                    });
+                });
+            });
+
+            describe("item/paddingBottom", () => {
+                const state = {
+                    ...initialState,
+                    itemStyle: {
+                        ...initialState.itemStyle,
+                        paddingBottom: 5,
+                    },
+                };
+
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingBottom",
+                        payload: "up",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingBottom: 6,
+                        },
+                    });
+                });
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingBottom",
+                        payload: "down",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingBottom: 4,
+                        },
+                    });
+                });
+            });
+
+            describe("item/paddingLeft", () => {
+                const state = {
+                    ...initialState,
+                    itemStyle: {
+                        ...initialState.itemStyle,
+                        paddingLeft: 5,
+                    },
+                };
+
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingLeft",
+                        payload: "up",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingLeft: 6,
+                        },
+                    });
+                });
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingLeft",
+                        payload: "down",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingLeft: 4,
+                        },
+                    });
+                });
+            });
+
+            describe("item/paddingRight", () => {
+                const state = {
+                    ...initialState,
+                    itemStyle: {
+                        ...initialState.itemStyle,
+                        paddingRight: 5,
+                    },
+                };
+
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingRight",
+                        payload: "up",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingRight: 6,
+                        },
+                    });
+                });
+                it("adds padding", () => {
+                    const result = dotGridReducer(state, {
+                        type: "item/paddingRight",
+                        payload: "down",
+                    });
+
+                    expect(result).toStrictEqual({
+                        ...state,
+                        itemStyle: {
+                            ...initialState.itemStyle,
+                            paddingRight: 4,
+                        },
+                    });
+                });
+            });
+        });
+
         describe("item/resize", () => {
             it("resizes a saved item", () => {
                 const state = {

@@ -6,7 +6,7 @@ export type PaddingAxis = "height" | "width";
 
 export type PaddingItem = {
     id: "top" | "bottom" | "left" | "right";
-    label: "T" | "B" | "L" | "R";
+    label: "↥" | "↧" | "↦" | "↤";
     name: string;
     value: ReactNode;
     onChange: (direction: PaddingDirection) => void;

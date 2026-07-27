@@ -30,7 +30,7 @@ export default function PaddingButtons({
             items: [
                 {
                     id: "top",
-                    label: "T",
+                    label: "↥",
                     name: "top",
                     value: state.itemStyle.paddingTop,
                     onChange: (payload) =>
@@ -38,7 +38,7 @@ export default function PaddingButtons({
                 },
                 {
                     id: "bottom",
-                    label: "B",
+                    label: "↧",
                     name: "bottom",
                     value: state.itemStyle.paddingBottom,
                     onChange: (payload) =>
@@ -52,7 +52,7 @@ export default function PaddingButtons({
             items: [
                 {
                     id: "left",
-                    label: "L",
+                    label: "↦",
                     name: "left",
                     value: state.itemStyle.paddingLeft,
                     onChange: (payload) =>
@@ -60,7 +60,7 @@ export default function PaddingButtons({
                 },
                 {
                     id: "right",
-                    label: "R",
+                    label: "↤",
                     name: "right",
                     value: state.itemStyle.paddingRight,
                     onChange: (payload) =>

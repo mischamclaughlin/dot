@@ -123,6 +123,8 @@ export function dotGridReducer(
             };
         }
 
+        // ---------------------------------------------------------------------
+        // Item
         case "item/paddingTop": {
             const rawPadding = state.itemStyle.paddingTop;
 
@@ -211,8 +213,6 @@ export function dotGridReducer(
             };
         }
 
-        // ---------------------------------------------------------------------
-        // Item
         case "item/resize":
             return {
                 ...state,
