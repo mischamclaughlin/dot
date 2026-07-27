@@ -2,11 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { AreaStyle, CanvasTool } from "../types/DotGridTypes";
 
-import {
-    contentAlignCenter,
-    defaultStyle,
-    paddingTop,
-} from "../tool/TextTool/TextStyles";
+import { contentAlignCenter, defaultStyle } from "../tool/TextTool/TextStyles";
 import { dotGridReducer, initialState } from "./DotGridReducer";
 // -----------------------------------------------------------------------------
 
