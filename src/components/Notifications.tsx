@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 import { useLayoutEffect, useRef, useState } from "react";
 
-import type { Notification } from "./types/NotificationTypes";
+import type { Notification } from "./model/NotificationTypes";
 
 import styles from "./Notifications.module.css";
 // -----------------------------------------------------------------------------
