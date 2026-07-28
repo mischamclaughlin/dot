@@ -1,0 +1,67 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: 100vh;
+    background-color: var(--surface);
+}
+
+.sidebarContainer {
+    display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+}
+
+.header {
+    border: 1px solid var(--fg);
+    padding: 0.25rem 0.5rem;
+    height: fit-content;
+}
+
+.headerTool {
+    display: grid;
+    height: fit-content;
+    width: 100%;
+    border-bottom: 1px solid var(--fg);
+}
+
+.optionContainer {
+    display: grid;
+    gap: 0.25rem;
+    height: fit-content;
+}
+
+.btn {
+    text-align: left;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--highlight-l);
+}
+.btn:hover {
+    background-color: var(--highlight-m);
+}
+
+.dragBox {
+    display: grid;
+    align-self: end;
+    width: 7.5px;
+    height: 100vh;
+    transition: background-color 100ms ease-in;
+}
+.dragBox:hover {
+    background-color: var(--accent-1);
+    cursor: col-resize;
+}
+
+.dragBar {
+    width: 1px;
+    height: 100vh;
+    background-color: var(--fg);
+    justify-self: end;
+}
+
+.fullscreenBtn {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+}
