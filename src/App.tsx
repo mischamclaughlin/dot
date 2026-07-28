@@ -1,9 +1,9 @@
 import type { ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-import type { Notification } from "./components/types/NotificationTypes";
+import type { Notification } from "./components/model/NotificationTypes";
 
-import DotGrid from "./components/DotGrid/DotGrid";
+import SquareDot from "./components/SquareDot";
 import Notifications from "./components/Notifications";
 
 import "./App.css";
@@ -12,22 +12,22 @@ import "./App.css";
 export default function App(): ReactElement {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    const handleNotifications = useCallback(
-        (lastSavedItemId: string | null) => {
-            if (!lastSavedItemId) return;
+    // const handleNotifications = useCallback(
+    //     (lastSavedItemId: string | null) => {
+    //         if (!lastSavedItemId) return;
 
-            setNotifications((current) => [
-                ...current,
-                {
-                    id: crypto.randomUUID(),
-                    type: "success",
-                    subtype: "saved",
-                    message: "Saved.",
-                },
-            ]);
-        },
-        [],
-    );
+    //         setNotifications((current) => [
+    //             ...current,
+    //             {
+    //                 id: crypto.randomUUID(),
+    //                 type: "success",
+    //                 subtype: "saved",
+    //                 message: "Saved.",
+    //             },
+    //         ]);
+    //     },
+    //     [],
+    // );
 
     function handleDeleteNotification(id: string) {
         setNotifications((current) =>
@@ -41,7 +41,8 @@ export default function App(): ReactElement {
                 notifications={notifications}
                 onDeleteNotification={handleDeleteNotification}
             />
-            <DotGrid onNotifications={handleNotifications} />
+            {/* <SquareDot onNotifications={handleNotifications} /> */}
+            <SquareDot />
         </div>
     );
 }
