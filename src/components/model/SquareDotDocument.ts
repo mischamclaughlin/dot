@@ -5,6 +5,8 @@ export type SquareDotDocument = {
 
 export type SquareDotItem = TextItem;
 
+export type ToolType = "text";
+
 export type TextItem = {
     id: string;
     toolType: "text";

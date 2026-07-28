@@ -1,101 +1,71 @@
-import type { ItemStyle } from "../../types/DotGridTypes";
+import type { TextStyle } from "../../../../model/SquareDotDocument";
 // -----------------------------------------------------------------------------
 
 export const variantTitle = {
-    fontSize: "2em",
+    fontSize: 2,
     fontWeight: 700,
-} satisfies ItemStyle;
+} satisfies Partial<TextStyle>;
 
-export const variantSubTitle = {
-    fontSize: "1.17em",
-    fontWeight: "bold",
-} satisfies ItemStyle;
+export const variantSubtitle = {
+    fontSize: 1.17,
+    fontWeight: 500,
+} satisfies Partial<TextStyle>;
 
 export const variantHeading = {
-    fontSize: "1.5em",
-    fontWeight: "bold",
-} satisfies ItemStyle;
+    fontSize: 1.5,
+    fontWeight: 600,
+} satisfies Partial<TextStyle>;
 
 export const variantSubHeading = {
-    fontSize: "1em",
-    fontWeight: "bold",
-} satisfies ItemStyle;
+    fontSize: 1,
+    fontWeight: 500,
+} satisfies Partial<TextStyle>;
 
 export const variantBody = {
-    fontSize: "1em",
-    fontWeight: 400,
-} satisfies ItemStyle;
+    fontSize: 1,
+    fontWeight: 300,
+} satisfies Partial<TextStyle>;
 
 export const textAlignLeft = {
-    textAlign: "left",
-} satisfies ItemStyle;
+    alignText: "left",
+} satisfies Partial<TextStyle>;
 
 export const textAlignRight = {
-    textAlign: "right",
-} satisfies ItemStyle;
+    alignText: "right",
+} satisfies Partial<TextStyle>;
 
 export const textAlignCenter = {
-    textAlign: "center",
-} satisfies ItemStyle;
+    alignText: "center",
+} satisfies Partial<TextStyle>;
 
 export const textAlignJustify = {
-    textAlign: "justify",
-} satisfies ItemStyle;
+    alignText: "justify",
+} satisfies Partial<TextStyle>;
 
 export const contentAlignStart = {
     alignContent: "start",
-} satisfies ItemStyle;
+} satisfies Partial<TextStyle>;
 
 export const contentAlignCenter = {
     alignContent: "center",
-} satisfies ItemStyle;
+} satisfies Partial<TextStyle>;
 
 export const contentAlignEnd = {
     alignContent: "end",
-} satisfies ItemStyle;
+} satisfies Partial<TextStyle>;
 
 export const paddingTop = {
-    paddingTop: "0",
-} satisfies ItemStyle;
+    paddingTop: 0,
+} satisfies Partial<TextStyle>;
 
 export const paddingRight = {
-    paddingRight: "0",
-} satisfies ItemStyle;
+    paddingRight: 0,
+} satisfies Partial<TextStyle>;
 
 export const paddingBottom = {
-    paddingBottom: "0",
-} satisfies ItemStyle;
+    paddingBottom: 0,
+} satisfies Partial<TextStyle>;
 
 export const paddingLeft = {
-    paddingLeft: "0",
-} satisfies ItemStyle;
-
-//------------------------------------------------------------------------------
-// Defaults
-export const defaultVariant = variantBody;
-export const defaultTextAlign = textAlignLeft;
-export const defaultContentAlign = contentAlignStart;
-
-export const defaultPadding = {
-    ...paddingTop,
-    ...paddingRight,
-    ...paddingBottom,
-    ...paddingLeft,
-};
-
-export const defaultBackgroundColour = {
-    backgroundColor: "#faf4ed",
-} satisfies ItemStyle;
-
-export const defaultForegroundColour = {
-    color: "#464261",
-} satisfies ItemStyle;
-
-export const defaultStyle: ItemStyle = {
-    ...defaultVariant,
-    ...defaultTextAlign,
-    ...defaultContentAlign,
-    ...defaultForegroundColour,
-    ...defaultBackgroundColour,
-    ...defaultPadding,
-};
+    paddingLeft: 0,
+} satisfies Partial<TextStyle>;

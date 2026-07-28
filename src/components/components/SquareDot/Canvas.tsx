@@ -5,12 +5,12 @@ import type { DotGridProps } from "./types/DotGridProps";
 import type { AreaResize, Dot } from "./types/DotGridTypes";
 
 import { DotGridService } from "./services/DotGridService";
-import { defaultStyle } from "./tool/TextTool/TextStyles";
 
 import DisplayItems from "./components/Canvas/DisplayItems";
 
 import styles from "./Canvas.module.css";
 import type { Rect } from "../../model/SquareDotDocument";
+import { initialStyle } from "./state/SquareDotReducer";
 // -----------------------------------------------------------------------------
 
 const service = new DotGridService();
@@ -80,7 +80,7 @@ export default function Canvas({
         const area = selectionDrag.area;
         if (!area) return;
 
-        if (state.mode.kind === "editing") {
+        if (state.selectedTool === "text") {
             dispatch({
                 type: "area/tool",
                 payload: area,
@@ -91,7 +91,6 @@ export default function Canvas({
                 payload: area,
             });
         }
-
         setSelectionDrag(null);
     }
 
@@ -153,7 +152,7 @@ export default function Canvas({
                     onPointerDown={(e) => e.stopPropagation()}
                     className={`${styles[state.mode.kind]} ${styles.activeTool}`}
                     style={{
-                        ...defaultStyle,
+                        ...initialStyle,
                         alignContent: state.mode.draft.style.alignContent,
                         textAlign: state.mode.draft.style.alignText,
                         backgroundColor:

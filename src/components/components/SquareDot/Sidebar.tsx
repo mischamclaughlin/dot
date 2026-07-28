@@ -75,27 +75,26 @@ export default function Sidebar({
                                 ? state.mode.draft.toolType.toUpperCase()
                                 : "TOOLS"}
                         </h3>
-                        {state.mode.kind !== "editing" && (
+                        {state.selectedTool === null && (
                             <ToolSelectorButtons
                                 state={state}
                                 dispatch={dispatch}
                             />
                         )}
-                        {state.mode.kind !== "idle" &&
-                            state.mode.kind !== "area-selected" && (
-                                <>
-                                    <ActionButtons
+                        {state.selectedTool !== null && (
+                            <>
+                                <ActionButtons
+                                    state={state}
+                                    dispatch={dispatch}
+                                />
+                                {state.selectedTool === "text" && (
+                                    <TextToolButtons
                                         state={state}
                                         dispatch={dispatch}
                                     />
-                                    {state.mode.kind === "editing" && (
-                                        <TextToolButtons
-                                            state={state}
-                                            dispatch={dispatch}
-                                        />
-                                    )}
-                                </>
-                            )}
+                                )}
+                            </>
+                        )}
                     </div>
                     <div
                         className={styles.dragBarContainer}

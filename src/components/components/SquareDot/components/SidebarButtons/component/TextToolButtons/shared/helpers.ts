@@ -1,10 +1,10 @@
-import type { ItemStyle } from "../../../../../types/DotGridTypes";
+import type { TextStyle } from "../../../../../../../model/SquareDotDocument";
 
 export function matchesStyle(
-    itemStyle: ItemStyle,
-    optionStyle: Partial<ItemStyle>,
+    itemStyle: TextStyle,
+    optionStyle: Partial<TextStyle>,
 ): boolean {
     return Object.entries(optionStyle).every(
-        ([property, value]) => itemStyle[property as keyof ItemStyle] === value,
+        ([property, value]) => itemStyle[property as keyof TextStyle] === value,
     );
 }

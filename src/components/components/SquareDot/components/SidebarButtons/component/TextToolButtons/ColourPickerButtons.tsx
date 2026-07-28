@@ -2,19 +2,20 @@ import type { ReactElement } from "react";
 
 import type { DotGridProps } from "../../../../types/DotGridProps";
 
-import {
-    defaultBackgroundColour,
-    defaultForegroundColour,
-} from "../../../../tool/TextTool/TextStyles";
-
 import styles from "./_index.module.css";
+import { initialStyle } from "../../../../state/SquareDotReducer";
 // -----------------------------------------------------------------------------
 
 export default function ColourPickerButtons({
     state,
     dispatch,
 }: DotGridProps): ReactElement {
-    if (state.mode.kind !== "editing") return <></>;
+    if (state.selectedTool !== "text") return <></>;
+
+    const currentStyle =
+        state.mode.kind === "editing"
+            ? state.mode.draft.style
+            : initialStyle;
 
     return (
         <div className={styles.controlContainer}>
@@ -26,10 +27,7 @@ export default function ColourPickerButtons({
                     type="color"
                     id="foregroundColour"
                     name="foregroundColour"
-                    value={
-                        state.mode.draft.style.colourForeground ??
-                        defaultForegroundColour.color
-                    }
+                    value={currentStyle.colourForeground}
                     onChange={(e) =>
                         dispatch({
                             type: "item/style",
@@ -46,10 +44,7 @@ export default function ColourPickerButtons({
                     type="color"
                     id="backgroundColour"
                     name="backgroundColour"
-                    value={
-                        state.mode.draft.style.colourBackground ??
-                        defaultBackgroundColour.backgroundColor
-                    }
+                    value={currentStyle.colourBackground}
                     onChange={(e) =>
                         dispatch({
                             type: "item/style",

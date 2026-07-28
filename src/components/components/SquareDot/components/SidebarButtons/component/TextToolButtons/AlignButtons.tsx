@@ -14,13 +14,17 @@ import {
 import { matchesStyle } from "./shared/helpers";
 
 import styles from "./_index.module.css";
+import { initialStyle } from "../../../../state/SquareDotReducer";
 // -----------------------------------------------------------------------------
 
 export default function AlignButtons({
     state,
     dispatch,
 }: DotGridProps): ReactElement {
-    if (state.mode.kind !== "editing") return <></>;
+    if (state.selectedTool !== "text") return <></>;
+
+    const currentStyle =
+        state.mode.kind === "editing" ? state.mode.draft.style : initialStyle;
 
     return (
         <>
@@ -28,7 +32,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, textAlignLeft) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, textAlignLeft) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -42,7 +46,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, textAlignRight) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, textAlignRight) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -56,7 +60,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, textAlignCenter) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, textAlignCenter) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -70,7 +74,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, textAlignJustify) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, textAlignJustify) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -86,7 +90,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, contentAlignStart) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, contentAlignStart) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -100,7 +104,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, contentAlignCenter) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, contentAlignCenter) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({
@@ -114,7 +118,7 @@ export default function AlignButtons({
                 <button
                     className={`
                         ${styles.button}
-                        ${matchesStyle(state.mode.draft.style, contentAlignEnd) ? styles.active : ""}
+                        ${matchesStyle(currentStyle, contentAlignEnd) ? styles.active : ""}
                         `}
                     onClick={() =>
                         dispatch({

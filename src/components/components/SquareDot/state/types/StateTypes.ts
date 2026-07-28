@@ -19,7 +19,10 @@ export type EditorMode =
           draft: TextItemDraft;
       };
 
+export type ToolType = "text";
+
 export type SquareDotState = {
     document: SquareDotDocument;
+    selectedTool: ToolType | null;
     mode: EditorMode;
 };

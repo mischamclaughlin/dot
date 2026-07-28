@@ -6,27 +6,28 @@ import {
     variantBody,
     variantHeading,
     variantSubHeading,
-    variantSubTitle,
+    variantSubtitle,
     variantTitle,
 } from "../../../../tool/TextTool/TextStyles";
 import { matchesStyle } from "./shared/helpers";
 
 import styles from "./_index.module.css";
+import { initialStyle } from "../../../../state/SquareDotReducer";
 // -----------------------------------------------------------------------------
 
 export default function TextDisplayButtons({
     state,
     dispatch,
 }: DotGridProps): ReactElement {
-    if (state.mode.kind !== "editing") return <></>;
+    if (state.selectedTool !== "text") return <></>;
+
+    const currentStyle =
+        state.mode.kind === "editing" ? state.mode.draft.style : initialStyle;
 
     return (
         <div className={styles.controlContainer}>
             <button
-                className={`
-                ${styles.button}
-                ${matchesStyle(state.mode.draft.style, variantTitle) ? styles.active : ""}
-                `}
+                className={`${styles.button} ${matchesStyle(currentStyle, variantTitle) ? styles.active : ""}`}
                 onClick={() =>
                     dispatch({
                         type: "item/style",
@@ -37,10 +38,7 @@ export default function TextDisplayButtons({
                 Title
             </button>
             <button
-                className={`
-                ${styles.button}
-                ${matchesStyle(state.mode.draft.style, variantSubTitle) ? styles.active : ""}
-                `}
+                className={`${styles.button} ${matchesStyle(currentStyle, variantSubtitle) ? styles.active : ""}`}
                 onClick={() =>
                     dispatch({
                         type: "item/style",
@@ -51,10 +49,7 @@ export default function TextDisplayButtons({
                 Subtitle
             </button>
             <button
-                className={`
-                ${styles.button}
-                ${matchesStyle(state.mode.draft.style, variantHeading) ? styles.active : ""}
-                `}
+                className={`${styles.button} ${matchesStyle(currentStyle, variantHeading) ? styles.active : ""}`}
                 onClick={() =>
                     dispatch({
                         type: "item/style",
@@ -65,28 +60,22 @@ export default function TextDisplayButtons({
                 Heading
             </button>
             <button
-                className={`
-                ${styles.button}
-                ${matchesStyle(state.mode.draft.style, variantSubHeading) ? styles.active : ""}
-                `}
+                className={`${styles.button} ${matchesStyle(currentStyle, variantSubHeading) ? styles.active : ""}`}
                 onClick={() =>
                     dispatch({
                         type: "item/style",
-                        payload: { fontSize: 1, fontWeight: 450 },
+                        payload: { fontSize: 1, fontWeight: 500 },
                     })
                 }
             >
                 Subheading
             </button>
             <button
-                className={`
-                ${styles.button}
-                ${matchesStyle(state.mode.draft.style, variantBody) ? styles.active : ""}
-                `}
+                className={`${styles.button} ${matchesStyle(currentStyle, variantBody) ? styles.active : ""}`}
                 onClick={() =>
                     dispatch({
                         type: "item/style",
-                        payload: { fontSize: 1, fontWeight: 400 },
+                        payload: { fontSize: 1, fontWeight: 300 },
                     })
                 }
             >

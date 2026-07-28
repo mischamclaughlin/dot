@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import type { AreaStyle, CanvasTool } from "../types/DotGridTypes";
 
-import { contentAlignCenter, defaultStyle } from "../tool/TextTool/TextStyles";
-import { squareDotReducer, initialState } from "./SquareDotReducer";
+import { contentAlignCenter } from "../tool/TextTool/TextStyles";
+import {
+    squareDotReducer,
+    initialState,
+    initialStyle,
+} from "./SquareDotReducer";
 // -----------------------------------------------------------------------------
 
 describe("squareDotReducer", () => {
@@ -21,7 +25,7 @@ describe("squareDotReducer", () => {
         {
             area: area,
             id: id,
-            style: defaultStyle,
+            style: initialStyle,
             text: text,
             type: tool,
         },
@@ -423,7 +427,7 @@ describe("squareDotReducer", () => {
             expect(result).toStrictEqual({
                 ...initialState,
                 itemStyle: {
-                    ...defaultStyle,
+                    ...initialStyle,
                     alignContent: "center",
                 },
             });

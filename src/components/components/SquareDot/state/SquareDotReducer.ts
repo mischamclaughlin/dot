@@ -4,7 +4,7 @@ import type {
     TextStyle,
 } from "../../../model/SquareDotDocument";
 import type { AreaResize } from "../DotGridTypes";
-import type { SquareDotState } from "./types/StateTypes";
+import type { SquareDotState, ToolType } from "./types/StateTypes";
 // -----------------------------------------------------------------------------
 
 export type Action =
@@ -30,25 +30,26 @@ export type Action =
     | { type: "item/save"; payload: string }
     | { type: "item/style"; payload: Partial<TextStyle> }
     | { type: "item/text"; payload: string }
-    | { type: "tool/selected"; payload: SquareDotItem };
+    | { type: "tool/selected"; payload: ToolType };
 
 export const initialState: SquareDotState = {
     document: {
         schemaVersion: 1,
         items: [],
     },
+    selectedTool: null,
     mode: {
         kind: "idle",
     },
 };
 
-const initialStyle: TextStyle = {
+export const initialStyle: TextStyle = {
     alignContent: "center",
     alignText: "left",
     colourBackground: "#faf4ed",
     colourForeground: "#464261",
     fontSize: 1,
-    fontWeight: 400,
+    fontWeight: 300,
     paddingTop: 16,
     paddingRight: 16,
     paddingBottom: 16,
@@ -73,54 +74,45 @@ export function squareDotReducer(
     switch (action.type) {
         // ---------------------------------------------------------------------
         // Area
-        case "area/selected":
-            if (
-                state.mode.kind !== "idle" &&
-                state.mode.kind !== "area-selected"
-            ) {
-                return state;
-            }
-
-            return {
-                ...state,
-                mode: action.payload
-                    ? {
-                          kind: "area-selected",
-                          area: action.payload,
-                      }
-                    : {
-                          kind: "idle",
-                      },
-            };
-
-        case "area/tool":
-            if (state.mode.kind !== "area-selected") {
-                return state;
-            }
-
+        case "area/selected": {
             return {
                 ...state,
                 mode: {
+                    ...state.mode,
+                    kind: "area-selected",
+                    area: action.payload,
+                },
+            };
+        }
+
+        case "area/tool": {
+            return {
+                ...state,
+                mode: {
+                    ...state.mode,
                     kind: "editing",
                     originalItemId: null,
                     draft: {
                         toolType: "text",
                         area: action.payload,
-                        text: "",
                         style: initialStyle,
+                        text: "",
                     },
                 },
             };
+        }
 
         // ---------------------------------------------------------------------
         // Editing
-        case "editing/back":
+        case "editing/back": {
             return {
                 ...state,
                 mode: {
                     kind: "idle",
                 },
+                selectedTool: null,
             };
+        }
 
         case "editing/cancel": {
             return {
@@ -128,6 +120,7 @@ export function squareDotReducer(
                 mode: {
                     kind: "idle",
                 },
+                selectedTool: null,
             };
         }
 
@@ -193,7 +186,7 @@ export function squareDotReducer(
             };
         }
 
-        case "item/resize":
+        case "item/resize": {
             return {
                 ...state,
                 document: {
@@ -211,6 +204,7 @@ export function squareDotReducer(
                     ),
                 },
             };
+        }
 
         case "item/save": {
             if (state.mode.kind !== "editing") return state;
@@ -233,7 +227,7 @@ export function squareDotReducer(
             };
         }
 
-        case "item/style":
+        case "item/style": {
             if (
                 state.mode.kind !== "editing" ||
                 state.mode.draft.toolType !== "text"
@@ -254,8 +248,9 @@ export function squareDotReducer(
                     },
                 },
             };
+        }
 
-        case "item/text":
+        case "item/text": {
             if (
                 state.mode.kind !== "editing" ||
                 state.mode.draft.toolType !== "text"
@@ -263,7 +258,6 @@ export function squareDotReducer(
                 return state;
             }
 
-            console.log(state);
             return {
                 ...state,
                 mode: {
@@ -274,28 +268,38 @@ export function squareDotReducer(
                     },
                 },
             };
+        }
 
         // ---------------------------------------------------------------------
         // Tool
-        case "tool/selected":
-            if (state.mode.kind !== "editing") {
-                return state;
+        case "tool/selected": {
+            if (state.mode.kind === "area-selected") {
+                return {
+                    ...state,
+                    selectedTool: action.payload,
+                    mode: {
+                        kind: "editing",
+                        originalItemId: null,
+                        draft: {
+                            toolType: action.payload,
+                            area: state.mode.area,
+                            style: initialStyle,
+                            text: "",
+                        },
+                    },
+                };
             }
 
             return {
                 ...state,
-                mode: {
-                    ...state.mode,
-                    draft: {
-                        ...state.mode.draft,
-                        toolType: action.payload.toolType,
-                    },
-                },
+                selectedTool: action.payload,
             };
+        }
 
         // ---------------------------------------------------------------------
         // Default
-        default:
+        default: {
             return assertNever(action);
+        }
     }
 }
