@@ -1,4 +1,4 @@
-import type { DotItem, Rect, ToolType } from "./DotDocument";
+import type { CanvasDot, Rect, ToolType } from "./DotDocument";
 // -----------------------------------------------------------------------------
 
 export type CanvasMode =
@@ -15,5 +15,5 @@ export type CanvasMode =
           mode: "editing";
           tool: ToolType;
           area: Rect;
-          style: DotItem;
+          style: CanvasDot;
       };

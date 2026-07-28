@@ -1,11 +1,11 @@
 export type DotDocument = {
     schemaVersion: 1;
-    items: DotItem[];
+    elements: CanvasElement[];
 };
 
-export type DotItem = TextItem;
+export type CanvasElement = TextElement;
 
-export type TextItem = {
+export type TextElement = {
     id: string;
     toolType: "text";
 

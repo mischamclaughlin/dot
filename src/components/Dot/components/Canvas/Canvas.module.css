@@ -1,0 +1,30 @@
+.container {
+    position: relative;
+    min-width: 0;
+    min-height: 100vh;
+    flex: 1;
+    overflow: hidden;
+
+    cursor: crosshair;
+}
+
+.canvas {
+    background-image: radial-gradient(
+        circle,
+        var(--highlight-l) 2px,
+        var(--bg) 1px
+    );
+}
+
+.hoverDot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition:
+        top 5ms ease-in,
+        left 5ms ease-in;
+}
