@@ -1,47 +1,13 @@
 import type { ReactElement } from "react";
-import { useState } from "react";
 
-import type { Notification } from "./components/model/NotificationTypes";
-
-import SquareDot from "./components/SquareDot";
-import Notifications from "./components/Notifications";
+import SquareDot from "./components/Dot/Dot";
 
 import "./App.css";
 // -----------------------------------------------------------------------------
 
 export default function App(): ReactElement {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-
-    // const handleNotifications = useCallback(
-    //     (lastSavedItemId: string | null) => {
-    //         if (!lastSavedItemId) return;
-
-    //         setNotifications((current) => [
-    //             ...current,
-    //             {
-    //                 id: crypto.randomUUID(),
-    //                 type: "success",
-    //                 subtype: "saved",
-    //                 message: "Saved.",
-    //             },
-    //         ]);
-    //     },
-    //     [],
-    // );
-
-    function handleDeleteNotification(id: string) {
-        setNotifications((current) =>
-            current.filter((notif) => notif.id !== id),
-        );
-    }
-
     return (
         <div className="appContainer">
-            <Notifications
-                notifications={notifications}
-                onDeleteNotification={handleDeleteNotification}
-            />
-            {/* <SquareDot onNotifications={handleNotifications} /> */}
             <SquareDot />
         </div>
     );

@@ -1,11 +1,9 @@
-export type SquareDotDocument = {
+export type DotDocument = {
     schemaVersion: 1;
-    items: SquareDotItem[];
+    items: DotItem[];
 };
 
-export type SquareDotItem = TextItem;
-
-export type ToolType = "text";
+export type DotItem = TextItem;
 
 export type TextItem = {
     id: string;
@@ -35,3 +33,5 @@ export type TextStyle = {
     paddingBottom: number;
     paddingLeft: number;
 };
+
+export type ToolType = "text" | "image";

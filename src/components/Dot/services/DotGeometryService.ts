@@ -1,9 +1,8 @@
 import type { RefObject } from "react";
-
-import type { Dot } from "../types/DotGridTypes";
+import type { SingleDot } from "../types/DotTypes";
 // -----------------------------------------------------------------------------
 
-export class DotGridService {
+export class DotGeometryService {
     readonly gridSize: number;
 
     constructor(gridSize: number = 15) {
@@ -25,7 +24,7 @@ export class DotGridService {
         );
     }
 
-    updateTempArea(start: Dot, end: Dot) {
+    updateTempArea(start: SingleDot, end: SingleDot) {
         const minX = Math.min(start.x, end.x);
         const maxX = Math.max(start.x, end.x);
         const minY = Math.min(start.y, end.y);
@@ -44,11 +43,11 @@ export class DotGridService {
         };
     }
 
-    isSameDot(dot: Dot | null, nextDot: Dot | null) {
+    isSameDot(dot: SingleDot | null, nextDot: SingleDot | null) {
         return dot?.x === nextDot?.x && dot?.y === nextDot?.y;
     }
 
-    updateItemWidth(start: Dot, end: Dot) {
+    updateItemWidth(start: SingleDot, end: SingleDot) {
         const minX = Math.min(start.x, end.x);
         const maxX = Math.max(start.x, end.x);
 
@@ -61,7 +60,7 @@ export class DotGridService {
         };
     }
 
-    updateItemHeight(start: Dot, end: Dot) {
+    updateItemHeight(start: SingleDot, end: SingleDot) {
         const minY = Math.min(start.y, end.y);
         const maxY = Math.max(start.y, end.y);
 
@@ -77,7 +76,7 @@ export class DotGridService {
     getCanvasDot(
         e: React.PointerEvent<HTMLDivElement>,
         canvasRef: RefObject<HTMLDivElement | null>,
-    ): Dot | null {
+    ): SingleDot | null {
         const canvas = canvasRef.current;
         if (!canvas) return null;
 
@@ -88,18 +87,4 @@ export class DotGridService {
             y: this.snapToGrid(e.clientY - rect.top, rect.height),
         };
     }
-
-    // getNextActiveDot(e: React.PointerEvent<HTMLDivElement>) {
-    //     const rect = e.currentTarget.getBoundingClientRect();
-
-    //     const x = e.clientX - rect.left;
-    //     const y = e.clientY - rect.top;
-
-    //     const nextActiveDot: Dot = {
-    //         x: this.snapToGrid(x, rect.width),
-    //         y: this.snapToGrid(y, rect.height),
-    //     };
-
-    //     return nextActiveDot;
-    // }
 }

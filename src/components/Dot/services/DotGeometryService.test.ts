@@ -1,17 +1,17 @@
 import type React from "react";
 import { describe, expect, it } from "vitest";
 
-import type { AreaStyle } from "../types/DotGridTypes";
+import type { Rect } from "../model/DotDocument";
 
-import { DotGridService } from "./DotGridService";
+import { DotGeometryService } from "./DotGeometryService";
 // -----------------------------------------------------------------------------
 
-describe("DotGridService", () => {
+describe("DotGeometryService", () => {
     const dot = { x: 22.5, y: 35.5 };
     const diffDot = { x: 52.5, y: 100.5 };
 
     describe("snapToGrid", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         it("snaps values to the grid", () => {
             expect(service.snapToGrid(0, 300)).toBe(7.5);
@@ -30,7 +30,7 @@ describe("DotGridService", () => {
     });
 
     describe("updateTempArea", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         const result = service.updateTempArea(dot, diffDot);
 
@@ -43,12 +43,12 @@ describe("DotGridService", () => {
             });
         });
         it("returns a AreaStyle type object", () => {
-            expectTypeOf(result).toEqualTypeOf<AreaStyle>();
+            expectTypeOf(result).toEqualTypeOf<Rect>();
         });
     });
 
     describe("isSameDot", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         it("returns true if selected dots are the same", () => {
             expect(service.isSameDot(dot, dot)).toBe(true);
@@ -59,7 +59,7 @@ describe("DotGridService", () => {
     });
 
     describe("updateItemWidth", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         const dotSmallX = { x: 22.5, y: 0 };
         const dotBigX = { x: 52.5, y: 0 };
@@ -91,7 +91,7 @@ describe("DotGridService", () => {
     });
 
     describe("updateItemHeight", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         const dotSmallY = { x: 0, y: 35.5 };
         const dotBigY = { x: 0, y: 100.5 };
@@ -123,7 +123,7 @@ describe("DotGridService", () => {
     });
 
     describe("getCanvasDot", () => {
-        const service = new DotGridService(15);
+        const service = new DotGeometryService(15);
 
         const fakeEvent = {} as React.PointerEvent<HTMLDivElement>;
         const nullCanvasRef = {
