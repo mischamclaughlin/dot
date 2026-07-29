@@ -5,7 +5,6 @@ import { DotGeometryService } from "../../services/DotGeometryService";
 import styles from "./Sidebar.module.css";
 import type { DotState } from "../../model/DotDocumentState";
 import { initialRect, type Action } from "../../state/DotReducer";
-import type { Rect } from "../../model/DotDocument";
 // -----------------------------------------------------------------------------
 
 const minWidth = 140;
