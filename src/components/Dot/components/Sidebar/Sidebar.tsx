@@ -5,6 +5,7 @@ import { DotGeometryService } from "../../services/DotGeometryService";
 import styles from "./Sidebar.module.css";
 import type { DotState } from "../../model/DotDocumentState";
 import { initialRect, type Action } from "../../state/DotReducer";
+import type { Rect } from "../../model/DotDocument";
 // -----------------------------------------------------------------------------
 
 const minWidth = 140;
@@ -95,12 +96,14 @@ export default function Sidebar({
                         <h3 className={styles.headerTool}>
                             {state.canvasMode.mode}
                         </h3>
-                        {state.toolType && (
+                        {state.canvasMode.mode === "editing" && (
                             <div className={styles.optionContainer}>
                                 <button
                                     className={styles.btn}
                                     onClick={() =>
-                                        dispatch({ type: "canvasMode/back" })
+                                        dispatch({
+                                            type: "canvasMode/back",
+                                        })
                                     }
                                 >
                                     back
@@ -108,30 +111,44 @@ export default function Sidebar({
                                 <button
                                     className={styles.btn}
                                     onClick={() =>
-                                        dispatch({ type: "canvasMode/cancel" })
+                                        dispatch({
+                                            type: "canvasMode/cancel",
+                                        })
                                     }
                                 >
                                     cancel
                                 </button>
                                 <button
                                     className={styles.btn}
+                                    disabled={
+                                        state.canvasMode.element.area ===
+                                        initialRect
+                                    }
                                     onClick={() => {}}
                                 >
                                     save
                                 </button>
                             </div>
                         )}
-                        <div className={styles.optionContainer}>
-                            <button
-                                className={styles.btn}
-                                onClick={handleToolSelect}
-                            >
-                                text
-                            </button>
-                            <button className={styles.btn}>coming soon.</button>
-                            <button className={styles.btn}>coming soon.</button>
-                            <button className={styles.btn}>coming soon.</button>
-                        </div>
+                        {!state.toolType && (
+                            <div className={styles.optionContainer}>
+                                <button
+                                    className={styles.btn}
+                                    onClick={handleToolSelect}
+                                >
+                                    text
+                                </button>
+                                <button className={styles.btn}>
+                                    coming soon.
+                                </button>
+                                <button className={styles.btn}>
+                                    coming soon.
+                                </button>
+                                <button className={styles.btn}>
+                                    coming soon.
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <div
                         className={styles.dragBox}
