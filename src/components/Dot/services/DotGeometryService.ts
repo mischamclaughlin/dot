@@ -9,6 +9,21 @@ export class DotGeometryService {
         this.gridSize = gridSize;
     }
 
+    getCanvasDot(
+        e: React.PointerEvent<HTMLDivElement>,
+        canvasRef: RefObject<HTMLDivElement | null>,
+    ): SingleDot | null {
+        const canvas = canvasRef.current;
+        if (!canvas) return null;
+
+        const rect = canvas.getBoundingClientRect();
+
+        return {
+            x: this.snapToGrid(e.clientX - rect.left, rect.width),
+            y: this.snapToGrid(e.clientY - rect.top, rect.height),
+        };
+    }
+
     snapToGrid(value: number, maxValue: number) {
         const offset = this.gridSize / 2;
         const snapped =
@@ -70,21 +85,6 @@ export class DotGeometryService {
         return {
             top: top,
             height: height,
-        };
-    }
-
-    getCanvasDot(
-        e: React.PointerEvent<HTMLDivElement>,
-        canvasRef: RefObject<HTMLDivElement | null>,
-    ): SingleDot | null {
-        const canvas = canvasRef.current;
-        if (!canvas) return null;
-
-        const rect = canvas.getBoundingClientRect();
-
-        return {
-            x: this.snapToGrid(e.clientX - rect.left, rect.width),
-            y: this.snapToGrid(e.clientY - rect.top, rect.height),
         };
     }
 }

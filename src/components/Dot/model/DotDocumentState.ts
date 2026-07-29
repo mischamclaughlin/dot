@@ -1,19 +1,15 @@
-import type { CanvasDot, Rect, ToolType } from "./DotDocument";
+import type { CanvasElement, DotDocument, Rect, ToolType } from "./DotDocument";
 // -----------------------------------------------------------------------------
 
+export type CanvasElementDraft = Omit<CanvasElement, "id">;
+
 export type CanvasMode =
-    | {
-          mode: "idle";
-          tool: ToolType;
-      }
-    | {
-          mode: "selected";
-          tool: ToolType;
-          area: Rect;
-      }
-    | {
-          mode: "editing";
-          tool: ToolType;
-          area: Rect;
-          style: CanvasDot;
-      };
+    | { mode: "idle" }
+    | { mode: "drawing"; area: Rect }
+    | { mode: "editing"; editId: string | null; element: CanvasElementDraft };
+
+export type DotState = {
+    document: DotDocument;
+    toolType: ToolType | null;
+    canvasMode: CanvasMode;
+};

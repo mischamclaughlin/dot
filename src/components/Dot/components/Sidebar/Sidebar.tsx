@@ -1,15 +1,26 @@
-import { useRef, useState, type ReactElement } from "react";
+import { useRef, useState, type Dispatch, type ReactElement } from "react";
 
 import { DotGeometryService } from "../../services/DotGeometryService";
 
 import styles from "./Sidebar.module.css";
+import type { DotState } from "../../model/DotDocumentState";
+import { initialRect, type Action } from "../../state/DotReducer";
 // -----------------------------------------------------------------------------
+
 const minWidth = 140;
 const maxWidthRatio = 0.8;
 
 const geo = new DotGeometryService();
 
-export default function Sidebar(): ReactElement {
+type CanvasProps = {
+    state: DotState;
+    dispatch: Dispatch<Action>;
+};
+
+export default function Sidebar({
+    state,
+    dispatch,
+}: CanvasProps): ReactElement {
     const sideBarRef = useRef(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -46,6 +57,28 @@ export default function Sidebar(): ReactElement {
         setIsDragging(false);
     }
 
+    function handleToolSelect() {
+        if (state.canvasMode.mode === "idle") {
+            dispatch({
+                type: "canvasMode/switch",
+                payload: {
+                    toolType: "text",
+                    area: initialRect,
+                },
+            });
+        }
+
+        if (state.canvasMode.mode === "drawing") {
+            dispatch({
+                type: "canvasMode/switch",
+                payload: {
+                    toolType: "text",
+                    area: state.canvasMode.area,
+                },
+            });
+        }
+    }
+
     return (
         <>
             {!isFullscreen && (
@@ -56,9 +89,45 @@ export default function Sidebar(): ReactElement {
                 >
                     <div className={styles.sidebarContainer}>
                         <h1 className={styles.header}>Dot.</h1>
-                        <h2 className={styles.headerTool}>TOOL</h2>
+                        <h2 className={styles.headerTool}>
+                            {state.toolType?.toUpperCase() ?? "TOOL"}
+                        </h2>
+                        <h3 className={styles.headerTool}>
+                            {state.canvasMode.mode}
+                        </h3>
+                        {state.toolType && (
+                            <div className={styles.optionContainer}>
+                                <button
+                                    className={styles.btn}
+                                    onClick={() =>
+                                        dispatch({ type: "canvasMode/back" })
+                                    }
+                                >
+                                    back
+                                </button>
+                                <button
+                                    className={styles.btn}
+                                    onClick={() =>
+                                        dispatch({ type: "canvasMode/cancel" })
+                                    }
+                                >
+                                    cancel
+                                </button>
+                                <button
+                                    className={styles.btn}
+                                    onClick={() => {}}
+                                >
+                                    save
+                                </button>
+                            </div>
+                        )}
                         <div className={styles.optionContainer}>
-                            <button className={styles.btn}>text</button>
+                            <button
+                                className={styles.btn}
+                                onClick={handleToolSelect}
+                            >
+                                text
+                            </button>
                             <button className={styles.btn}>coming soon.</button>
                             <button className={styles.btn}>coming soon.</button>
                             <button className={styles.btn}>coming soon.</button>

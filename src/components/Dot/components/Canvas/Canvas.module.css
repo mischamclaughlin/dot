@@ -4,7 +4,6 @@
     min-height: 100vh;
     flex: 1;
     overflow: hidden;
-
     cursor: crosshair;
 }
 
@@ -16,8 +15,14 @@
     );
 }
 
-.hoverDot {
+.hoverDot,
+.tempArea,
+.selectArea,
+.editArea {
     position: absolute;
+}
+
+.hoverDot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -27,4 +32,16 @@
     transition:
         top 5ms ease-in,
         left 5ms ease-in;
+}
+
+.tempArea {
+    background-color: red;
+}
+
+.selectArea {
+    background-color: blue;
+}
+
+.editArea {
+    background-color: orange;
 }

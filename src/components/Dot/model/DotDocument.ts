@@ -8,7 +8,6 @@ export type CanvasElement = TextElement;
 export type TextElement = {
     id: string;
     toolType: "text";
-
     area: Rect;
     style: TextStyle;
     text: string;
@@ -34,4 +33,4 @@ export type TextStyle = {
     paddingLeft: number;
 };
 
-export type ToolType = "text" | "image";
+export type ToolType = "text";
