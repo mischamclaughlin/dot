@@ -1,0 +1,39 @@
+.container,
+.bar {
+    position: absolute;
+}
+
+.bar {
+    background-color: var(--accent-1);
+    filter: opacity(0);
+    transition: filter 150ms ease-in;
+    z-index: 800;
+}
+.bar:hover {
+    filter: opacity(1);
+}
+
+.horizontal {
+    width: 100%;
+    height: var(--grid-spacing-half);
+    cursor: row-resize;
+}
+
+.vertical {
+    height: 100%;
+    width: var(--grid-spacing-half);
+    cursor: col-resize;
+}
+
+.top {
+    top: 0;
+}
+.bottom {
+    bottom: 0;
+}
+.right {
+    right: 0;
+}
+.left {
+    left: 0;
+}

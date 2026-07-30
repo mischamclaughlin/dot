@@ -11,7 +11,11 @@ export type Action =
           };
       }
     | { type: "canvasMode/back" }
-    | { type: "canvasMode/cancel" };
+    | { type: "canvasMode/cancel" }
+    | {
+          type: "edit/resize";
+          payload: Rect;
+      };
 
 export const initialState: DotState = {
     document: {
@@ -61,17 +65,17 @@ export function dotReducer(
                         },
                     },
                 };
-            } else {
-                return {
-                    ...state,
-                    toolType: action.payload.toolType,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        mode: "drawing",
-                        area: action.payload.area,
-                    },
-                };
             }
+
+            return {
+                ...state,
+                toolType: action.payload.toolType,
+                canvasMode: {
+                    ...state.canvasMode,
+                    mode: "drawing",
+                    area: action.payload.area,
+                },
+            };
         }
 
         case "canvasMode/back": {
@@ -113,6 +117,33 @@ export function dotReducer(
                     mode: "idle",
                 },
             };
+        }
+
+        case "edit/resize": {
+            if (state.canvasMode.mode === "drawing") {
+                return {
+                    ...state,
+                    canvasMode: {
+                        ...state.canvasMode,
+                        area: action.payload,
+                    },
+                };
+            }
+
+            if (state.canvasMode.mode === "editing") {
+                return {
+                    ...state,
+                    canvasMode: {
+                        ...state.canvasMode,
+                        element: {
+                            ...state.canvasMode.element,
+                            area: action.payload,
+                        },
+                    },
+                };
+            }
+
+            return state;
         }
 
         default:

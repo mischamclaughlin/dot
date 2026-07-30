@@ -45,7 +45,7 @@
 .dragBox {
     display: grid;
     align-self: end;
-    width: 7.5px;
+    width: var(--grid-spacing-half);
     height: 100vh;
     transition: background-color 100ms ease-in;
 }

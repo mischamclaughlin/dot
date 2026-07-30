@@ -18,6 +18,8 @@ export default function Dot(): ReactElement {
             className={styles.container}
             style={
                 {
+                    "--grid-spacing": `${dotConfig.gridSpacing}px`,
+                    "--grid-spacing-half": `${dotConfig.gridSpacing / 2}px`,
                     "--dot-size": `${dotConfig.dotSize}px`,
                     "--hover-dot-size": `${dotConfig.hoverDotSize}px`,
                 } as CSSProperties

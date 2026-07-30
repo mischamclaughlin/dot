@@ -9,6 +9,7 @@ import styles from "./Canvas.module.css";
 import type { DotState } from "../../model/DotDocumentState";
 import type { Action } from "../../state/DotReducer";
 import { dotConfig } from "../../dotConfig/DotConfig";
+import DragBox from "./components/DragBox";
 // -----------------------------------------------------------------------------
 
 type CanvasProps = {
@@ -95,26 +96,48 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                     />
                 )}
                 {state.canvasMode.mode === "drawing" && (
-                    <div
-                        className={styles.selectArea}
-                        style={{
-                            left: state.canvasMode.area.left,
-                            width: state.canvasMode.area.width,
-                            top: state.canvasMode.area.top,
-                            height: state.canvasMode.area.height,
-                        }}
-                    />
+                    <>
+                        <div
+                            className={styles.selectArea}
+                            style={{
+                                left: state.canvasMode.area.left,
+                                width: state.canvasMode.area.width,
+                                top: state.canvasMode.area.top,
+                                height: state.canvasMode.area.height,
+                            }}
+                            onPointerDown={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            }}
+                        />
+                        <DragBox
+                            state={state}
+                            dispatch={dispatch}
+                            canvasRef={canvasRef}
+                        />
+                    </>
                 )}
                 {state.canvasMode.mode === "editing" && (
-                    <div
-                        className={styles.editArea}
-                        style={{
-                            left: state.canvasMode.element.area.left,
-                            width: state.canvasMode.element.area.width,
-                            top: state.canvasMode.element.area.top,
-                            height: state.canvasMode.element.area.height,
-                        }}
-                    />
+                    <>
+                        <div
+                            className={styles.editArea}
+                            style={{
+                                left: state.canvasMode.element.area.left,
+                                width: state.canvasMode.element.area.width,
+                                top: state.canvasMode.element.area.top,
+                                height: state.canvasMode.element.area.height,
+                            }}
+                            onPointerDown={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            }}
+                        />
+                        <DragBox
+                            state={state}
+                            dispatch={dispatch}
+                            canvasRef={canvasRef}
+                        />
+                    </>
                 )}
             </div>
         </>
