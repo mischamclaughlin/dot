@@ -1,20 +1,28 @@
-import { useReducer, type ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
+import { useReducer } from "react";
 
+import { dotConfig } from "./dotConfig/DotConfig";
+import { dotReducer, initialState } from "./state/DotReducer";
+
+import Canvas from "./components/Canvas/Canvas";
 import Sidebar from "./components/Sidebar/Sidebar";
 
 import styles from "./Dot.module.css";
-import Canvas from "./components/Canvas/Canvas";
-import { dotReducer, initialState } from "./state/DotReducer";
 // -----------------------------------------------------------------------------
-
-export const MAX_WIDTH_RATIO = 0.85;
-export const MIN_WIDTH = 185;
 
 export default function Dot(): ReactElement {
     const [state, dispatch] = useReducer(dotReducer, initialState);
 
     return (
-        <div className={styles.container}>
+        <div
+            className={styles.container}
+            style={
+                {
+                    "--dot-size": `${dotConfig.dotSize}px`,
+                    "--hover-dot-size": `${dotConfig.hoverDotSize}px`,
+                } as CSSProperties
+            }
+        >
             <Sidebar state={state} dispatch={dispatch} />
             <Canvas state={state} dispatch={dispatch} />
         </div>

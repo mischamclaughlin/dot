@@ -1,16 +1,17 @@
-import { useRef, useState, type Dispatch, type ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
+import { useRef, useState } from "react";
 
+import type { DotState } from "../../model/DotDocumentState";
+import type { Action } from "../../state/DotReducer";
+
+import { dotConfig } from "../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../services/DotGeometryService";
+import { initialRect } from "../../state/DotReducer";
 
 import styles from "./Sidebar.module.css";
-import type { DotState } from "../../model/DotDocumentState";
-import { initialRect, type Action } from "../../state/DotReducer";
 // -----------------------------------------------------------------------------
 
-const minWidth = 140;
-const maxWidthRatio = 0.8;
-
-const geo = new DotGeometryService();
+const geo = new DotGeometryService(dotConfig.gridSpacing);
 
 type CanvasProps = {
     state: DotState;
@@ -26,7 +27,7 @@ export default function Sidebar({
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
 
-    const [width, setWidth] = useState<number>(minWidth);
+    const [width, setWidth] = useState<number>(dotConfig.minWidth);
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -41,12 +42,15 @@ export default function Sidebar({
 
         const parentRect = parent.getBoundingClientRect();
 
-        const maxWidth = Math.max(minWidth, parentRect.width * maxWidthRatio);
+        const maxWidth = Math.max(
+            dotConfig.minWidth,
+            parentRect.width * dotConfig.maxWidthRatio,
+        );
         const nextWidth = e.clientX - parentRect.left;
 
         const snappedWidth = geo.snapToGrid(nextWidth, maxWidth);
 
-        setWidth(Math.max(minWidth, snappedWidth));
+        setWidth(Math.max(dotConfig.minWidth, snappedWidth));
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
@@ -88,7 +92,10 @@ export default function Sidebar({
             {!isFullscreen && (
                 <div
                     className={styles.container}
-                    style={{ minWidth: `${minWidth}px`, width: `${width}px` }}
+                    style={{
+                        minWidth: `${dotConfig.minWidth}px`,
+                        width: `${width}px`,
+                    }}
                     ref={sideBarRef}
                 >
                     <div className={styles.sidebarContainer}>
@@ -163,7 +170,7 @@ export default function Sidebar({
             <button
                 className={`${styles.btn} ${styles.fullscreenBtn}`}
                 style={{
-                    minWidth: `${minWidth - 25}px`,
+                    minWidth: `${dotConfig.minWidth - 25}px`,
                     width: `${width - 25}px`,
                 }}
                 onClick={() => setIsFullscreen((f) => !f)}

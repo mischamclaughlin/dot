@@ -8,6 +8,7 @@ import { DotGeometryService } from "../../services/DotGeometryService";
 import styles from "./Canvas.module.css";
 import type { DotState } from "../../model/DotDocumentState";
 import type { Action } from "../../state/DotReducer";
+import { dotConfig } from "../../dotConfig/DotConfig";
 // -----------------------------------------------------------------------------
 
 type CanvasProps = {
@@ -15,7 +16,7 @@ type CanvasProps = {
     dispatch: Dispatch<Action>;
 };
 
-const geo = new DotGeometryService();
+const geo = new DotGeometryService(dotConfig.gridSpacing);
 
 export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const canvasRef = useRef(null);

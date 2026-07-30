@@ -10,8 +10,8 @@
 .canvas {
     background-image: radial-gradient(
         circle,
-        var(--highlight-l) 2px,
-        var(--bg) 1px
+        var(--highlight-l) var(--dot-size),
+        var(--bg) var(--dot-size)
     );
 }
 
@@ -23,8 +23,8 @@
 }
 
 .hoverDot {
-    width: 8px;
-    height: 8px;
+    width: var(--hover-dot-size);
+    height: var(--hover-dot-size);
     border-radius: 50%;
     background-color: var(--accent);
     transform: translate(-50%, -50%);
