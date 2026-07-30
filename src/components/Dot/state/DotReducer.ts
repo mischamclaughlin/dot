@@ -76,7 +76,7 @@ export function dotReducer(
 
         case "canvasMode/back": {
             if (state.canvasMode.mode === "editing") {
-                if (state.canvasMode.element.area === initialRect) {
+                if (state.canvasMode.element.area == initialRect) {
                     return {
                         ...state,
                         toolType: null,

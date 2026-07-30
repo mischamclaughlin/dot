@@ -79,6 +79,10 @@ export default function Sidebar({
         }
     }
 
+    const disabledSave: boolean =
+        state.canvasMode.mode !== "editing" ||
+        state.canvasMode.element.area == initialRect;
+
     return (
         <>
             {!isFullscreen && (
@@ -95,7 +99,7 @@ export default function Sidebar({
                         <h3 className={styles.headerTool}>
                             {state.canvasMode.mode}
                         </h3>
-                        {state.canvasMode.mode === "editing" && (
+                        {state.canvasMode.mode !== "idle" && (
                             <div className={styles.optionContainer}>
                                 <button
                                     className={styles.btn}
@@ -119,10 +123,7 @@ export default function Sidebar({
                                 </button>
                                 <button
                                     className={styles.btn}
-                                    disabled={
-                                        state.canvasMode.element.area ===
-                                        initialRect
-                                    }
+                                    disabled={disabledSave}
                                     onClick={() => {}}
                                 >
                                     save
