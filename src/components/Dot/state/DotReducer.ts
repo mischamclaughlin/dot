@@ -97,8 +97,6 @@ export function dotReducer(
                 text: action.payload.element.text,
             };
 
-            console.log(state);
-
             return {
                 ...state,
                 toolType: null,

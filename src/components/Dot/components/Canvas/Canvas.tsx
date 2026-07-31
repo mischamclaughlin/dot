@@ -1,7 +1,7 @@
-import type { ReactElement } from "react";
+import type { ReactElement, CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
-import type { Rect } from "../../model/DotDocument";
+import type { Rect, TextStyle } from "../../model/DotDocument";
 import type { DotStateProps } from "../../state/DotStateProps";
 import type { SingleDot } from "../../types/DotTypes";
 
@@ -26,8 +26,6 @@ export default function Canvas({
     const [startDot, setStartDot] = useState<SingleDot | null>(null);
 
     const [tempArea, setTempArea] = useState<Rect | null>(null);
-
-    const [text, setText] = useState<string>("");
 
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
@@ -83,6 +81,44 @@ export default function Canvas({
                 area: area,
             },
         });
+    }
+
+    function handleSave(e: React.SubmitEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        if (state.canvasMode.mode !== "editing") return;
+
+        const text = new FormData(e.currentTarget).get("text");
+
+        dispatch({
+            type: "action/save",
+            payload: {
+                id: crypto.randomUUID(),
+                element: {
+                    toolType: "text",
+                    area: state.canvasMode.element.area,
+                    style: state.canvasMode.element.style,
+                    text: typeof text === "string" ? text : "",
+                },
+            },
+        });
+    }
+
+    function styleCSS(element?: TextStyle) {
+        if (!element) return undefined;
+
+        return {
+            alignContent: element.alignContent,
+            textAlign: element.alignText,
+            backgroundColor: element.colourBackground,
+            color: element.colourForeground,
+            fontSize: `${element.fontSize}rem`,
+            fontWeight: element.fontWeight,
+            paddingTop: `${element.paddingTop}px`,
+            paddingRight: `${element.paddingRight}px`,
+            paddingBottom: `${element.paddingBottom}px`,
+            paddingLeft: `${element.paddingLeft}px`,
+        } satisfies CSSProperties;
     }
 
     return (
@@ -148,20 +184,22 @@ export default function Canvas({
                 {state.canvasMode.mode === "editing" &&
                     state.canvasMode.element.area && (
                         <>
-                            <textarea
-                                className={stylesArea.editArea}
-                                style={{
-                                    left: state.canvasMode.element.area.left,
-                                    width: state.canvasMode.element.area.width,
-                                    top: state.canvasMode.element.area.top,
-                                    height: state.canvasMode.element.area
-                                        .height,
-                                }}
-                                onPointerDown={(e) => {
-                                    e.stopPropagation();
-                                }}
-                                onChange={(e) => setText(e.target.value)}
-                            />
+                            <form id="text-edit-form" onSubmit={handleSave}>
+                                <textarea
+                                    className={stylesArea.editArea}
+                                    style={{
+                                        ...styleCSS(
+                                            state.canvasMode.element.style,
+                                        ),
+                                        ...state.canvasMode.element.area,
+                                    }}
+                                    name="text"
+                                    defaultValue={state.canvasMode.element.text}
+                                    onPointerDown={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                />
+                            </form>
                             <DragBox
                                 state={state}
                                 dispatch={dispatch}
@@ -174,10 +212,11 @@ export default function Canvas({
                         key={element.id}
                         className={stylesArea.savedElements}
                         style={{
+                            ...styleCSS(element.style),
                             ...element.area,
-                            ...element.style,
                         }}
                     >
+                        {element.text}
                         <button
                             className={styles.editBtn}
                             onClick={() =>
