@@ -1,8 +1,7 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { useRef, useState } from "react";
 
-import type { DotState } from "../../model/DotDocumentState";
-import type { Action } from "../../state/DotReducer";
+import type { DotStateProps } from "../../state/DotStateProps";
 
 import { dotConfig } from "../../dotConfig/DotConfig";
 
@@ -14,15 +13,10 @@ import ToolSelectButtonsProps from "./components/ToolSelectButtons";
 import styles from "./Sidebar.module.css";
 // -----------------------------------------------------------------------------
 
-type CanvasProps = {
-    state: DotState;
-    dispatch: Dispatch<Action>;
-};
-
 export default function Sidebar({
     state,
     dispatch,
-}: CanvasProps): ReactElement {
+}: DotStateProps): ReactElement {
     const sideBarRef = useRef(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);

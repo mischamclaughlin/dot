@@ -1,22 +1,16 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-import type { DotState } from "../../../model/DotDocumentState";
-import type { Action } from "../../../state/DotReducer";
+import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { initialRect } from "../../../state/DotReducer";
 
 import stylesBtn from "../styles/Button.module.css";
 // -----------------------------------------------------------------------------
 
-type ToolSelectButtonsProps = {
-    state: DotState;
-    dispatch: Dispatch<Action>;
-};
-
 export default function ToolSelectButtons({
     state,
     dispatch,
-}: ToolSelectButtonsProps): ReactElement {
+}: DotStateProps): ReactElement {
     function handleToolSelect() {
         if (state.canvasMode.mode === "idle") {
             dispatch({

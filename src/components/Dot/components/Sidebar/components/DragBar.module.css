@@ -8,6 +8,7 @@
 }
 .dragBox:hover {
     background-color: var(--accent-1);
+
     cursor: col-resize;
 }
 

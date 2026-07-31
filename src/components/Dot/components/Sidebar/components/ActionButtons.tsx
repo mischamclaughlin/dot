@@ -1,22 +1,16 @@
-import type { Dispatch, ReactElement } from "react";
-import type { DotState } from "../../../model/DotDocumentState";
+import type { ReactElement } from "react";
 
-import type { Action } from "../../../state/DotReducer";
+import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { initialRect } from "../../../state/DotReducer";
 
 import stylesBtn from "../styles/Button.module.css";
 // -----------------------------------------------------------------------------
 
-type ActionButtonsProps = {
-    state: DotState;
-    dispatch: Dispatch<Action>;
-};
-
 export default function ActionButtons({
     state,
     dispatch,
-}: ActionButtonsProps): ReactElement {
+}: DotStateProps): ReactElement {
     const disabledSave: boolean =
         state.canvasMode.mode !== "editing" ||
         state.canvasMode.element.area == initialRect;

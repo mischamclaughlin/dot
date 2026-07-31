@@ -1,9 +1,8 @@
-import type { Dispatch, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Rect } from "../../model/DotDocument";
-import type { DotState } from "../../model/DotDocumentState";
-import type { Action } from "../../state/DotReducer";
+import type { DotStateProps } from "../../state/DotStateProps";
 import type { SingleDot } from "../../types/DotTypes";
 
 import { dotConfig } from "../../dotConfig/DotConfig";
@@ -15,14 +14,12 @@ import styles from "./Canvas.module.css";
 import stylesArea from "./styles/Area.module.css";
 // -----------------------------------------------------------------------------
 
-type CanvasProps = {
-    state: DotState;
-    dispatch: Dispatch<Action>;
-};
-
 const geo = new DotGeometryService(dotConfig.gridSpacing);
 
-export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
+export default function Canvas({
+    state,
+    dispatch,
+}: DotStateProps): ReactElement {
     const canvasRef = useRef(null);
 
     const [hoverDot, setHoverDot] = useState<SingleDot | null>(null);

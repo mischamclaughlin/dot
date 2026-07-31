@@ -1,9 +1,8 @@
-import type { Dispatch, ReactElement, RefObject } from "react";
+import type { ReactElement, RefObject } from "react";
 import React, { useState } from "react";
 
 import type { Rect } from "../../../model/DotDocument";
-import type { DotState } from "../../../model/DotDocumentState";
-import type { Action } from "../../../state/DotReducer";
+import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { dotConfig } from "../../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../../services/DotGeometryService";
@@ -14,9 +13,7 @@ import styles from "./DragBox.module.css";
 
 const geo = new DotGeometryService(dotConfig.gridSpacing);
 
-type DragBoxProps = {
-    state: DotState;
-    dispatch: Dispatch<Action>;
+type DragBoxProps = DotStateProps & {
     canvasRef: RefObject<HTMLDivElement | null>;
 };
 
