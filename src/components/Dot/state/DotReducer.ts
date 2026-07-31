@@ -29,6 +29,10 @@ export type Action =
               toolType: ToolType | null;
               area: Rect | null;
           };
+      }
+    | {
+          type: "canvasMode/editElement";
+          payload: string;
       };
 
 export function dotReducer(
@@ -93,8 +97,12 @@ export function dotReducer(
                 text: action.payload.element.text,
             };
 
+            console.log(state);
+
             return {
                 ...state,
+                toolType: null,
+                canvasMode: { mode: "idle" },
                 document: {
                     ...state.document,
                     elements: [...state.document.elements, element],
@@ -136,6 +144,40 @@ export function dotReducer(
             }
 
             return state;
+        }
+
+        case "canvasMode/editElement": {
+            const element = state.document.elements.find(
+                (el) => el.id === action.payload,
+            );
+            if (!element) return state;
+
+            const editElement: DraftTextElement = {
+                toolType: "text",
+                area: element.area,
+                style: element.style,
+                text: element.text,
+            };
+
+            const elements = state.document.elements.filter(
+                (el) => el.id !== action.payload,
+            );
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: elements,
+                },
+                canvasMode: {
+                    ...state.canvasMode,
+                    mode: "editing",
+                    editId: action.payload,
+                    element: {
+                        ...editElement,
+                    },
+                },
+            };
         }
 
         // ---------------------------------------------------------------------

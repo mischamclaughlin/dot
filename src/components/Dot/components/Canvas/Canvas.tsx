@@ -27,6 +27,8 @@ export default function Canvas({
 
     const [tempArea, setTempArea] = useState<Rect | null>(null);
 
+    const [text, setText] = useState<string>("");
+
     useEffect(() => {
         function handleWindowKeyDown(e: KeyboardEvent) {
             if (e.key !== "Escape") return;
@@ -158,6 +160,7 @@ export default function Canvas({
                                 onPointerDown={(e) => {
                                     e.stopPropagation();
                                 }}
+                                onChange={(e) => setText(e.target.value)}
                             />
                             <DragBox
                                 state={state}
@@ -166,6 +169,28 @@ export default function Canvas({
                             />
                         </>
                     )}
+                {state.document.elements.map((element) => (
+                    <div
+                        key={element.id}
+                        className={stylesArea.savedElements}
+                        style={{
+                            ...element.area,
+                            ...element.style,
+                        }}
+                    >
+                        <button
+                            className={styles.editBtn}
+                            onClick={() =>
+                                dispatch({
+                                    type: "canvasMode/editElement",
+                                    payload: element.id,
+                                })
+                            }
+                        >
+                            edit
+                        </button>
+                    </div>
+                ))}
             </div>
         </>
     );

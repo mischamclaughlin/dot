@@ -1,7 +1,8 @@
 .tempArea,
 .selectArea,
 .editArea,
-.resizeArea {
+.resizeArea,
+.savedElements {
     position: absolute;
 }
 
@@ -26,4 +27,8 @@
     border: 1px dashed var(--fg);
     background-color: color-mix(in srgb, var(--highlight-l) 10%, transparent);
     backdrop-filter: blur(1.25px);
+}
+
+.savedElements {
+    background-color: red;
 }
