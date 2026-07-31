@@ -208,27 +208,34 @@ export default function Canvas({
                         </>
                     )}
                 {state.document.elements.map((element) => (
-                    <div
-                        key={element.id}
-                        className={stylesArea.savedElements}
-                        style={{
-                            ...styleCSS(element.style),
-                            ...element.area,
-                        }}
-                    >
-                        {element.text}
-                        <button
-                            className={styles.editBtn}
-                            onClick={() =>
-                                dispatch({
-                                    type: "canvasMode/editElement",
-                                    payload: element.id,
-                                })
-                            }
+                    <>
+                        <div
+                            key={element.id}
+                            className={stylesArea.savedElement}
+                            style={{
+                                ...styleCSS(element.style),
+                                ...element.area,
+                            }}
                         >
-                            edit
-                        </button>
-                    </div>
+                            {element.text}
+                        </div>
+                        <div
+                            className={stylesArea.savedElement}
+                            style={{ ...element.area }}
+                        >
+                            <button
+                                className={stylesArea.editBtn}
+                                onClick={() =>
+                                    dispatch({
+                                        type: "canvasMode/editElement",
+                                        payload: element.id,
+                                    })
+                                }
+                            >
+                                edit
+                            </button>
+                        </div>
+                    </>
                 ))}
             </div>
         </>

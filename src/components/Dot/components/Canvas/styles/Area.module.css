@@ -2,14 +2,32 @@
 .selectArea,
 .editArea,
 .resizeArea,
-.savedElements {
+.savedElement,
+.editBtn {
     position: absolute;
 }
 
 .editArea,
-.savedElements {
+.savedElement {
     white-space: pre-wrap;
     overflow-wrap: break-word;
+}
+
+.editBtn {
+    z-index: 1000;
+
+    margin: 0.25rem;
+    padding: 0.25rem;
+    left: 0;
+    bottom: 0;
+
+    opacity: 0;
+    background-color: var(--highlight-l);
+
+    transition: opacity 250ms ease-in;
+}
+.savedElement:hover .editBtn {
+    opacity: 1;
 }
 
 .tempArea {

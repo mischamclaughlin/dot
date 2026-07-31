@@ -37,12 +37,3 @@
         top 5ms ease-in,
         left 5ms ease-in;
 }
-
-.editBtn {
-    position: absolute;
-    background-color: var(--highlight-l);
-    left: 0;
-    bottom: 0;
-    margin: 0.25rem;
-    padding: 0.25rem;
-}
