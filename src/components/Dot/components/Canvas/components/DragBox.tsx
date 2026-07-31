@@ -33,7 +33,7 @@ export default function DragBox({
 
     const [resizeArea, setResizeArea] = useState<Rect | undefined>();
 
-    const displayedArea = isDragging ? resizeArea : stateArea;
+    const displayedArea = isDragging ? resizeArea : (stateArea ?? undefined);
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         if (!stateArea) return;
@@ -125,7 +125,7 @@ export default function DragBox({
         if (!resizeArea) return;
 
         dispatch({
-            type: "edit/resize",
+            type: "area/resize",
             payload: resizeArea,
         });
 

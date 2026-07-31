@@ -5,6 +5,13 @@ export type DotDocument = {
 
 export type CanvasElement = TextElement;
 
+export type DraftTextElement = {
+    toolType: "text";
+    area: Rect | null;
+    style: TextStyle;
+    text: string;
+};
+
 export type TextElement = {
     id: string;
     toolType: "text";

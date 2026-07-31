@@ -1,86 +1,46 @@
-import type { Rect, TextStyle, ToolType } from "../model/DotDocument";
+import type {
+    DraftTextElement,
+    Rect,
+    TextElement,
+    ToolType,
+} from "../model/DotDocument";
 import type { DotState } from "../model/DotDocumentState";
+
+import { initialState, initialStyle } from "./DotInitialState";
 // -----------------------------------------------------------------------------
 
 export type Action =
+    | { type: "action/back" }
+    | { type: "action/cancel" }
+    | {
+          type: "action/save";
+          payload: {
+              id: string;
+              element: DraftTextElement;
+          };
+      }
+    | {
+          type: "area/resize";
+          payload: Rect;
+      }
     | {
           type: "canvasMode/switch";
           payload: {
               toolType: ToolType | null;
-              area: Rect;
+              area: Rect | null;
           };
-      }
-    | { type: "canvasMode/back" }
-    | { type: "canvasMode/cancel" }
-    | {
-          type: "edit/resize";
-          payload: Rect;
       };
-
-export const initialState: DotState = {
-    document: {
-        schemaVersion: 1,
-        elements: [],
-    },
-    toolType: null,
-    canvasMode: {
-        mode: "idle",
-    },
-};
-
-export const initialStyle: TextStyle = {
-    alignContent: "center",
-    alignText: "left",
-    colourBackground: "#faf4ed",
-    colourForeground: "#464261",
-    fontSize: 1,
-    fontWeight: 300,
-    paddingTop: 16,
-    paddingRight: 16,
-    paddingBottom: 16,
-    paddingLeft: 16,
-};
-
-export const initialRect: Rect = { left: 0, width: 0, top: 0, height: 0 };
 
 export function dotReducer(
     state: DotState = initialState,
     action: Action,
 ): DotState {
     switch (action.type) {
-        case "canvasMode/switch": {
-            if (action.payload.toolType) {
-                return {
-                    ...state,
-                    toolType: action.payload.toolType,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        mode: "editing",
-                        editId: null,
-                        element: {
-                            toolType: "text",
-                            area: action.payload.area,
-                            style: initialStyle,
-                            text: "",
-                        },
-                    },
-                };
-            }
-
-            return {
-                ...state,
-                toolType: action.payload.toolType,
-                canvasMode: {
-                    ...state.canvasMode,
-                    mode: "drawing",
-                    area: action.payload.area,
-                },
-            };
-        }
-
-        case "canvasMode/back": {
+        // ---------------------------------------------------------------------
+        // Action
+        case "action/back": {
             if (state.canvasMode.mode === "editing") {
-                if (state.canvasMode.element.area == initialRect) {
+                if (!state.canvasMode.element.area) {
                     return {
                         ...state,
                         toolType: null,
@@ -109,7 +69,7 @@ export function dotReducer(
             };
         }
 
-        case "canvasMode/cancel": {
+        case "action/cancel": {
             return {
                 ...state,
                 toolType: null,
@@ -119,7 +79,68 @@ export function dotReducer(
             };
         }
 
-        case "edit/resize": {
+        case "action/save": {
+            if (state.canvasMode.mode !== "editing") return state;
+
+            const area = action.payload.element.area;
+            if (!area) return state;
+
+            const element: TextElement = {
+                id: action.payload.id,
+                toolType: "text",
+                area: area,
+                style: action.payload.element.style,
+                text: action.payload.element.text,
+            };
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: [...state.document.elements, element],
+                },
+            };
+        }
+
+        // ---------------------------------------------------------------------
+        // CanvasMode
+        case "canvasMode/switch": {
+            if (action.payload.toolType) {
+                return {
+                    ...state,
+                    toolType: action.payload.toolType,
+                    canvasMode: {
+                        ...state.canvasMode,
+                        mode: "editing",
+                        editId: null,
+                        element: {
+                            toolType: "text",
+                            area: action.payload.area,
+                            style: initialStyle,
+                            text: "",
+                        },
+                    },
+                };
+            }
+
+            if (action.payload.area) {
+                return {
+                    ...state,
+                    toolType: action.payload.toolType,
+                    canvasMode: {
+                        ...state.canvasMode,
+                        mode: "drawing",
+                        area: action.payload.area,
+                    },
+                };
+            }
+
+            return state;
+        }
+
+        // ---------------------------------------------------------------------
+        // Area
+        case "area/resize": {
             if (state.canvasMode.mode === "drawing") {
                 return {
                     ...state,
@@ -146,6 +167,8 @@ export function dotReducer(
             return state;
         }
 
+        // ---------------------------------------------------------------------
+        // Default
         default:
             return state;
     }

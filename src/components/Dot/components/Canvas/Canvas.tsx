@@ -32,7 +32,8 @@ export default function Canvas({
             if (e.key !== "Escape") return;
 
             setTempArea(null);
-            dispatch({ type: "canvasMode/cancel" });
+            setStartDot(null);
+            dispatch({ type: "action/cancel" });
         }
 
         window.addEventListener("keydown", handleWindowKeyDown);
@@ -59,16 +60,19 @@ export default function Canvas({
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
+        const tempStartDot = startDot;
+
+        setStartDot(null);
+
         const end = geo.getCanvasDot(e, canvasRef);
         if (!end) return;
 
-        if (!startDot) return;
-        if (geo.isSameDot(startDot, end)) return;
+        if (!tempStartDot) return;
+        if (geo.isSameDot(tempStartDot, end)) return;
 
-        const area = geo.updateTempArea(startDot, end);
+        const area = geo.updateTempArea(tempStartDot, end);
 
         setTempArea(null);
-        setStartDot(null);
 
         dispatch({
             type: "canvasMode/switch",
@@ -139,27 +143,29 @@ export default function Canvas({
                         />
                     </>
                 )}
-                {state.canvasMode.mode === "editing" && (
-                    <>
-                        <textarea
-                            className={stylesArea.editArea}
-                            style={{
-                                left: state.canvasMode.element.area.left,
-                                width: state.canvasMode.element.area.width,
-                                top: state.canvasMode.element.area.top,
-                                height: state.canvasMode.element.area.height,
-                            }}
-                            onPointerDown={(e) => {
-                                e.stopPropagation();
-                            }}
-                        />
-                        <DragBox
-                            state={state}
-                            dispatch={dispatch}
-                            canvasRef={canvasRef}
-                        />
-                    </>
-                )}
+                {state.canvasMode.mode === "editing" &&
+                    state.canvasMode.element.area && (
+                        <>
+                            <textarea
+                                className={stylesArea.editArea}
+                                style={{
+                                    left: state.canvasMode.element.area.left,
+                                    width: state.canvasMode.element.area.width,
+                                    top: state.canvasMode.element.area.top,
+                                    height: state.canvasMode.element.area
+                                        .height,
+                                }}
+                                onPointerDown={(e) => {
+                                    e.stopPropagation();
+                                }}
+                            />
+                            <DragBox
+                                state={state}
+                                dispatch={dispatch}
+                                canvasRef={canvasRef}
+                            />
+                        </>
+                    )}
             </div>
         </>
     );

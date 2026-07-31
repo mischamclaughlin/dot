@@ -2,8 +2,6 @@ import type { ReactElement } from "react";
 
 import type { DotStateProps } from "../../../state/DotStateProps";
 
-import { initialRect } from "../../../state/DotReducer";
-
 import stylesBtn from "../styles/Button.module.css";
 // -----------------------------------------------------------------------------
 
@@ -17,7 +15,7 @@ export default function ToolSelectButtons({
                 type: "canvasMode/switch",
                 payload: {
                     toolType: "text",
-                    area: initialRect,
+                    area: null,
                 },
             });
         }

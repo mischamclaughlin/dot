@@ -2,7 +2,8 @@ import type { CSSProperties, ReactElement } from "react";
 import { useReducer } from "react";
 
 import { dotConfig } from "./dotConfig/DotConfig";
-import { dotReducer, initialState } from "./state/DotReducer";
+import { initialState } from "./state/DotInitialState";
+import { dotReducer } from "./state/DotReducer";
 
 import Canvas from "./components/Canvas/Canvas";
 import Sidebar from "./components/Sidebar/Sidebar";

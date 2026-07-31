@@ -1,8 +1,7 @@
 import type { ReactElement } from "react";
 
+import type { DraftTextElement } from "../../../model/DotDocument";
 import type { DotStateProps } from "../../../state/DotStateProps";
-
-import { initialRect } from "../../../state/DotReducer";
 
 import stylesBtn from "../styles/Button.module.css";
 // -----------------------------------------------------------------------------
@@ -11,9 +10,27 @@ export default function ActionButtons({
     state,
     dispatch,
 }: DotStateProps): ReactElement {
-    const disabledSave: boolean =
-        state.canvasMode.mode !== "editing" ||
-        state.canvasMode.element.area == initialRect;
+    const element: DraftTextElement | null =
+        state.canvasMode.mode === "editing"
+            ? {
+                  toolType: "text",
+                  area: state.canvasMode.element.area,
+                  style: state.canvasMode.element.style,
+                  text: state.canvasMode.element.text,
+              }
+            : null;
+
+    function handleDispatchActionSave() {
+        if (!element) return;
+
+        dispatch({
+            type: "action/save",
+            payload: {
+                id: crypto.randomUUID(),
+                element: element,
+            },
+        });
+    }
 
     return (
         <div className={stylesBtn.buttonsContainer}>
@@ -21,7 +38,7 @@ export default function ActionButtons({
                 className={stylesBtn.btn}
                 onClick={() =>
                     dispatch({
-                        type: "canvasMode/back",
+                        type: "action/back",
                     })
                 }
             >
@@ -31,7 +48,7 @@ export default function ActionButtons({
                 className={stylesBtn.btn}
                 onClick={() =>
                     dispatch({
-                        type: "canvasMode/cancel",
+                        type: "action/cancel",
                     })
                 }
             >
@@ -39,8 +56,11 @@ export default function ActionButtons({
             </button>
             <button
                 className={stylesBtn.btn}
-                disabled={disabledSave}
-                onClick={() => {}}
+                disabled={
+                    state.canvasMode.mode !== "editing" ||
+                    !state.canvasMode.element.area
+                }
+                onClick={handleDispatchActionSave}
             >
                 save
             </button>
