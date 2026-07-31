@@ -1,0 +1,29 @@
+.tempArea,
+.selectArea,
+.editArea,
+.resizeArea {
+    position: absolute;
+}
+
+.tempArea {
+    border: 1px dashed var(--fg);
+    background-color: color-mix(in srgb, var(--highlight-l) 10%, transparent);
+    backdrop-filter: blur(2.5px);
+}
+
+.selectArea {
+    border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+    backdrop-filter: blur(2.5px);
+}
+
+.editArea {
+    background-color: var(--bg);
+    resize: none;
+}
+
+.resizeArea {
+    border: 1px dashed var(--fg);
+    background-color: color-mix(in srgb, var(--highlight-l) 10%, transparent);
+    backdrop-filter: blur(1.25px);
+}

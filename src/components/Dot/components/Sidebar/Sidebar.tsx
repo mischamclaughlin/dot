@@ -5,13 +5,14 @@ import type { DotState } from "../../model/DotDocumentState";
 import type { Action } from "../../state/DotReducer";
 
 import { dotConfig } from "../../dotConfig/DotConfig";
-import { DotGeometryService } from "../../services/DotGeometryService";
-import { initialRect } from "../../state/DotReducer";
+
+import ActionButtons from "./components/ActionButtons";
+import DragBar from "./components/DragBar";
+import FullscreenButton from "./components/FullscreenButtons";
+import ToolSelectButtonsProps from "./components/ToolSelectButtons";
 
 import styles from "./Sidebar.module.css";
 // -----------------------------------------------------------------------------
-
-const geo = new DotGeometryService(dotConfig.gridSpacing);
 
 type CanvasProps = {
     state: DotState;
@@ -25,67 +26,8 @@ export default function Sidebar({
     const sideBarRef = useRef(null);
 
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const [isDragging, setIsDragging] = useState(false);
 
     const [width, setWidth] = useState<number>(dotConfig.minWidth);
-
-    function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
-        e.currentTarget.setPointerCapture(e.pointerId);
-        setIsDragging(true);
-    }
-
-    function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
-        if (!isDragging) return;
-
-        const parent = e.currentTarget.parentElement?.parentElement;
-        if (!parent) return;
-
-        const parentRect = parent.getBoundingClientRect();
-
-        const maxWidth = Math.max(
-            dotConfig.minWidth,
-            parentRect.width * dotConfig.maxWidthRatio,
-        );
-        const nextWidth = e.clientX - parentRect.left;
-
-        const snappedWidth = geo.snapToGrid(nextWidth, maxWidth);
-
-        setWidth(Math.max(dotConfig.minWidth, snappedWidth));
-    }
-
-    function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
-        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-            e.currentTarget.releasePointerCapture(e.pointerId);
-        }
-
-        setIsDragging(false);
-    }
-
-    function handleToolSelect() {
-        if (state.canvasMode.mode === "idle") {
-            dispatch({
-                type: "canvasMode/switch",
-                payload: {
-                    toolType: "text",
-                    area: initialRect,
-                },
-            });
-        }
-
-        if (state.canvasMode.mode === "drawing") {
-            dispatch({
-                type: "canvasMode/switch",
-                payload: {
-                    toolType: "text",
-                    area: state.canvasMode.area,
-                },
-            });
-        }
-    }
-
-    const disabledSave: boolean =
-        state.canvasMode.mode !== "editing" ||
-        state.canvasMode.element.area == initialRect;
 
     return (
         <>
@@ -106,77 +48,26 @@ export default function Sidebar({
                         <h3 className={styles.headerTool}>
                             {state.canvasMode.mode}
                         </h3>
+
                         {state.canvasMode.mode !== "idle" && (
-                            <div className={styles.optionContainer}>
-                                <button
-                                    className={styles.btn}
-                                    onClick={() =>
-                                        dispatch({
-                                            type: "canvasMode/back",
-                                        })
-                                    }
-                                >
-                                    back
-                                </button>
-                                <button
-                                    className={styles.btn}
-                                    onClick={() =>
-                                        dispatch({
-                                            type: "canvasMode/cancel",
-                                        })
-                                    }
-                                >
-                                    cancel
-                                </button>
-                                <button
-                                    className={styles.btn}
-                                    disabled={disabledSave}
-                                    onClick={() => {}}
-                                >
-                                    save
-                                </button>
-                            </div>
+                            <ActionButtons state={state} dispatch={dispatch} />
                         )}
+
                         {!state.toolType && (
-                            <div className={styles.optionContainer}>
-                                <button
-                                    className={styles.btn}
-                                    onClick={handleToolSelect}
-                                >
-                                    text
-                                </button>
-                                <button className={styles.btn}>
-                                    coming soon.
-                                </button>
-                                <button className={styles.btn}>
-                                    coming soon.
-                                </button>
-                                <button className={styles.btn}>
-                                    coming soon.
-                                </button>
-                            </div>
+                            <ToolSelectButtonsProps
+                                state={state}
+                                dispatch={dispatch}
+                            />
                         )}
                     </div>
-                    <div
-                        className={styles.dragBox}
-                        onPointerDown={handlePointerDown}
-                        onPointerMove={handlePointerMove}
-                        onPointerUp={handlePointerUp}
-                    >
-                        <div className={styles.dragBar} />
-                    </div>
+
+                    <DragBar onSetWidth={setWidth} />
                 </div>
             )}
-            <button
-                className={`${styles.btn} ${styles.fullscreenBtn}`}
-                style={{
-                    minWidth: `${dotConfig.minWidth - 25}px`,
-                    width: `${width - 25}px`,
-                }}
-                onClick={() => setIsFullscreen((f) => !f)}
-            >
-                Fullscreen
-            </button>
+            <FullscreenButton
+                width={width}
+                onSetIsFullscreen={setIsFullscreen}
+            />
         </>
     );
 }

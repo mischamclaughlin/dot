@@ -8,6 +8,7 @@ import type { Action } from "../../../state/DotReducer";
 import { dotConfig } from "../../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../../services/DotGeometryService";
 
+import stylesArea from "../styles/Area.module.css";
 import styles from "./DragBox.module.css";
 // -----------------------------------------------------------------------------
 
@@ -33,9 +34,9 @@ export default function DragBox({
               ? state.canvasMode.element.area
               : undefined;
 
-    const [draftArea, setDraftArea] = useState<Rect | undefined>();
+    const [resizeArea, setResizeArea] = useState<Rect | undefined>();
 
-    const displayedArea = isDragging ? draftArea : stateArea;
+    const displayedArea = isDragging ? resizeArea : stateArea;
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         if (!stateArea) return;
@@ -44,7 +45,7 @@ export default function DragBox({
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
 
-        setDraftArea(stateArea);
+        setResizeArea(stateArea);
         setIsDragging(true);
     }
 
@@ -57,7 +58,7 @@ export default function DragBox({
         const current = geo.getCanvasDot(e, canvasRef);
         if (!current) return;
 
-        setDraftArea((prevArea) => {
+        setResizeArea((prevArea) => {
             if (!prevArea) return prevArea;
 
             const halfGrid = dotConfig.gridSpacing / 2;
@@ -124,15 +125,15 @@ export default function DragBox({
             e.currentTarget.releasePointerCapture(e.pointerId);
         }
 
-        if (!draftArea) return;
+        if (!resizeArea) return;
 
         dispatch({
             type: "edit/resize",
-            payload: draftArea,
+            payload: resizeArea,
         });
 
         setIsDragging(false);
-        setDraftArea(undefined);
+        setResizeArea(undefined);
     }
 
     function handlePointerCancel(e: React.PointerEvent<HTMLDivElement>) {
@@ -141,55 +142,72 @@ export default function DragBox({
         }
 
         setIsDragging(false);
-        setDraftArea(undefined);
+        setResizeArea(undefined);
     }
 
     return (
-        <div className={styles.container} style={displayedArea}>
-            <div
-                className={`
+        <>
+            <div className={styles.container} style={displayedArea}>
+                <div
+                    className={`
 					${styles.bar}
 					${styles.horizontal}
 					${styles.top}
 				`}
-                onPointerDown={handlePointerDown}
-                onPointerMove={(e) => handlePointerMove(e, "top")}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerCancel}
-            />
-            <div
-                className={`
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={(e) => handlePointerMove(e, "top")}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
 					${styles.bar}
 					${styles.horizontal}
 					${styles.bottom}
 				`}
-                onPointerDown={handlePointerDown}
-                onPointerMove={(e) => handlePointerMove(e, "bottom")}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerCancel}
-            />
-            <div
-                className={`
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={(e) => handlePointerMove(e, "bottom")}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
 					${styles.bar}
 					${styles.vertical}
 					${styles.right}
 				`}
-                onPointerDown={handlePointerDown}
-                onPointerMove={(e) => handlePointerMove(e, "right")}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerCancel}
-            />
-            <div
-                className={`
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={(e) => handlePointerMove(e, "right")}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
 					${styles.bar}
 					${styles.vertical}
 					${styles.left}
 				`}
-                onPointerDown={handlePointerDown}
-                onPointerMove={(e) => handlePointerMove(e, "left")}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerCancel}
-            />
-        </div>
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={(e) => handlePointerMove(e, "left")}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+            </div>
+            {resizeArea && (
+                <div
+                    className={stylesArea.resizeArea}
+                    style={{
+                        left: resizeArea.left,
+                        width: resizeArea.width,
+                        top: resizeArea.top,
+                        height: resizeArea.height,
+                    }}
+                    onPointerDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }}
+                />
+            )}
+        </>
     );
 }

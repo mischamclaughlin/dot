@@ -1,9 +1,10 @@
 .container {
+    flex: 1;
     position: relative;
     min-width: 0;
     min-height: 100vh;
-    flex: 1;
     overflow: hidden;
+
     cursor: crosshair;
 }
 
@@ -14,34 +15,25 @@
         var(--bg) var(--dot-size)
     );
 }
-
-.hoverDot,
-.tempArea,
-.selectArea,
-.editArea {
-    position: absolute;
+.canvasEdit {
+    background-image: radial-gradient(
+        circle,
+        var(--highlight-m) var(--dot-size),
+        var(--bg) var(--dot-size)
+    );
 }
 
 .hoverDot {
+    position: absolute;
     width: var(--hover-dot-size);
     height: var(--hover-dot-size);
+    transform: translate(-50%, -50%);
+
     border-radius: 50%;
     background-color: var(--accent);
-    transform: translate(-50%, -50%);
+
     pointer-events: none;
     transition:
         top 5ms ease-in,
         left 5ms ease-in;
-}
-
-.tempArea {
-    background-color: red;
-}
-
-.selectArea {
-    background-color: blue;
-}
-
-.editArea {
-    background-color: orange;
 }

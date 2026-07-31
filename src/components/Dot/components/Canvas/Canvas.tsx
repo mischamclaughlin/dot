@@ -1,15 +1,18 @@
-import { useRef, useState, type Dispatch, type ReactElement } from "react";
+import type { Dispatch, ReactElement } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { SingleDot } from "../../types/DotTypes";
 import type { Rect } from "../../model/DotDocument";
-
-import { DotGeometryService } from "../../services/DotGeometryService";
-
-import styles from "./Canvas.module.css";
 import type { DotState } from "../../model/DotDocumentState";
 import type { Action } from "../../state/DotReducer";
+import type { SingleDot } from "../../types/DotTypes";
+
 import { dotConfig } from "../../dotConfig/DotConfig";
+import { DotGeometryService } from "../../services/DotGeometryService";
+
 import DragBox from "./components/DragBox";
+
+import styles from "./Canvas.module.css";
+import stylesArea from "./styles/Area.module.css";
 // -----------------------------------------------------------------------------
 
 type CanvasProps = {
@@ -26,6 +29,19 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     const [startDot, setStartDot] = useState<SingleDot | null>(null);
 
     const [tempArea, setTempArea] = useState<Rect | null>(null);
+
+    useEffect(() => {
+        function handleWindowKeyDown(e: KeyboardEvent) {
+            if (e.key !== "Escape") return;
+
+            setTempArea(null);
+            dispatch({ type: "canvasMode/cancel" });
+        }
+
+        window.addEventListener("keydown", handleWindowKeyDown);
+
+        return () => window.removeEventListener("keydown", handleWindowKeyDown);
+    }, [dispatch]);
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         const start = geo.getCanvasDot(e, canvasRef);
@@ -69,7 +85,14 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
     return (
         <>
             <div
-                className={`${styles.container} ${styles.canvas}`}
+                className={`
+                        ${styles.container}
+                        ${
+                            state.canvasMode.mode === "editing"
+                                ? styles.canvasEdit
+                                : styles.canvas
+                        }
+                    `}
                 style={{
                     backgroundSize: `${geo.gridSize}px ${geo.gridSize}px`,
                 }}
@@ -86,19 +109,22 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                 )}
                 {tempArea && (
                     <div
-                        className={styles.tempArea}
+                        className={stylesArea.tempArea}
                         style={{
                             left: tempArea.left,
                             width: tempArea.width,
                             top: tempArea.top,
                             height: tempArea.height,
                         }}
+                        onPointerDown={(e) => {
+                            e.stopPropagation();
+                        }}
                     />
                 )}
                 {state.canvasMode.mode === "drawing" && (
                     <>
                         <div
-                            className={styles.selectArea}
+                            className={stylesArea.selectArea}
                             style={{
                                 left: state.canvasMode.area.left,
                                 width: state.canvasMode.area.width,
@@ -107,7 +133,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                             }}
                             onPointerDown={(e) => {
                                 e.stopPropagation();
-                                e.preventDefault();
                             }}
                         />
                         <DragBox
@@ -119,8 +144,8 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                 )}
                 {state.canvasMode.mode === "editing" && (
                     <>
-                        <div
-                            className={styles.editArea}
+                        <textarea
+                            className={stylesArea.editArea}
                             style={{
                                 left: state.canvasMode.element.area.left,
                                 width: state.canvasMode.element.area.width,
@@ -129,7 +154,6 @@ export default function Canvas({ state, dispatch }: CanvasProps): ReactElement {
                             }}
                             onPointerDown={(e) => {
                                 e.stopPropagation();
-                                e.preventDefault();
                             }}
                         />
                         <DragBox
