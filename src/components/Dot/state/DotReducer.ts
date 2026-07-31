@@ -74,10 +74,40 @@ export function dotReducer(
         }
 
         case "action/cancel": {
+            if (
+                state.canvasMode.mode === "editing" &&
+                state.canvasMode.editId
+            ) {
+                const area = state.canvasMode.element.area;
+                if (!area) return state;
+
+                const element: TextElement = {
+                    id: state.canvasMode.editId,
+                    toolType: "text",
+                    area: area,
+                    style: state.canvasMode.element.style,
+                    text: state.canvasMode.element.text,
+                };
+
+                return {
+                    ...state,
+                    document: {
+                        ...state.document,
+                        elements: [...state.document.elements, element],
+                    },
+                    toolType: null,
+                    canvasMode: {
+                        ...state.canvasMode,
+                        mode: "idle",
+                    },
+                };
+            }
+
             return {
                 ...state,
                 toolType: null,
                 canvasMode: {
+                    ...state.canvasMode,
                     mode: "idle",
                 },
             };
@@ -100,7 +130,10 @@ export function dotReducer(
             return {
                 ...state,
                 toolType: null,
-                canvasMode: { mode: "idle" },
+                canvasMode: {
+                    ...state.canvasMode,
+                    mode: "idle",
+                },
                 document: {
                     ...state.document,
                     elements: [...state.document.elements, element],
