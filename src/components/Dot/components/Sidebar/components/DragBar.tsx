@@ -3,7 +3,7 @@ import { useState, type ReactElement } from "react";
 import { dotConfig } from "../../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../../services/DotGeometryService";
 
-import styles from "../Sidebar.module.css";
+import styles from "./DragBar.module.css";
 // -----------------------------------------------------------------------------
 
 const geo = new DotGeometryService(dotConfig.gridSpacing);

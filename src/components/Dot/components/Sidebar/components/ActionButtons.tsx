@@ -1,9 +1,10 @@
 import type { Dispatch, ReactElement } from "react";
 import type { DotState } from "../../../model/DotDocumentState";
 
-import { initialRect, type Action } from "../../../state/DotReducer";
+import type { Action } from "../../../state/DotReducer";
 
-import styles from "../Sidebar.module.css";
+import { initialRect } from "../../../state/DotReducer";
+
 import stylesBtn from "../styles/Button.module.css";
 // -----------------------------------------------------------------------------
 
@@ -21,7 +22,7 @@ export default function ActionButtons({
         state.canvasMode.element.area == initialRect;
 
     return (
-        <div className={styles.optionContainer}>
+        <div className={stylesBtn.buttonsContainer}>
             <button
                 className={stylesBtn.btn}
                 onClick={() =>

@@ -6,7 +6,6 @@ import type { Action } from "../../../state/DotReducer";
 import { initialRect } from "../../../state/DotReducer";
 
 import stylesBtn from "../styles/Button.module.css";
-import styles from "../Sidebar.module.css";
 // -----------------------------------------------------------------------------
 
 type ToolSelectButtonsProps = {
@@ -42,7 +41,7 @@ export default function ToolSelectButtons({
 
     return (
         <>
-            <div className={styles.optionContainer}>
+            <div className={stylesBtn.buttonsContainer}>
                 <button className={stylesBtn.btn} onClick={handleToolSelect}>
                     text
                 </button>
