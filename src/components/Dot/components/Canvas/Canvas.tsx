@@ -1,5 +1,5 @@
 import type { ReactElement, CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import type { Rect, TextStyle } from "../../model/DotDocument";
 import type { DotStateProps } from "../../state/DotStateProps";
@@ -88,18 +88,13 @@ export default function Canvas({
 
         if (state.canvasMode.mode !== "editing") return;
 
-        const text = new FormData(e.currentTarget).get("text");
+        const session = state.canvasMode.session;
 
         dispatch({
             type: "action/save",
             payload: {
-                id: crypto.randomUUID(),
-                element: {
-                    toolType: "text",
-                    area: state.canvasMode.element.area,
-                    style: state.canvasMode.element.style,
-                    text: typeof text === "string" ? text : "",
-                },
+                id: session.editId ?? crypto.randomUUID(),
+                element: session.element,
             },
         });
     }
@@ -120,6 +115,11 @@ export default function Canvas({
             paddingLeft: `${element.paddingLeft}px`,
         } satisfies CSSProperties;
     }
+
+    const activeEditId =
+        state.canvasMode.mode === "idle"
+            ? null
+            : state.canvasMode.session.editId;
 
     return (
         <>
@@ -160,41 +160,47 @@ export default function Canvas({
                         }}
                     />
                 )}
-                {state.canvasMode.mode === "drawing" && (
-                    <>
-                        <div
-                            className={stylesArea.selectArea}
-                            style={{
-                                left: state.canvasMode.area.left,
-                                width: state.canvasMode.area.width,
-                                top: state.canvasMode.area.top,
-                                height: state.canvasMode.area.height,
-                            }}
-                            onPointerDown={(e) => {
-                                e.stopPropagation();
-                            }}
-                        />
-                        <DragBox
-                            state={state}
-                            dispatch={dispatch}
-                            canvasRef={canvasRef}
-                        />
-                    </>
-                )}
+                {state.canvasMode.mode === "drawing" &&
+                    state.canvasMode.session.element.area && (
+                        <>
+                            <div
+                                className={stylesArea.selectArea}
+                                style={state.canvasMode.session.element.area}
+                                onPointerDown={(e) => {
+                                    e.stopPropagation();
+                                }}
+                            />
+                            <DragBox
+                                state={state}
+                                dispatch={dispatch}
+                                canvasRef={canvasRef}
+                            />
+                        </>
+                    )}
                 {state.canvasMode.mode === "editing" &&
-                    state.canvasMode.element.area && (
+                    state.canvasMode.session.element.area && (
                         <>
                             <form id="text-edit-form" onSubmit={handleSave}>
                                 <textarea
                                     className={stylesArea.editArea}
                                     style={{
                                         ...styleCSS(
-                                            state.canvasMode.element.style,
+                                            state.canvasMode.session.element
+                                                .style,
                                         ),
-                                        ...state.canvasMode.element.area,
+                                        ...state.canvasMode.session.element
+                                            .area,
                                     }}
                                     name="text"
-                                    defaultValue={state.canvasMode.element.text}
+                                    value={
+                                        state.canvasMode.session.element.text
+                                    }
+                                    onChange={(e) =>
+                                        dispatch({
+                                            type: "draft/textChanged",
+                                            payload: e.target.value,
+                                        })
+                                    }
                                     onPointerDown={(e) => {
                                         e.stopPropagation();
                                     }}
@@ -207,10 +213,11 @@ export default function Canvas({
                             />
                         </>
                     )}
-                {state.document.elements.map((element) => (
-                    <>
+                {state.document.elements
+                    .filter((element) => element.id !== activeEditId)
+                    .map((element) => (
+                    <Fragment key={element.id}>
                         <div
-                            key={element.id}
                             className={stylesArea.savedElement}
                             style={{
                                 ...styleCSS(element.style),
@@ -219,23 +226,27 @@ export default function Canvas({
                         >
                             {element.text}
                         </div>
-                        <div
-                            className={stylesArea.savedElement}
-                            style={{ ...element.area }}
+                        <button
+                            className={stylesArea.editBtn}
+                            style={{
+                                left: element.area.left + 4,
+                                top:
+                                    element.area.top +
+                                    element.area.height -
+                                    4,
+                                transform: "translateY(-100%)",
+                            }}
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={() =>
+                                dispatch({
+                                    type: "canvasMode/editElement",
+                                    payload: element.id,
+                                })
+                            }
                         >
-                            <button
-                                className={stylesArea.editBtn}
-                                onClick={() =>
-                                    dispatch({
-                                        type: "canvasMode/editElement",
-                                        payload: element.id,
-                                    })
-                                }
-                            >
-                                edit
-                            </button>
-                        </div>
-                    </>
+                            edit
+                        </button>
+                    </Fragment>
                 ))}
             </div>
         </>

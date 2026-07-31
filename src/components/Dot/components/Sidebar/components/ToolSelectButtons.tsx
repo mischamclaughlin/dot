@@ -25,7 +25,7 @@ export default function ToolSelectButtons({
                 type: "canvasMode/switch",
                 payload: {
                     toolType: "text",
-                    area: state.canvasMode.area,
+                    area: state.canvasMode.session.element.area,
                 },
             });
         }

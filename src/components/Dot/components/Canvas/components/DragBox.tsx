@@ -25,11 +25,9 @@ export default function DragBox({
     const [isDragging, setIsDragging] = useState(false);
 
     const stateArea =
-        state.canvasMode.mode === "drawing"
-            ? state.canvasMode.area
-            : state.canvasMode.mode === "editing"
-              ? state.canvasMode.element.area
-              : undefined;
+        state.canvasMode.mode === "idle"
+            ? undefined
+            : state.canvasMode.session.element.area;
 
     const [resizeArea, setResizeArea] = useState<Rect | undefined>();
 

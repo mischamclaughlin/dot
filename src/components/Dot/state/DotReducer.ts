@@ -4,7 +4,7 @@ import type {
     TextElement,
     ToolType,
 } from "../model/DotDocument";
-import type { DotState } from "../model/DotDocumentState";
+import type { DotState, EditSession } from "../model/DotDocumentState";
 
 import { initialState, initialStyle } from "./DotInitialState";
 // -----------------------------------------------------------------------------
@@ -33,7 +33,23 @@ export type Action =
     | {
           type: "canvasMode/editElement";
           payload: string;
+      }
+    | {
+          type: "draft/textChanged";
+          payload: string;
       };
+
+function createSession(area: Rect): EditSession {
+    return {
+        editId: null,
+        element: {
+            toolType: "text",
+            area,
+            style: { ...initialStyle },
+            text: "",
+        },
+    };
+}
 
 export function dotReducer(
     state: DotState = initialState,
@@ -44,22 +60,12 @@ export function dotReducer(
         // Action
         case "action/back": {
             if (state.canvasMode.mode === "editing") {
-                if (!state.canvasMode.element.area) {
-                    return {
-                        ...state,
-                        toolType: null,
-                        canvasMode: {
-                            mode: "idle",
-                        },
-                    };
-                }
-
                 return {
                     ...state,
                     toolType: null,
                     canvasMode: {
                         mode: "drawing",
-                        area: state.canvasMode.element.area,
+                        session: state.canvasMode.session,
                     },
                 };
             }
@@ -74,40 +80,10 @@ export function dotReducer(
         }
 
         case "action/cancel": {
-            if (
-                state.canvasMode.mode === "editing" &&
-                state.canvasMode.editId
-            ) {
-                const area = state.canvasMode.element.area;
-                if (!area) return state;
-
-                const element: TextElement = {
-                    id: state.canvasMode.editId,
-                    toolType: "text",
-                    area: area,
-                    style: state.canvasMode.element.style,
-                    text: state.canvasMode.element.text,
-                };
-
-                return {
-                    ...state,
-                    document: {
-                        ...state.document,
-                        elements: [...state.document.elements, element],
-                    },
-                    toolType: null,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        mode: "idle",
-                    },
-                };
-            }
-
             return {
                 ...state,
                 toolType: null,
                 canvasMode: {
-                    ...state.canvasMode,
                     mode: "idle",
                 },
             };
@@ -119,10 +95,11 @@ export function dotReducer(
             const area = action.payload.element.area;
             if (!area) return state;
 
+            const editId = state.canvasMode.session.editId;
             const element: TextElement = {
                 id: action.payload.id,
-                toolType: "text",
-                area: area,
+                toolType: action.payload.element.toolType,
+                area,
                 style: action.payload.element.style,
                 text: action.payload.element.text,
             };
@@ -131,12 +108,15 @@ export function dotReducer(
                 ...state,
                 toolType: null,
                 canvasMode: {
-                    ...state.canvasMode,
                     mode: "idle",
                 },
                 document: {
                     ...state.document,
-                    elements: [...state.document.elements, element],
+                    elements: editId
+                        ? state.document.elements.map((existing) =>
+                              existing.id === editId ? element : existing,
+                          )
+                        : [...state.document.elements, element],
                 },
             };
         }
@@ -144,68 +124,80 @@ export function dotReducer(
         // ---------------------------------------------------------------------
         // CanvasMode
         case "canvasMode/switch": {
-            if (action.payload.toolType) {
+            const { toolType, area } = action.payload;
+
+            if (!area) {
                 return {
                     ...state,
-                    toolType: action.payload.toolType,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        mode: "editing",
-                        editId: null,
-                        element: {
-                            toolType: "text",
-                            area: action.payload.area,
-                            style: initialStyle,
-                            text: "",
-                        },
-                    },
+                    toolType,
                 };
             }
 
-            if (action.payload.area) {
-                return {
-                    ...state,
-                    toolType: action.payload.toolType,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        mode: "drawing",
-                        area: action.payload.area,
-                    },
-                };
-            }
+            const session =
+                state.canvasMode.mode === "idle"
+                    ? createSession(area)
+                    : {
+                          ...state.canvasMode.session,
+                          element: {
+                              ...state.canvasMode.session.element,
+                              area,
+                          },
+                      };
 
-            return state;
+            return {
+                ...state,
+                toolType,
+                canvasMode: toolType
+                    ? {
+                          mode: "editing",
+                          session,
+                      }
+                    : {
+                          mode: "drawing",
+                          session,
+                      },
+            };
         }
 
         case "canvasMode/editElement": {
             const element = state.document.elements.find(
-                (el) => el.id === action.payload,
+                (candidate) => candidate.id === action.payload,
             );
             if (!element) return state;
 
-            const editElement: DraftTextElement = {
-                toolType: "text",
-                area: element.area,
-                style: element.style,
-                text: element.text,
+            return {
+                ...state,
+                toolType: element.toolType,
+                canvasMode: {
+                    mode: "editing",
+                    session: {
+                        editId: element.id,
+                        element: {
+                            toolType: element.toolType,
+                            area: { ...element.area },
+                            style: { ...element.style },
+                            text: element.text,
+                        },
+                    },
+                },
             };
+        }
 
-            const elements = state.document.elements.filter(
-                (el) => el.id !== action.payload,
-            );
+        // ---------------------------------------------------------------------
+        // Draft
+        case "draft/textChanged": {
+            if (state.canvasMode.mode !== "editing") return state;
 
             return {
                 ...state,
-                document: {
-                    ...state.document,
-                    elements: elements,
-                },
                 canvasMode: {
                     ...state.canvasMode,
-                    mode: "editing",
-                    editId: action.payload,
-                    element: {
-                        ...editElement,
+                    session: {
+                        ...state.canvasMode.session,
+                        element: {
+                            ...state.canvasMode.session.element,
+                            text: action.payload,
+                        },
                     },
                 },
             };
@@ -214,30 +206,21 @@ export function dotReducer(
         // ---------------------------------------------------------------------
         // Area
         case "area/resize": {
-            if (state.canvasMode.mode === "drawing") {
-                return {
-                    ...state,
-                    canvasMode: {
-                        ...state.canvasMode,
-                        area: action.payload,
-                    },
-                };
-            }
+            if (state.canvasMode.mode === "idle") return state;
 
-            if (state.canvasMode.mode === "editing") {
-                return {
-                    ...state,
-                    canvasMode: {
-                        ...state.canvasMode,
+            return {
+                ...state,
+                canvasMode: {
+                    ...state.canvasMode,
+                    session: {
+                        ...state.canvasMode.session,
                         element: {
-                            ...state.canvasMode.element,
+                            ...state.canvasMode.session.element,
                             area: action.payload,
                         },
                     },
-                };
-            }
-
-            return state;
+                },
+            };
         }
 
         // ---------------------------------------------------------------------

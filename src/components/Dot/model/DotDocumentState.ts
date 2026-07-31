@@ -1,15 +1,19 @@
 import type {
     DotDocument,
     DraftTextElement,
-    Rect,
     ToolType,
 } from "./DotDocument";
 // -----------------------------------------------------------------------------
 
+export type EditSession = {
+    editId: string | null;
+    element: DraftTextElement;
+};
+
 export type CanvasMode =
     | { mode: "idle" }
-    | { mode: "drawing"; area: Rect }
-    | { mode: "editing"; editId: string | null; element: DraftTextElement };
+    | { mode: "drawing"; session: EditSession }
+    | { mode: "editing"; session: EditSession };
 
 export type DotState = {
     document: DotDocument;

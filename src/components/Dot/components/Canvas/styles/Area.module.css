@@ -16,18 +16,22 @@
 .editBtn {
     z-index: 1000;
 
-    margin: 0.25rem;
     padding: 0.25rem;
-    left: 0;
-    bottom: 0;
 
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     background-color: var(--highlight-l);
 
     transition: opacity 250ms ease-in;
 }
-.savedElement:hover .editBtn {
+
+.savedElement:hover + .editBtn,
+.editBtn:hover,
+.editBtn:focus-visible {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .tempArea {
