@@ -62,9 +62,14 @@ export default function EditingMode({
                             />
                         </form>
                         <DragBox
-                            state={state}
-                            dispatch={dispatch}
+                            area={state.canvasMode.session.element.area}
                             canvasRef={canvasRef}
+                            onResize={(area) =>
+                                dispatch({
+                                    type: "resize/area",
+                                    payload: area,
+                                })
+                            }
                         />
                     </>
                 )}

@@ -13,25 +13,38 @@
     overflow-wrap: break-word;
 }
 
+.savedElement {
+    transition: filter 100ms ease-in;
+}
+
+.savedElement:hover {
+    filter: brightness(0.975);
+}
+
 .editBtn {
-    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 
     padding: 0.25rem;
+    background-color: transparent;
 
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    background-color: var(--highlight-l);
-
-    transition: opacity 250ms ease-in;
+    transition:
+        opacity 250ms ease-in,
+        background-color 150ms ease-in;
 }
 
 .savedElement:hover + .editBtn,
 .editBtn:hover,
 .editBtn:focus-visible {
-    opacity: 1;
     visibility: visible;
+    opacity: 1;
     pointer-events: auto;
+}
+
+.editBtn:hover,
+.editBtn:focus-visible {
+    background-color: var(--highlight-l);
 }
 
 .tempArea {

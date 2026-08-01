@@ -1,11 +1,13 @@
-import { Fragment, type ReactElement, type RefObject } from "react";
+import type { ReactElement, RefObject } from "react";
+import { Fragment } from "react";
 
 import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { styleCSS } from "./shared/StyleCSS";
 
-import stylesArea from "../styles/Area.module.css";
 import DragBox from "./DragBox";
+
+import stylesArea from "../styles/Area.module.css";
 // -----------------------------------------------------------------------------
 
 type SavedElementsProps = DotStateProps & {
@@ -40,9 +42,8 @@ export default function SavedElements({
                         <button
                             className={stylesArea.editBtn}
                             style={{
+                                top: element.area.top + 4,
                                 left: element.area.left + 4,
-                                top: element.area.top + element.area.height - 4,
-                                transform: "translateY(-100%)",
                             }}
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={() =>
@@ -55,9 +56,17 @@ export default function SavedElements({
                             edit
                         </button>
                         <DragBox
-                            state={state}
-                            dispatch={dispatch}
+                            area={element.area}
                             canvasRef={canvasRef}
+                            onResize={(area) =>
+                                dispatch({
+                                    type: "resize/element",
+                                    payload: {
+                                        id: element.id,
+                                        area: area,
+                                    },
+                                })
+                            }
                         />
                     </Fragment>
                 ))}

@@ -2,7 +2,6 @@ import type { ReactElement, RefObject } from "react";
 import React, { useState } from "react";
 
 import type { Rect } from "../../../model/DotDocument";
-import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { dotConfig } from "../../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../../services/DotGeometryService";
@@ -13,34 +12,29 @@ import styles from "./DragBox.module.css";
 
 const geo = new DotGeometryService(dotConfig.gridSpacing);
 
-type DragBoxProps = DotStateProps & {
+type DragBoxProps = {
+    area: Rect;
     canvasRef: RefObject<HTMLDivElement | null>;
+    onResize: (area: Rect) => void;
 };
 
 export default function DragBox({
-    state,
-    dispatch,
+    area,
     canvasRef,
+    onResize,
 }: DragBoxProps): ReactElement {
     const [isDragging, setIsDragging] = useState(false);
 
-    const stateArea =
-        state.canvasMode.mode === "idle"
-            ? undefined
-            : state.canvasMode.session.element.area;
-
     const [resizeArea, setResizeArea] = useState<Rect | undefined>();
 
-    const displayedArea = isDragging ? resizeArea : (stateArea ?? undefined);
+    const displayedArea = isDragging ? resizeArea : area;
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
-        if (!stateArea) return;
-
         e.preventDefault();
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
 
-        setResizeArea(stateArea);
+        setResizeArea(area);
         setIsDragging(true);
     }
 
@@ -122,10 +116,7 @@ export default function DragBox({
 
         if (!resizeArea) return;
 
-        dispatch({
-            type: "area/resize",
-            payload: resizeArea,
-        });
+        onResize(resizeArea);
 
         setIsDragging(false);
         setResizeArea(undefined);

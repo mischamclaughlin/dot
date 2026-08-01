@@ -4,8 +4,6 @@ import type { TextStyle } from "../../../../model/DotDocument";
 // -----------------------------------------------------------------------------
 
 export function styleCSS(element: TextStyle) {
-    if (!element) return undefined;
-
     return {
         alignContent: element.alignContent,
         textAlign: element.alignText,

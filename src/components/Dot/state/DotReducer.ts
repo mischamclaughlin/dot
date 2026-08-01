@@ -20,8 +20,15 @@ export type Action =
           };
       }
     | {
-          type: "area/resize";
+          type: "resize/area";
           payload: Rect;
+      }
+    | {
+          type: "resize/element";
+          payload: {
+              id: string;
+              area: Rect;
+          };
       }
     | {
           type: "canvasMode/switch";
@@ -204,8 +211,8 @@ export function dotReducer(
         }
 
         // ---------------------------------------------------------------------
-        // Area
-        case "area/resize": {
+        // Resize
+        case "resize/area": {
             if (state.canvasMode.mode === "idle") return state;
 
             return {
@@ -219,6 +226,23 @@ export function dotReducer(
                             area: action.payload,
                         },
                     },
+                },
+            };
+        }
+
+        case "resize/element": {
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: state.document.elements.map((el) =>
+                        el.id === action.payload.id
+                            ? {
+                                  ...el,
+                                  area: action.payload.area,
+                              }
+                            : el,
+                    ),
                 },
             };
         }
