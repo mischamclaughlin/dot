@@ -1,14 +1,16 @@
-import type { ReactElement, CSSProperties } from "react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import type { ReactElement } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { Rect, TextStyle } from "../../model/DotDocument";
+import type { Rect } from "../../model/DotDocument";
 import type { DotStateProps } from "../../state/DotStateProps";
 import type { SingleDot } from "../../types/DotTypes";
 
 import { dotConfig } from "../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../services/DotGeometryService";
 
-import DragBox from "./components/DragBox";
+import DrawingMode from "./components/DrawingMode";
+import EditingMode from "./components/EditingMode";
+import SavedElements from "./components/SavedElements";
 
 import styles from "./Canvas.module.css";
 import stylesArea from "./styles/Area.module.css";
@@ -83,48 +85,16 @@ export default function Canvas({
         });
     }
 
-    function handleSave(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
+    function handlePointeCancel() {
+        setStartDot(null);
+        setTempArea(null);
 
-        if (state.canvasMode.mode !== "editing") return;
-
-        const session = state.canvasMode.session;
-
-        dispatch({
-            type: "action/save",
-            payload: {
-                id: session.editId ?? crypto.randomUUID(),
-                element: session.element,
-            },
-        });
+        dispatch({ type: "action/cancel" });
     }
-
-    function styleCSS(element?: TextStyle) {
-        if (!element) return undefined;
-
-        return {
-            alignContent: element.alignContent,
-            textAlign: element.alignText,
-            backgroundColor: element.colourBackground,
-            color: element.colourForeground,
-            fontSize: `${element.fontSize}rem`,
-            fontWeight: element.fontWeight,
-            paddingTop: `${element.paddingTop}px`,
-            paddingRight: `${element.paddingRight}px`,
-            paddingBottom: `${element.paddingBottom}px`,
-            paddingLeft: `${element.paddingLeft}px`,
-        } satisfies CSSProperties;
-    }
-
-    const activeEditId =
-        state.canvasMode.mode === "idle"
-            ? null
-            : state.canvasMode.session.editId;
 
     return (
-        <>
-            <div
-                className={`
+        <div
+            className={`
                         ${styles.container}
                         ${
                             state.canvasMode.mode === "editing"
@@ -132,123 +102,53 @@ export default function Canvas({
                                 : styles.canvas
                         }
                     `}
-                style={{
-                    backgroundSize: `${geo.gridSize}px ${geo.gridSize}px`,
-                }}
-                ref={canvasRef}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-            >
-                {hoverDot && (
-                    <div
-                        className={styles.hoverDot}
-                        style={{ left: hoverDot.x, top: hoverDot.y }}
-                    />
-                )}
-                {tempArea && (
-                    <div
-                        className={stylesArea.tempArea}
-                        style={{
-                            left: tempArea.left,
-                            width: tempArea.width,
-                            top: tempArea.top,
-                            height: tempArea.height,
-                        }}
-                        onPointerDown={(e) => {
-                            e.stopPropagation();
-                        }}
-                    />
-                )}
-                {state.canvasMode.mode === "drawing" &&
-                    state.canvasMode.session.element.area && (
-                        <>
-                            <div
-                                className={stylesArea.selectArea}
-                                style={state.canvasMode.session.element.area}
-                                onPointerDown={(e) => {
-                                    e.stopPropagation();
-                                }}
-                            />
-                            <DragBox
-                                state={state}
-                                dispatch={dispatch}
-                                canvasRef={canvasRef}
-                            />
-                        </>
-                    )}
-                {state.canvasMode.mode === "editing" &&
-                    state.canvasMode.session.element.area && (
-                        <>
-                            <form id="text-edit-form" onSubmit={handleSave}>
-                                <textarea
-                                    className={stylesArea.editArea}
-                                    style={{
-                                        ...styleCSS(
-                                            state.canvasMode.session.element
-                                                .style,
-                                        ),
-                                        ...state.canvasMode.session.element
-                                            .area,
-                                    }}
-                                    name="text"
-                                    value={
-                                        state.canvasMode.session.element.text
-                                    }
-                                    onChange={(e) =>
-                                        dispatch({
-                                            type: "draft/textChanged",
-                                            payload: e.target.value,
-                                        })
-                                    }
-                                    onPointerDown={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                />
-                            </form>
-                            <DragBox
-                                state={state}
-                                dispatch={dispatch}
-                                canvasRef={canvasRef}
-                            />
-                        </>
-                    )}
-                {state.document.elements
-                    .filter((element) => element.id !== activeEditId)
-                    .map((element) => (
-                    <Fragment key={element.id}>
-                        <div
-                            className={stylesArea.savedElement}
-                            style={{
-                                ...styleCSS(element.style),
-                                ...element.area,
-                            }}
-                        >
-                            {element.text}
-                        </div>
-                        <button
-                            className={stylesArea.editBtn}
-                            style={{
-                                left: element.area.left + 4,
-                                top:
-                                    element.area.top +
-                                    element.area.height -
-                                    4,
-                                transform: "translateY(-100%)",
-                            }}
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={() =>
-                                dispatch({
-                                    type: "canvasMode/editElement",
-                                    payload: element.id,
-                                })
-                            }
-                        >
-                            edit
-                        </button>
-                    </Fragment>
-                ))}
-            </div>
-        </>
+            style={{
+                backgroundSize: `${geo.gridSize}px ${geo.gridSize}px`,
+            }}
+            ref={canvasRef}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointeCancel}
+        >
+            {hoverDot && (
+                <div
+                    className={styles.hoverDot}
+                    style={{ left: hoverDot.x, top: hoverDot.y }}
+                />
+            )}
+            {tempArea && (
+                <div
+                    className={stylesArea.tempArea}
+                    style={{
+                        left: tempArea.left,
+                        width: tempArea.width,
+                        top: tempArea.top,
+                        height: tempArea.height,
+                    }}
+                    onPointerDown={(e) => {
+                        e.stopPropagation();
+                    }}
+                />
+            )}
+
+            <DrawingMode
+                state={state}
+                dispatch={dispatch}
+                canvasRef={canvasRef}
+            />
+
+            <EditingMode
+                state={state}
+                dispatch={dispatch}
+                canvasRef={canvasRef}
+            />
+
+            <SavedElements
+                state={state}
+                dispatch={dispatch}
+                canvasRef={canvasRef}
+            />
+        </div>
     );
 }
