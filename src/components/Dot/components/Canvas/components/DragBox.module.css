@@ -5,9 +5,11 @@
 
 .container {
     pointer-events: none;
+    display: grid;
 }
 
-.bar {
+.bar,
+.square {
     z-index: 800;
 
     background-color: var(--accent-1);
@@ -17,8 +19,16 @@
 
     transition: filter 150ms ease-in;
 }
-.bar:hover {
+.bar:hover,
+.square:hover {
     filter: opacity(1);
+}
+
+.central {
+    width: 25%;
+    height: 25%;
+
+    cursor: crosshair;
 }
 
 .horizontal {
@@ -33,6 +43,10 @@
     width: var(--grid-spacing-half);
 
     cursor: col-resize;
+}
+
+.middle {
+    place-self: center;
 }
 
 .left {

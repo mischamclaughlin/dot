@@ -78,9 +78,9 @@ export default function SavedElements({
                         <DragBox
                             area={element.area}
                             canvasRef={canvasRef}
-                            onResize={(area) =>
+                            onChangeArea={(area) =>
                                 dispatch({
-                                    type: "resize/element",
+                                    type: "change/element/area",
                                     payload: {
                                         id: element.id,
                                         area: area,

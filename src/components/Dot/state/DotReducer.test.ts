@@ -87,7 +87,7 @@ describe("dotReducer editing workflow", () => {
         });
         const resizedArea = { ...area, width: 120 };
         const resized = dotReducer(editing, {
-            type: "resize/area",
+            type: "change/draft/area",
             payload: resizedArea,
         });
 

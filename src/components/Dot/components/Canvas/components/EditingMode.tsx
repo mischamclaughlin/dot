@@ -64,9 +64,9 @@ export default function EditingMode({
                         <DragBox
                             area={state.canvasMode.session.element.area}
                             canvasRef={canvasRef}
-                            onResize={(area) =>
+                            onChangeArea={(area) =>
                                 dispatch({
-                                    type: "resize/area",
+                                    type: "change/draft/area",
                                     payload: area,
                                 })
                             }

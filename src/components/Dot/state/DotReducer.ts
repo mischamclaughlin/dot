@@ -20,11 +20,11 @@ export type Action =
           };
       }
     | {
-          type: "resize/area";
+          type: "change/draft/area";
           payload: Rect;
       }
     | {
-          type: "resize/element";
+          type: "change/element/area";
           payload: {
               id: string;
               area: Rect;
@@ -249,7 +249,7 @@ export function dotReducer(
 
         // ---------------------------------------------------------------------
         // Resize
-        case "resize/area": {
+        case "change/draft/area": {
             if (state.canvasMode.mode === "idle") return state;
 
             return {
@@ -267,7 +267,7 @@ export function dotReducer(
             };
         }
 
-        case "resize/element": {
+        case "change/element/area": {
             return {
                 ...state,
                 document: {

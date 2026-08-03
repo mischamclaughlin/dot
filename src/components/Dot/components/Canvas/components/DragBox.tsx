@@ -2,6 +2,7 @@ import type { ReactElement, RefObject } from "react";
 import React, { useState } from "react";
 
 import type { Rect } from "../../../model/DotDocument";
+import type { SingleDot } from "../../../types/DotTypes";
 
 import { dotConfig } from "../../../dotConfig/DotConfig";
 import { DotGeometryService } from "../../../services/DotGeometryService";
@@ -15,21 +16,28 @@ const geo = new DotGeometryService(dotConfig.gridSpacing);
 type DragBoxProps = {
     area: Rect;
     canvasRef: RefObject<HTMLDivElement | null>;
-    onResize: (area: Rect) => void;
+    onChangeArea: (area: Rect) => void;
+};
+
+type MoveStart = {
+    dot: SingleDot;
+    area: Rect;
 };
 
 export default function DragBox({
     area,
     canvasRef,
-    onResize,
+    onChangeArea,
 }: DragBoxProps): ReactElement {
     const [isDragging, setIsDragging] = useState(false);
 
     const [resizeArea, setResizeArea] = useState<Rect | undefined>();
 
+    const [moveStart, setMoveStart] = useState<MoveStart | null>(null);
+
     const displayedArea = isDragging ? resizeArea : area;
 
-    function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    function handleResizePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         e.preventDefault();
         e.stopPropagation();
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -38,7 +46,7 @@ export default function DragBox({
         setIsDragging(true);
     }
 
-    function handlePointerMove(
+    function handleResizePointerMove(
         e: React.PointerEvent<HTMLDivElement>,
         edge: "left" | "right" | "top" | "bottom",
     ) {
@@ -109,6 +117,40 @@ export default function DragBox({
         });
     }
 
+    function handleMovePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const dot = geo.getCanvasDot(e, canvasRef);
+        if (!dot) return;
+
+        e.currentTarget.setPointerCapture(e.pointerId);
+
+        setMoveStart({
+            dot,
+            area,
+        });
+
+        setResizeArea(area);
+        setIsDragging(true);
+    }
+
+    function handleMovePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+        if (!moveStart) return;
+
+        const currentDot = geo.getCanvasDot(e, canvasRef);
+        if (!currentDot) return;
+
+        const deltaX = currentDot.x - moveStart.dot.x;
+        const deltaY = currentDot.y - moveStart.dot.y;
+
+        setResizeArea({
+            ...moveStart.area,
+            left: moveStart.area.left + deltaX,
+            top: moveStart.area.top + deltaY,
+        });
+    }
+
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
             e.currentTarget.releasePointerCapture(e.pointerId);
@@ -116,10 +158,11 @@ export default function DragBox({
 
         if (!resizeArea) return;
 
-        onResize(resizeArea);
+        onChangeArea(resizeArea);
 
         setIsDragging(false);
         setResizeArea(undefined);
+        setMoveStart(null);
     }
 
     function handlePointerCancel(e: React.PointerEvent<HTMLDivElement>) {
@@ -129,6 +172,7 @@ export default function DragBox({
 
         setIsDragging(false);
         setResizeArea(undefined);
+        setMoveStart(null);
     }
 
     return (
@@ -136,12 +180,23 @@ export default function DragBox({
             <div className={styles.container} style={displayedArea}>
                 <div
                     className={`
+					${styles.square}
+					${styles.central}
+					${styles.middle}
+				`}
+                    onPointerDown={handleMovePointerDown}
+                    onPointerMove={handleMovePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
 					${styles.bar}
 					${styles.horizontal}
 					${styles.top}
 				`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={(e) => handlePointerMove(e, "top")}
+                    onPointerDown={handleResizePointerDown}
+                    onPointerMove={(e) => handleResizePointerMove(e, "top")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
                 />
@@ -151,8 +206,8 @@ export default function DragBox({
 					${styles.horizontal}
 					${styles.bottom}
 				`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={(e) => handlePointerMove(e, "bottom")}
+                    onPointerDown={handleResizePointerDown}
+                    onPointerMove={(e) => handleResizePointerMove(e, "bottom")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
                 />
@@ -162,8 +217,8 @@ export default function DragBox({
 					${styles.vertical}
 					${styles.right}
 				`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={(e) => handlePointerMove(e, "right")}
+                    onPointerDown={handleResizePointerDown}
+                    onPointerMove={(e) => handleResizePointerMove(e, "right")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
                 />
@@ -173,8 +228,8 @@ export default function DragBox({
 					${styles.vertical}
 					${styles.left}
 				`}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={(e) => handlePointerMove(e, "left")}
+                    onPointerDown={handleResizePointerDown}
+                    onPointerMove={(e) => handleResizePointerMove(e, "left")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
                 />
