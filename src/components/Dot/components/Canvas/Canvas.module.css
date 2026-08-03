@@ -8,6 +8,20 @@
     cursor: crosshair;
 }
 
+.world {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+.panReady {
+    cursor: grab;
+}
+
+.panning {
+    cursor: grabbing;
+}
+
 .canvas {
     background-image: radial-gradient(
         circle,

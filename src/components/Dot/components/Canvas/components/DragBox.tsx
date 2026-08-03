@@ -17,6 +17,7 @@ type DragBoxProps = {
     area: Rect;
     canvasRef: RefObject<HTMLDivElement | null>;
     onChangeArea: (area: Rect) => void;
+    pan: SingleDot;
 };
 
 type MoveStart = {
@@ -28,6 +29,7 @@ export default function DragBox({
     area,
     canvasRef,
     onChangeArea,
+    pan,
 }: DragBoxProps): ReactElement {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -52,7 +54,7 @@ export default function DragBox({
     ) {
         if (!isDragging) return;
 
-        const current = geo.getCanvasDot(e, canvasRef);
+        const current = geo.getCanvasDot(e, canvasRef, pan);
         if (!current) return;
 
         setResizeArea((prevArea) => {
@@ -121,7 +123,7 @@ export default function DragBox({
         e.preventDefault();
         e.stopPropagation();
 
-        const dot = geo.getCanvasDot(e, canvasRef);
+        const dot = geo.getCanvasDot(e, canvasRef, pan);
         if (!dot) return;
 
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -138,7 +140,7 @@ export default function DragBox({
     function handleMovePointerMove(e: React.PointerEvent<HTMLDivElement>) {
         if (!moveStart) return;
 
-        const currentDot = geo.getCanvasDot(e, canvasRef);
+        const currentDot = geo.getCanvasDot(e, canvasRef, pan);
         if (!currentDot) return;
 
         const deltaX = currentDot.x - moveStart.dot.x;

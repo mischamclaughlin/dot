@@ -7,16 +7,19 @@ import { styleCSS } from "./shared/StyleCSS";
 import DragBox from "./DragBox";
 
 import stylesArea from "../styles/Area.module.css";
+import type { SingleDot } from "../../../types/DotTypes";
 // -----------------------------------------------------------------------------
 
 type EditingModeProps = DotStateProps & {
     canvasRef: RefObject<HTMLDivElement | null>;
+    pan: SingleDot;
 };
 
 export default function EditingMode({
     state,
     dispatch,
     canvasRef,
+    pan,
 }: EditingModeProps): ReactElement {
     function handleSave(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -70,6 +73,7 @@ export default function EditingMode({
                                     payload: area,
                                 })
                             }
+                            pan={pan}
                         />
                     </>
                 )}

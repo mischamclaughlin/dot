@@ -5,16 +5,19 @@ import type { DotStateProps } from "../../../state/DotStateProps";
 import DragBox from "./DragBox";
 
 import stylesArea from "../styles/Area.module.css";
+import type { SingleDot } from "../../../types/DotTypes";
 // -----------------------------------------------------------------------------
 
 type DrawingModeProps = DotStateProps & {
     canvasRef: RefObject<HTMLDivElement | null>;
+    pan: SingleDot;
 };
 
 export default function DrawingMode({
     state,
     dispatch,
     canvasRef,
+    pan,
 }: DrawingModeProps): ReactElement {
     return (
         <>
@@ -38,6 +41,7 @@ export default function DrawingMode({
                                     payload: area,
                                 })
                             }
+                            pan={pan}
                         />
                     </>
                 )}

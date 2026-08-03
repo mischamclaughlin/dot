@@ -8,16 +8,19 @@ import { styleCSS } from "./shared/StyleCSS";
 import DragBox from "./DragBox";
 
 import styles from "./SavedElements.module.css";
+import type { SingleDot } from "../../../types/DotTypes";
 // -----------------------------------------------------------------------------
 
 type SavedElementsProps = DotStateProps & {
     canvasRef: RefObject<HTMLDivElement | null>;
+    pan: SingleDot;
 };
 
 export default function SavedElements({
     state,
     dispatch,
     canvasRef,
+    pan,
 }: SavedElementsProps): ReactElement {
     const activeEditId =
         state.canvasMode.mode === "idle"
@@ -87,6 +90,7 @@ export default function SavedElements({
                                     },
                                 })
                             }
+                            pan={pan}
                         />
                     </Fragment>
                 ))}

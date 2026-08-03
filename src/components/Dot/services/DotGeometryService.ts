@@ -12,6 +12,7 @@ export class DotGeometryService {
     getCanvasDot(
         e: React.PointerEvent<HTMLDivElement>,
         canvasRef: RefObject<HTMLDivElement | null>,
+        pan: SingleDot = { x: 0, y: 0 },
     ): SingleDot | null {
         const canvas = canvasRef.current;
         if (!canvas) return null;
@@ -19,16 +20,19 @@ export class DotGeometryService {
         const rect = canvas.getBoundingClientRect();
 
         return {
-            x: this.snapToGrid(e.clientX - rect.left, rect.width),
-            y: this.snapToGrid(e.clientY - rect.top, rect.height),
+            x: this.snapToGrid(e.clientX - rect.left - pan.x),
+            y: this.snapToGrid(e.clientY - rect.top - pan.y),
         };
     }
 
-    snapToGrid(value: number, maxValue: number) {
+    snapToGrid(value: number, maxValue?: number) {
         const offset = this.gridSize / 2;
         const snapped =
             Math.round((value - offset) / this.gridSize) * this.gridSize +
             offset;
+
+        if (maxValue === undefined) return snapped;
+
         const maxGridActiveDot =
             Math.floor((maxValue - offset) / this.gridSize) * this.gridSize +
             offset;
