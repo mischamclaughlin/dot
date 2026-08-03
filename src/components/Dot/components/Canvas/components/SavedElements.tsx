@@ -52,12 +52,27 @@ export default function SavedElements({
                                 onPointerDown={(e) => e.stopPropagation()}
                                 onClick={() =>
                                     dispatch({
-                                        type: "canvasMode/editElement",
+                                        type: "element/edit",
                                         payload: element.id,
                                     })
                                 }
                             >
                                 edit
+                            </button>
+                            <button
+                                className={styles.editBtn}
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={() =>
+                                    dispatch({
+                                        type: "element/copy",
+                                        payload: {
+                                            id: element.id,
+                                            newId: crypto.randomUUID(),
+                                        },
+                                    })
+                                }
+                            >
+                                copy
                             </button>
                         </div>
                         <DragBox

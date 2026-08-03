@@ -1,5 +1,4 @@
-.savedElement,
-.editBtn {
+.savedElement {
     position: absolute;
 }
 
@@ -14,6 +13,7 @@
     border: 1px solid transparent;
     background-color: transparent;
     padding: 0.25rem;
+    height: fit-content;
     pointer-events: none;
     transition:
         opacity 100ms ease-in,
@@ -24,6 +24,14 @@
 .overlayContainer {
     position: absolute;
     background-color: transparent;
+    padding: var(--grid-spacing-half);
+
+    display: flex;
+    justify-content: start;
+    align-content: start;
+    gap: var(--grid-spacing-half);
+    flex-wrap: wrap;
+
     transition: background-color 50ms ease-in;
 }
 .overlayContainer:hover {

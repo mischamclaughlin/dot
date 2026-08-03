@@ -43,7 +43,7 @@ describe("dotReducer editing workflow", () => {
     it("keeps the saved element in the document while editing", () => {
         const state = stateWithSavedElement();
         const editing = dotReducer(state, {
-            type: "canvasMode/editElement",
+            type: "element/edit",
             payload: savedElement.id,
         });
 
@@ -53,7 +53,7 @@ describe("dotReducer editing workflow", () => {
 
     it("retains the complete session when moving back to drawing and editing", () => {
         const editing = dotReducer(stateWithSavedElement(), {
-            type: "canvasMode/editElement",
+            type: "element/edit",
             payload: savedElement.id,
         });
         const withText = dotReducer(editing, {
@@ -82,7 +82,7 @@ describe("dotReducer editing workflow", () => {
 
     it("resizes without clearing the existing element ID", () => {
         const editing = dotReducer(stateWithSavedElement(), {
-            type: "canvasMode/editElement",
+            type: "element/edit",
             payload: savedElement.id,
         });
         const resizedArea = { ...area, width: 120 };
@@ -98,7 +98,7 @@ describe("dotReducer editing workflow", () => {
     it("discards an edited draft without changing the saved document", () => {
         const state = stateWithSavedElement();
         const editing = dotReducer(state, {
-            type: "canvasMode/editElement",
+            type: "element/edit",
             payload: savedElement.id,
         });
         const changed = dotReducer(editing, {
@@ -113,7 +113,7 @@ describe("dotReducer editing workflow", () => {
 
     it("replaces an edited element without changing its ID", () => {
         const editing = dotReducer(stateWithSavedElement(), {
-            type: "canvasMode/editElement",
+            type: "element/edit",
             payload: savedElement.id,
         });
         const changed = dotReducer(editing, {

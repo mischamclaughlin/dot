@@ -38,8 +38,15 @@ export type Action =
           };
       }
     | {
-          type: "canvasMode/editElement";
+          type: "element/edit";
           payload: string;
+      }
+    | {
+          type: "element/copy";
+          payload: {
+              id: string;
+              newId: string;
+          };
       }
     | {
           type: "draft/textChanged";
@@ -166,7 +173,9 @@ export function dotReducer(
             };
         }
 
-        case "canvasMode/editElement": {
+        // ---------------------------------------------------------------------
+        // Element
+        case "element/edit": {
             const element = state.document.elements.find(
                 (candidate) => candidate.id === action.payload,
             );
@@ -186,6 +195,34 @@ export function dotReducer(
                             text: element.text,
                         },
                     },
+                },
+            };
+        }
+
+        case "element/copy": {
+            const element = state.document.elements.find(
+                (candidate) => candidate.id === action.payload.id,
+            );
+            if (!element) return state;
+
+            const elementCopy: TextElement = {
+                id: action.payload.newId,
+                toolType: "text",
+                area: {
+                    left: element.area.left + 15,
+                    width: element.area.width + 15,
+                    top: element.area.top + 15,
+                    height: element.area.height + 15,
+                },
+                style: element.style,
+                text: element.text,
+            };
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: [...state.document.elements, elementCopy],
                 },
             };
         }
