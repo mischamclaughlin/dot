@@ -11,12 +11,14 @@
 
 .editBtn {
     opacity: 0;
+    border: 1px solid transparent;
     background-color: transparent;
     padding: 0.25rem;
     pointer-events: none;
     transition:
-        opacity 150ms ease-in,
-        background-color 150ms ease-in;
+        opacity 100ms ease-in,
+        background-color 125ms ease-in,
+        border-color 150ms ease-in;
 }
 
 .overlayContainer {
@@ -30,16 +32,16 @@
     .editBtn {
         opacity: 1;
         background-color: var(--highlight-l);
-        border: 1px solid var(--fg);
+        border-color: var(--fg);
         pointer-events: auto;
         transition:
-            background-color 50ms ease-in,
-            border 100ms ease-in;
+            background-color 75ms ease-in,
+            border-color 100ms ease-in;
     }
 
     .editBtn:hover,
     .editBtn:focus-visible {
-        border: 1px solid transparent;
+        border-color: transparent;
         background-color: var(--highlight-h);
     }
 }

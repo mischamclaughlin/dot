@@ -46,8 +46,8 @@ export default function SavedElements({
                             <button
                                 className={styles.editBtn}
                                 style={{
-                                    top: 0,
-                                    left: 0,
+                                    top: 5,
+                                    left: 5,
                                 }}
                                 onPointerDown={(e) => e.stopPropagation()}
                                 onClick={() =>

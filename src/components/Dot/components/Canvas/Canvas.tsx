@@ -44,6 +44,8 @@ export default function Canvas({
     }, [dispatch]);
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+        if (e.target !== e.currentTarget) return;
+
         const start = geo.getCanvasDot(e, canvasRef);
         setStartDot(start);
     }
