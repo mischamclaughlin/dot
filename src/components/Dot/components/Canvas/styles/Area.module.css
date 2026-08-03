@@ -25,6 +25,8 @@
 .editArea {
     background-color: var(--bg);
     resize: none;
+    min-width: 0;
+    min-height: 0;
 }
 
 .resizeArea {

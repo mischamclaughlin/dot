@@ -1,3 +1,4 @@
+import { dotConfig } from "../dotConfig/DotConfig";
 import type {
     DraftTextElement,
     Rect,
@@ -49,7 +50,7 @@ export type Action =
           };
       }
     | {
-          type: "draft/textChanged";
+          type: "change/draft/text";
           payload: string;
       };
 
@@ -209,10 +210,10 @@ export function dotReducer(
                 id: action.payload.newId,
                 toolType: "text",
                 area: {
-                    left: element.area.left + 15,
-                    width: element.area.width + 15,
-                    top: element.area.top + 15,
-                    height: element.area.height + 15,
+                    left: element.area.left + dotConfig.gridSpacing,
+                    width: element.area.width + dotConfig.gridSpacing,
+                    top: element.area.top * 2 + dotConfig.gridSpacing,
+                    height: element.area.height + dotConfig.gridSpacing,
                 },
                 style: element.style,
                 text: element.text,
@@ -228,8 +229,8 @@ export function dotReducer(
         }
 
         // ---------------------------------------------------------------------
-        // Draft
-        case "draft/textChanged": {
+        // Change
+        case "change/draft/text": {
             if (state.canvasMode.mode !== "editing") return state;
 
             return {
@@ -247,8 +248,6 @@ export function dotReducer(
             };
         }
 
-        // ---------------------------------------------------------------------
-        // Resize
         case "change/draft/area": {
             if (state.canvasMode.mode === "idle") return state;
 

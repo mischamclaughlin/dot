@@ -55,7 +55,7 @@ export default function EditingMode({
                                 value={state.canvasMode.session.element.text}
                                 onChange={(e) =>
                                     dispatch({
-                                        type: "draft/textChanged",
+                                        type: "change/draft/text",
                                         payload: e.target.value,
                                     })
                                 }

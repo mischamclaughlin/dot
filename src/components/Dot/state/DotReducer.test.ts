@@ -57,7 +57,7 @@ describe("dotReducer editing workflow", () => {
             payload: savedElement.id,
         });
         const withText = dotReducer(editing, {
-            type: "draft/textChanged",
+            type: "change/draft/text",
             payload: "Draft text",
         });
         const drawing = dotReducer(withText, { type: "action/back" });
@@ -102,7 +102,7 @@ describe("dotReducer editing workflow", () => {
             payload: savedElement.id,
         });
         const changed = dotReducer(editing, {
-            type: "draft/textChanged",
+            type: "change/draft/text",
             payload: "Changed text",
         });
         const cancelled = dotReducer(changed, { type: "action/cancel" });
@@ -117,7 +117,7 @@ describe("dotReducer editing workflow", () => {
             payload: savedElement.id,
         });
         const changed = dotReducer(editing, {
-            type: "draft/textChanged",
+            type: "change/draft/text",
             payload: "Saved text",
         });
         const session = getSession(changed);

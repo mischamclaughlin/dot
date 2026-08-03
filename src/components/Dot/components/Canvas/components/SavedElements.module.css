@@ -27,7 +27,7 @@
     padding: var(--grid-spacing-half);
 
     display: flex;
-    justify-content: start;
+    justify-content: end;
     align-content: start;
     gap: var(--grid-spacing-half);
     flex-wrap: wrap;

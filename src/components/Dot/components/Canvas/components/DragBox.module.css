@@ -6,6 +6,7 @@
 .container {
     pointer-events: none;
     display: grid;
+    overflow: visible;
 }
 
 .bar,
@@ -25,8 +26,8 @@
 }
 
 .central {
-    width: 25%;
-    height: 25%;
+    width: calc(var(--grid-spacing) * 2);
+    height: calc(var(--grid-spacing) * 2);
 
     cursor: move;
 }
@@ -46,18 +47,17 @@
 }
 
 .middle {
-    place-self: center;
+    place-self: start;
 }
-
 .left {
-    left: 0;
+    place-self: start;
 }
 .right {
-    right: 0;
+    place-self: end;
 }
 .top {
-    top: 0;
+    place-self: start;
 }
 .bottom {
-    bottom: 0;
+    place-self: end;
 }
