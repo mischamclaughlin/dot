@@ -22,6 +22,7 @@ export default function DrawingMode({
                 state.canvasMode.session.element.area && (
                     <>
                         <div
+                            data-testid="select-area"
                             className={stylesArea.selectArea}
                             style={state.canvasMode.session.element.area}
                             onPointerDown={(e) => {

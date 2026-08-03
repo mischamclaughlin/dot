@@ -94,6 +94,7 @@ export default function Canvas({
 
     return (
         <div
+            data-testid="canvas"
             className={`
                         ${styles.container}
                         ${
@@ -113,12 +114,14 @@ export default function Canvas({
         >
             {hoverDot && (
                 <div
+                    data-testid="hover-dot"
                     className={styles.hoverDot}
                     style={{ left: hoverDot.x, top: hoverDot.y }}
                 />
             )}
             {tempArea && (
                 <div
+                    data-testid="temp-area"
                     className={stylesArea.tempArea}
                     style={{
                         left: tempArea.left,
