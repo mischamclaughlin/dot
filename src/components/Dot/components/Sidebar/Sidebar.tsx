@@ -42,16 +42,14 @@ export default function Sidebar({
                         <h3 className={styles.headerTool}>
                             {state.canvasMode.mode}
                         </h3>
-
-                        {state.canvasMode.mode !== "idle" && (
-                            <ActionButtons state={state} dispatch={dispatch} />
-                        )}
-
                         {!state.toolType && (
                             <ToolSelectButtonsProps
                                 state={state}
                                 dispatch={dispatch}
                             />
+                        )}
+                        {state.toolType && (
+                            <ActionButtons state={state} dispatch={dispatch} />
                         )}
                     </div>
 
