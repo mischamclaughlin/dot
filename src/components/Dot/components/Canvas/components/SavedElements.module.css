@@ -1,0 +1,45 @@
+.savedElement,
+.editBtn {
+    position: absolute;
+}
+
+.savedElement {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    pointer-events: none;
+}
+
+.editBtn {
+    opacity: 0;
+    background-color: transparent;
+    padding: 0.25rem;
+    pointer-events: none;
+    transition:
+        opacity 150ms ease-in,
+        background-color 150ms ease-in;
+}
+
+.overlayContainer {
+    position: absolute;
+    background-color: transparent;
+    transition: background-color 50ms ease-in;
+}
+.overlayContainer:hover {
+    background-color: color-mix(in srgb, var(--highlight-l) 50%, transparent);
+
+    .editBtn {
+        opacity: 1;
+        background-color: var(--highlight-l);
+        border: 1px solid var(--fg);
+        pointer-events: auto;
+        transition:
+            background-color 50ms ease-in,
+            border 100ms ease-in;
+    }
+
+    .editBtn:hover,
+    .editBtn:focus-visible {
+        border: 1px solid transparent;
+        background-color: var(--highlight-h);
+    }
+}

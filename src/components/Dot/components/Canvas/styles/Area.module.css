@@ -1,50 +1,13 @@
 .tempArea,
 .selectArea,
 .editArea,
-.resizeArea,
-.savedElement,
-.editBtn {
+.resizeArea {
     position: absolute;
 }
 
-.editArea,
-.savedElement {
+.editArea {
     white-space: pre-wrap;
     overflow-wrap: break-word;
-}
-
-.savedElement {
-    transition: filter 100ms ease-in;
-}
-
-.savedElement:hover {
-    filter: brightness(0.975);
-}
-
-.editBtn {
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-
-    padding: 0.25rem;
-    background-color: transparent;
-
-    transition:
-        opacity 250ms ease-in,
-        background-color 150ms ease-in;
-}
-
-.savedElement:hover + .editBtn,
-.editBtn:hover,
-.editBtn:focus-visible {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.editBtn:hover,
-.editBtn:focus-visible {
-    background-color: var(--highlight-l);
 }
 
 .tempArea {

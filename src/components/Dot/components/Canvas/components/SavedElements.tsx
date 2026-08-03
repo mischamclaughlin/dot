@@ -7,7 +7,7 @@ import { styleCSS } from "./shared/StyleCSS";
 
 import DragBox from "./DragBox";
 
-import stylesArea from "../styles/Area.module.css";
+import styles from "./SavedElements.module.css";
 // -----------------------------------------------------------------------------
 
 type SavedElementsProps = DotStateProps & {
@@ -31,7 +31,7 @@ export default function SavedElements({
                 .map((element) => (
                     <Fragment key={element.id}>
                         <div
-                            className={stylesArea.savedElement}
+                            className={styles.savedElement}
                             style={{
                                 ...styleCSS(element.style),
                                 ...element.area,
@@ -39,22 +39,27 @@ export default function SavedElements({
                         >
                             {element.text}
                         </div>
-                        <button
-                            className={stylesArea.editBtn}
-                            style={{
-                                top: element.area.top + 4,
-                                left: element.area.left + 4,
-                            }}
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={() =>
-                                dispatch({
-                                    type: "canvasMode/editElement",
-                                    payload: element.id,
-                                })
-                            }
+                        <div
+                            className={styles.overlayContainer}
+                            style={{ ...element.area }}
                         >
-                            edit
-                        </button>
+                            <button
+                                className={styles.editBtn}
+                                style={{
+                                    top: 0,
+                                    left: 0,
+                                }}
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={() =>
+                                    dispatch({
+                                        type: "canvasMode/editElement",
+                                        payload: element.id,
+                                    })
+                                }
+                            >
+                                edit
+                            </button>
+                        </div>
                         <DragBox
                             area={element.area}
                             canvasRef={canvasRef}
