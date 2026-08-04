@@ -49,6 +49,7 @@ export type Action =
               newId: string;
           };
       }
+    | { type: "element/delete"; payload: string }
     | {
           type: "change/draft/text";
           payload: string;
@@ -224,6 +225,20 @@ export function dotReducer(
                 document: {
                     ...state.document,
                     elements: [...state.document.elements, elementCopy],
+                },
+            };
+        }
+
+        case "element/delete": {
+            const elements = state.document.elements.filter(
+                (el) => el.id !== action.payload,
+            );
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: elements,
                 },
             };
         }
