@@ -9,7 +9,13 @@
     align-items: start;
 }
 
+.hoverContainer {
+    position: fixed;
+}
+
 .buttonContainer {
+    z-index: 1000;
+
     height: fit-content;
     width: fit-content;
 
@@ -55,8 +61,19 @@
         border-color: transparent;
         background-color: var(--highlight-h);
     }
+
+    .hoverContainer {
+        background-color: color-mix(
+            in srgb,
+            var(--highlight-l) 75%,
+            transparent
+        );
+    }
 }
 
 .hoverContainer {
-    position: fixed;
+    background-color: transparent;
+}
+.hoverContainer:hover {
+    background-color: color-mix(in srgb, var(--highlight-l) 75%, transparent);
 }

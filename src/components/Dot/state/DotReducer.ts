@@ -212,9 +212,9 @@ export function dotReducer(
                 toolType: "text",
                 area: {
                     left: element.area.left + dotConfig.gridSpacing,
-                    width: element.area.width + dotConfig.gridSpacing,
+                    width: element.area.width,
                     top: element.area.top * 2 + dotConfig.gridSpacing,
-                    height: element.area.height + dotConfig.gridSpacing,
+                    height: element.area.height,
                 },
                 style: element.style,
                 text: element.text,

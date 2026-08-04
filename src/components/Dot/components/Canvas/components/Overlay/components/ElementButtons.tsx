@@ -21,7 +21,6 @@ export default function ElementButtons({
             style={{
                 left: element.area.left,
                 top: element.area.top - dotConfig.gridSpacing * 2,
-                // height: element.area.height,
             }}
         >
             <div
