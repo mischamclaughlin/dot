@@ -5,10 +5,11 @@ import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { styleCSS } from "./shared/StyleCSS";
 
-import DragBox from "./DragBox";
+import DragBox from "./Overlay/components/DragBox";
 
 import styles from "./SavedElements.module.css";
 import type { SingleDot } from "../../../types/DotTypes";
+import ElementButtons from "./Overlay/components/ElementButtons";
 // -----------------------------------------------------------------------------
 
 type SavedElementsProps = DotStateProps & {
@@ -42,42 +43,9 @@ export default function SavedElements({
                         >
                             {element.text}
                         </div>
-                        <div
-                            className={styles.overlayContainer}
-                            style={{ ...element.area }}
-                        >
-                            <button
-                                className={styles.editBtn}
-                                style={{
-                                    top: 5,
-                                    left: 5,
-                                }}
-                                onPointerDown={(e) => e.stopPropagation()}
-                                onClick={() =>
-                                    dispatch({
-                                        type: "element/edit",
-                                        payload: element.id,
-                                    })
-                                }
-                            >
-                                edit
-                            </button>
-                            <button
-                                className={styles.editBtn}
-                                onPointerDown={(e) => e.stopPropagation()}
-                                onClick={() =>
-                                    dispatch({
-                                        type: "element/copy",
-                                        payload: {
-                                            id: element.id,
-                                            newId: crypto.randomUUID(),
-                                        },
-                                    })
-                                }
-                            >
-                                copy
-                            </button>
-                        </div>
+
+                        <ElementButtons dispatch={dispatch} element={element} />
+
                         <DragBox
                             area={element.area}
                             canvasRef={canvasRef}

@@ -1,13 +1,13 @@
 import type { ReactElement, RefObject } from "react";
 import React, { useState } from "react";
 
-import type { Rect } from "../../../model/DotDocument";
-import type { SingleDot } from "../../../types/DotTypes";
+import type { Rect } from "../../../../../model/DotDocument";
+import type { SingleDot } from "../../../../../types/DotTypes";
 
-import { dotConfig } from "../../../dotConfig/DotConfig";
-import { DotGeometryService } from "../../../services/DotGeometryService";
+import { dotConfig } from "../../../../../dotConfig/DotConfig";
+import { DotGeometryService } from "../../../../../services/DotGeometryService";
 
-import stylesArea from "../styles/Area.module.css";
+import stylesArea from "../../../styles/Area.module.css";
 import styles from "./DragBox.module.css";
 // -----------------------------------------------------------------------------
 

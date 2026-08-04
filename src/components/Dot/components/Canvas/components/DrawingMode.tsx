@@ -2,7 +2,7 @@ import type { ReactElement, RefObject } from "react";
 
 import type { DotStateProps } from "../../../state/DotStateProps";
 
-import DragBox from "./DragBox";
+import DragBox from "./Overlay/components/DragBox";
 
 import stylesArea from "../styles/Area.module.css";
 import type { SingleDot } from "../../../types/DotTypes";

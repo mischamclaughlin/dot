@@ -4,7 +4,7 @@ import type { DotStateProps } from "../../../state/DotStateProps";
 
 import { styleCSS } from "./shared/StyleCSS";
 
-import DragBox from "./DragBox";
+import DragBox from "./Overlay/components/DragBox";
 
 import stylesArea from "../styles/Area.module.css";
 import type { SingleDot } from "../../../types/DotTypes";
