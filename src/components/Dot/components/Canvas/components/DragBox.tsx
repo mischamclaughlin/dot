@@ -182,9 +182,9 @@ export default function DragBox({
             <div className={styles.container} style={displayedArea}>
                 <div
                     className={`
+					${styles.dragZone}
 					${styles.square}
-					${styles.central}
-					${styles.middle}
+					${styles.topLeft}
 				`}
                     onPointerDown={handleMovePointerDown}
                     onPointerMove={handleMovePointerMove}
@@ -193,7 +193,40 @@ export default function DragBox({
                 />
                 <div
                     className={`
-					${styles.bar}
+					${styles.dragZone}
+					${styles.square}
+					${styles.topRight}
+				`}
+                    onPointerDown={handleMovePointerDown}
+                    onPointerMove={handleMovePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
+					${styles.dragZone}
+					${styles.square}
+					${styles.bottomLeft}
+				`}
+                    onPointerDown={handleMovePointerDown}
+                    onPointerMove={handleMovePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
+					${styles.dragZone}
+					${styles.square}
+					${styles.bottomRight}
+				`}
+                    onPointerDown={handleMovePointerDown}
+                    onPointerMove={handleMovePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerCancel}
+                />
+                <div
+                    className={`
+					${styles.dragZone}
 					${styles.horizontal}
 					${styles.top}
 				`}
@@ -204,7 +237,7 @@ export default function DragBox({
                 />
                 <div
                     className={`
-					${styles.bar}
+					${styles.dragZone}
 					${styles.horizontal}
 					${styles.bottom}
 				`}
@@ -215,7 +248,7 @@ export default function DragBox({
                 />
                 <div
                     className={`
-					${styles.bar}
+					${styles.dragZone}
 					${styles.vertical}
 					${styles.right}
 				`}
@@ -226,7 +259,7 @@ export default function DragBox({
                 />
                 <div
                     className={`
-					${styles.bar}
+					${styles.dragZone}
 					${styles.vertical}
 					${styles.left}
 				`}

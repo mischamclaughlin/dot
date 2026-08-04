@@ -23,14 +23,17 @@
 
 .overlayContainer {
     position: absolute;
-    background-color: transparent;
+    min-width: 30px;
+    min-height: 30px;
+
     padding: var(--grid-spacing-half);
+    background-color: transparent;
 
     display: flex;
-    justify-content: end;
-    align-content: start;
-    gap: var(--grid-spacing-half);
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
+    gap: var(--grid-spacing);
 
     transition: background-color 50ms ease-in;
 }

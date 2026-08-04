@@ -19,8 +19,8 @@ export const initialStyle: TextStyle = {
     colourForeground: "#464261",
     fontSize: 1,
     fontWeight: 300,
-    paddingTop: 16,
-    paddingRight: 16,
-    paddingBottom: 16,
-    paddingLeft: 16,
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 4,
+    paddingLeft: 4,
 };

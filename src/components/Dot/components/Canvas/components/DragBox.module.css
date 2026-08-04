@@ -1,5 +1,5 @@
 .container,
-.bar {
+.dragZone {
     position: absolute;
 }
 
@@ -9,8 +9,7 @@
     overflow: visible;
 }
 
-.bar,
-.square {
+.dragZone {
     z-index: 800;
 
     background-color: var(--accent-1);
@@ -20,12 +19,11 @@
 
     transition: filter 150ms ease-in;
 }
-.bar:hover,
-.square:hover {
+.dragZone:hover {
     filter: opacity(1);
 }
 
-.central {
+.square {
     width: calc(var(--grid-spacing) * 2);
     height: calc(var(--grid-spacing) * 2);
 
@@ -46,8 +44,17 @@
     cursor: col-resize;
 }
 
-.middle {
+.topLeft {
     place-self: start;
+}
+.topRight {
+    place-self: start end;
+}
+.bottomLeft {
+    place-self: end start;
+}
+.bottomRight {
+    place-self: end;
 }
 .left {
     place-self: start;
