@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import Dot from "./components/Dot/Dot";
+import Dot from "./ui/dot/Dot";
 
 import "./App.css";
 // -----------------------------------------------------------------------------
