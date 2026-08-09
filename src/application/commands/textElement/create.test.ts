@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { createEmptyDocument } from "../../domain/document/DotDocument";
+import { createEmptyDocument } from "../../../domain/document/DotDocument";
 
-import { createTextElement } from "./createTextElement";
-import { textElement } from "./test/testFactory";
+import { textElement } from "../test/testFactory";
+
+import { createTextElement } from "./create";
 
 describe("createTextElement", () => {
     it("adds a TextElement without changing the original document", () => {
