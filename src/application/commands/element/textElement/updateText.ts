@@ -1,4 +1,4 @@
-import type { DotDocument } from "../../../domain/document/DotDocument";
+import type { DotDocument } from "../../../../domain/document/DotDocument";
 
 export type UpdateTextResult =
     | {

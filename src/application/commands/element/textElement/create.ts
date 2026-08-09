@@ -1,7 +1,7 @@
-import type { DotDocument } from "../../../domain/document/DotDocument";
-import type { TextElement } from "../../../domain/elements/TextElement";
+import type { DotDocument } from "../../../../domain/document/DotDocument";
+import type { TextElement } from "../../../../domain/elements/TextElement";
 
-import { isValidRect } from "../../../domain/geometry/Rect";
+import { isValidRect } from "../../../../domain/geometry/Rect";
 
 export type CreateTextElementResult =
     | {

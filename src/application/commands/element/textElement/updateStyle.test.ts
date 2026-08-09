@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createTextElement } from "./create";
-import { createEmptyDocument } from "../../../domain/document/DotDocument";
+import { createEmptyDocument } from "../../../../domain/document/DotDocument";
 import { textElement } from "../test/testFactory";
 import { updateStyle } from "./updateStyle";
 

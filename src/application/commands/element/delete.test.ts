@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { createEmptyDocument } from "../../domain/document/DotDocument";
+import { createEmptyDocument } from "../../../domain/document/DotDocument";
 
 import { textElement } from "./test/testFactory";
 
-import { deleteCanvasElement } from "./deleteCanvasElement";
+import { deleteElement } from "./delete";
 import { createTextElement } from "./textElement/create";
 
-describe("deleteCanvasElement", () => {
+describe("deleteElement", () => {
     it("deletes a CanvasElement without changing the original document", () => {
         const created = createTextElement(createEmptyDocument(), textElement());
 
@@ -16,7 +16,7 @@ describe("deleteCanvasElement", () => {
         }
 
         const previousDocument = created.document;
-        const deleted = deleteCanvasElement(previousDocument, "text-1");
+        const deleted = deleteElement(previousDocument, "text-1");
 
         if (!deleted.ok) {
             throw new Error(`deletedCanvasElement failed: ${deleted.error}`);
@@ -40,7 +40,7 @@ describe("deleteCanvasElement", () => {
             throw new Error(`createTextElement error: ${second.error}`);
         }
 
-        const deleted = deleteCanvasElement(second.document, "text-1");
+        const deleted = deleteElement(second.document, "text-1");
         if (!deleted.ok) {
             throw new Error(`deletedCanvasElement error: ${deleted.error}`);
         }
@@ -51,7 +51,7 @@ describe("deleteCanvasElement", () => {
     });
 
     it("reject invalid IDs", () => {
-        const deleted = deleteCanvasElement(createEmptyDocument(), "text-1");
+        const deleted = deleteElement(createEmptyDocument(), "text-1");
 
         expect(deleted).toEqual({
             ok: false,
@@ -66,10 +66,10 @@ describe("deleteCanvasElement", () => {
             throw new Error(`createText failed: ${created.error}`);
         }
 
-        const result = deleteCanvasElement(created.document, "text-1");
+        const result = deleteElement(created.document, "text-1");
 
         if (!result.ok) {
-            throw new Error(`deleteCanvasElement failed: ${result.error}`);
+            throw new Error(`deleteElement failed: ${result.error}`);
         }
 
         const serialisedDocument = JSON.stringify(result.document);

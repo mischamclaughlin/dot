@@ -1,7 +1,7 @@
 import type { DotDocument } from "../../../domain/document/DotDocument";
-import type { TextStyle } from "../../../domain/elements/TextElement";
+import type { Rect } from "../../../domain/geometry/Rect";
 
-export type UpdateStyleResult =
+export type UpdateAreaResult =
     | {
           ok: true;
           document: DotDocument;
@@ -11,12 +11,13 @@ export type UpdateStyleResult =
           error: "invalid-id";
       };
 
-export function updateStyle(
+export function updateArea(
     document: DotDocument,
     elementId: string,
-    style: TextStyle,
-): UpdateStyleResult {
+    area: Rect,
+): UpdateAreaResult {
     const element = document.elements[elementId];
+
     if (!element) {
         return {
             ok: false,
@@ -32,7 +33,7 @@ export function updateStyle(
                 ...document.elements,
                 [elementId]: {
                     ...element,
-                    style,
+                    rect: area,
                 },
             },
         },

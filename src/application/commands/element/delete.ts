@@ -1,6 +1,6 @@
-import type { DotDocument } from "../../domain/document/DotDocument";
+import type { DotDocument } from "../../../domain/document/DotDocument";
 
-export type DeleteCanvasElementResult =
+export type DeleteElementResult =
     | {
           ok: true;
           document: DotDocument;
@@ -10,10 +10,10 @@ export type DeleteCanvasElementResult =
           error: "invalid-id";
       };
 
-export function deleteCanvasElement(
+export function deleteElement(
     document: DotDocument,
     elementId: string,
-): DeleteCanvasElementResult {
+): DeleteElementResult {
     if (!Object.hasOwn(document.elements, elementId)) {
         return {
             ok: false,
