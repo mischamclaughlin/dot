@@ -1,0 +1,30 @@
+.container {
+    position: fixed;
+    display: grid;
+    z-index: 900;
+    grid-template-columns: 1fr auto;
+    height: 100vh;
+
+    background-color: var(--surface);
+}
+
+.sidebarContainer {
+    display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+}
+
+.header {
+    border: 1px solid var(--fg);
+    height: fit-content;
+    padding: 0.25rem 0.5rem;
+}
+
+.headerTool {
+    display: grid;
+    height: fit-content;
+    width: 100%;
+    border-bottom: 1px solid var(--fg);
+}

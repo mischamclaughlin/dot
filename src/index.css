@@ -49,6 +49,6 @@ button {
     cursor: pointer;
     transition:
         color 50ms ease-in,
-        background-color 150ms ease-in,
-        filter 150ms ease-in;
+        background-color 50ms ease-in,
+        filter 50ms ease-in;
 }

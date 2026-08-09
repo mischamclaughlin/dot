@@ -1,0 +1,16 @@
+.savedElement {
+    position: absolute;
+}
+
+.savedElement {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    pointer-events: none;
+}
+
+.selectedElement {
+    z-index: 900;
+    border: 1px dashed var(--accent-1);
+    background-color: transparent;
+    pointer-events: none;
+}
