@@ -3,7 +3,7 @@ import type { TextElement } from "../../domain/elements/TextElement";
 
 import { isValidRect } from "../../domain/geometry/Rect";
 
-export type CreateTextResult =
+export type CreateTextElementResult =
     | {
           ok: true;
           document: DotDocument;
@@ -13,11 +13,11 @@ export type CreateTextResult =
           error: "duplicate-id" | "invalid-rectangle";
       };
 
-export function createText(
+export function createTextElement(
     document: DotDocument,
     element: TextElement,
-): CreateTextResult {
-    if (document.elements[element.id]) {
+): CreateTextElementResult {
+    if (Object.hasOwn(document.elements, element.id)) {
         return {
             ok: false,
             error: "duplicate-id",
