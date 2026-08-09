@@ -21,9 +21,7 @@ export function deleteCanvasElement(
         };
     }
 
-    const nextElements = {
-        ...document.elements,
-    };
+    const nextElements = { ...document.elements };
 
     delete nextElements[elementId];
 

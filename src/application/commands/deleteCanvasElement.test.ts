@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { createEmptyDocument } from "../../domain/document/DotDocument";
 
-import { createTextElement } from "./createTextElement";
-import { deleteCanvasElement } from "./deleteCanvasElement";
 import { textElement } from "./test/testFactory";
+
+import { deleteCanvasElement } from "./deleteCanvasElement";
+import { createTextElement } from "./textElement/create";
 
 describe("deleteCanvasElement", () => {
     it("deletes a CanvasElement without changing the original document", () => {
