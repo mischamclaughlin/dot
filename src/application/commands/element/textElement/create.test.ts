@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createEmptyDocument } from "../../../../domain/document/DotDocument";
 
-import { textElement } from "../../test/testFactory";
+import { textElement } from "../test/testFactory";
 
 import { createTextElement } from "./create";
 

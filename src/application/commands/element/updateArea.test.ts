@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { createTextElement } from "./textElement/create";
+
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
-import { textElement } from "../test/testFactory";
+
+import { createTextElement } from "./textElement/create";
+import { textElement } from "./test/testFactory";
 import { updateArea } from "./updateArea";
 
 describe("updateArea", () => {
