@@ -3,7 +3,7 @@ import type { DotState } from "../model/DotDocumentState";
 
 export const initialState: DotState = {
     document: {
-        schemaVersion: 1,
+        schemaVersion: 2,
         elements: [],
         relationships: [],
     },

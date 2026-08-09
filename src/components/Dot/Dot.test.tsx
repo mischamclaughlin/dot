@@ -24,26 +24,41 @@ function renderDot() {
     return canvas;
 }
 
-function pointerDown(canvas: HTMLElement) {
+function pointerDown(canvas: HTMLElement, clientX = 20, clientY = 20) {
     fireEvent.pointerDown(canvas, {
-        clientX: 20,
-        clientY: 20,
+        clientX,
+        clientY,
         pointerId: 1,
     });
 }
-function pointerMove(canvas: HTMLElement) {
+function pointerMove(canvas: HTMLElement, clientX = 100, clientY = 80) {
     fireEvent.pointerMove(canvas, {
-        clientX: 100,
-        clientY: 80,
+        clientX,
+        clientY,
         pointerId: 1,
     });
 }
-function pointerUp(canvas: HTMLElement) {
+function pointerUp(canvas: HTMLElement, clientX = 100, clientY = 80) {
     fireEvent.pointerUp(canvas, {
-        clientX: 100,
-        clientY: 80,
+        clientX,
+        clientY,
         pointerId: 1,
     });
+}
+
+async function createTextElement(
+    user: ReturnType<typeof userEvent.setup>,
+    canvas: HTMLElement,
+    text: string,
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+) {
+    pointerDown(canvas, start.x, start.y);
+    pointerMove(canvas, end.x, end.y);
+    pointerUp(canvas, end.x, end.y);
+    await user.click(screen.getByRole("button", { name: "text" }));
+    await user.type(screen.getByRole("textbox"), text);
+    await user.click(screen.getByRole("button", { name: "save" }));
 }
 
 describe("Dot component interactions", () => {
@@ -251,6 +266,52 @@ describe("Dot component interactions", () => {
             expect(
                 screen.queryByRole("button", { name: "clear" }),
             ).not.toBeInTheDocument();
+        });
+
+        it("sets a selected parent and configures child inheritance", async () => {
+            const user = userEvent.setup();
+            const canvas = renderDot();
+
+            await createTextElement(
+                user,
+                canvas,
+                "Parent",
+                { x: 20, y: 20 },
+                { x: 100, y: 80 },
+            );
+            await createTextElement(
+                user,
+                canvas,
+                "Child",
+                { x: 200, y: 200 },
+                { x: 300, y: 260 },
+            );
+
+            await user.click(
+                screen.getByRole("button", { name: "Select Parent" }),
+            );
+            await user.click(
+                screen.getByRole("button", { name: "Select Child" }),
+            );
+            await user.click(
+                screen.getByRole("button", { name: "make Parent parent" }),
+            );
+
+            expect(
+                screen.queryByRole("button", { name: "make Parent parent" }),
+            ).not.toBeInTheDocument();
+
+            await user.click(
+                screen.getByRole("button", { name: "Select Parent" }),
+            );
+
+            const inheritWidth = screen.getByRole("checkbox", {
+                name: "Children inherit width",
+            });
+            expect(inheritWidth).toBeChecked();
+
+            await user.click(inheritWidth);
+            expect(inheritWidth).not.toBeChecked();
         });
     });
 });

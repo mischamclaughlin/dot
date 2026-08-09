@@ -1,11 +1,19 @@
 import { dotConfig } from "../dotConfig/DotConfig";
 import type {
     DraftTextElement,
+    InheritableGeometryAttribute,
+    InheritableStyleAttribute,
     Rect,
     TextElement,
     ToolType,
 } from "../model/DotDocument";
+import { createDefaultInheritancePolicy } from "../model/DotDocument";
 import type { DotState, EditSession } from "../model/DotDocumentState";
+import {
+    getInheritedAttributes,
+    resolveElement,
+    wouldCreateParentCycle,
+} from "../services/DotInheritanceService";
 
 import { initialState, initialStyle } from "./DotInitialState";
 // -----------------------------------------------------------------------------
@@ -69,6 +77,22 @@ export type Action =
     | {
           type: "relationship/parent/unset";
           payload: string;
+      }
+    | {
+          type: "inheritance/attribute/set";
+          payload:
+              | {
+                    parentId: string;
+                    group: "geometry";
+                    attribute: InheritableGeometryAttribute;
+                    enabled: boolean;
+                }
+              | {
+                    parentId: string;
+                    group: "style";
+                    attribute: InheritableStyleAttribute;
+                    enabled: boolean;
+                };
       };
 
 function createSession(area: Rect): EditSession {
@@ -89,6 +113,20 @@ function getElementById(state: DotState, id: string) {
     );
 
     return element ?? null;
+}
+
+function setAttribute<T extends string>(
+    attributes: readonly T[],
+    attribute: T,
+    enabled: boolean,
+): readonly T[] {
+    if (enabled) {
+        return attributes.includes(attribute)
+            ? attributes
+            : [...attributes, attribute];
+    }
+
+    return attributes.filter((candidate) => candidate !== attribute);
 }
 
 export function dotReducer(
@@ -136,12 +174,46 @@ export function dotReducer(
             if (!area) return state;
 
             const editId = state.canvasMode.session.editId;
+            const existingElement = editId
+                ? getElementById(state, editId)
+                : null;
+
+            const nextArea = { ...area };
+            const nextStyle = { ...action.payload.element.style };
+
+            if (existingElement) {
+                const inheritedAttributes = getInheritedAttributes(
+                    state.document,
+                    existingElement.id,
+                );
+
+                for (const attribute of inheritedAttributes.geometry) {
+                    Object.assign(nextArea, {
+                        [attribute]: existingElement.area[attribute],
+                    });
+                }
+
+                for (const attribute of inheritedAttributes.style) {
+                    Object.assign(nextStyle, {
+                        [attribute]: existingElement.style[attribute],
+                    });
+                }
+            }
+
             const element: TextElement = {
                 id: action.payload.id,
                 toolType: action.payload.element.toolType,
-                area,
-                style: action.payload.element.style,
+                area: nextArea,
+                style: nextStyle,
                 text: action.payload.element.text,
+                childInheritance: existingElement
+                    ? {
+                          geometry: [
+                              ...existingElement.childInheritance.geometry,
+                          ],
+                          style: [...existingElement.childInheritance.style],
+                      }
+                    : createDefaultInheritancePolicy(),
             };
 
             return {
@@ -202,7 +274,7 @@ export function dotReducer(
         // ---------------------------------------------------------------------
         // Element
         case "element/edit": {
-            const element = getElementById(state, action.payload);
+            const element = resolveElement(state.document, action.payload);
             if (!element) return state;
 
             return {
@@ -251,7 +323,7 @@ export function dotReducer(
         }
 
         case "element/copy": {
-            const element = getElementById(state, action.payload.id);
+            const element = resolveElement(state.document, action.payload.id);
             if (!element) return state;
 
             const elementCopy: TextElement = {
@@ -266,8 +338,12 @@ export function dotReducer(
                         dotConfig.gridSpacing,
                     height: element.area.height,
                 },
-                style: element.style,
+                style: { ...element.style },
                 text: element.text,
+                childInheritance: {
+                    geometry: [...element.childInheritance.geometry],
+                    style: [...element.childInheritance.style],
+                },
             };
 
             return {
@@ -280,9 +356,33 @@ export function dotReducer(
         }
 
         case "element/delete": {
-            const elements = state.document.elements.filter(
-                (el) => el.id !== action.payload,
+            const directChildIds = new Set(
+                state.document.relationships
+                    .filter(
+                        (relationship) =>
+                            relationship.parentId === action.payload,
+                    )
+                    .map((relationship) => relationship.childId),
             );
+
+            const elements = state.document.elements
+                .map((element) => {
+                    if (!directChildIds.has(element.id)) return element;
+
+                    const resolvedElement = resolveElement(
+                        state.document,
+                        element.id,
+                    );
+
+                    return resolvedElement
+                        ? {
+                              ...element,
+                              area: { ...resolvedElement.area },
+                              style: { ...resolvedElement.style },
+                          }
+                        : element;
+                })
+                .filter((element) => element.id !== action.payload);
             const selectedElementIds = new Set(state.selectedElementIds);
             selectedElementIds.delete(action.payload);
 
@@ -300,6 +400,11 @@ export function dotReducer(
                 document: {
                     ...state.document,
                     elements: elements,
+                    relationships: state.document.relationships.filter(
+                        (relationship) =>
+                            relationship.parentId !== action.payload &&
+                            relationship.childId !== action.payload,
+                    ),
                 },
             };
         }
@@ -327,6 +432,25 @@ export function dotReducer(
         case "change/draft/area": {
             if (state.canvasMode.mode === "idle") return state;
 
+            const nextArea = { ...action.payload };
+            const editId = state.canvasMode.session.editId;
+
+            if (editId) {
+                const inheritedAttributes = getInheritedAttributes(
+                    state.document,
+                    editId,
+                );
+
+                for (const attribute of inheritedAttributes.geometry) {
+                    const currentArea = state.canvasMode.session.element.area;
+                    if (!currentArea) continue;
+
+                    Object.assign(nextArea, {
+                        [attribute]: currentArea[attribute],
+                    });
+                }
+            }
+
             return {
                 ...state,
                 canvasMode: {
@@ -335,7 +459,7 @@ export function dotReducer(
                         ...state.canvasMode.session,
                         element: {
                             ...state.canvasMode.session.element,
-                            area: action.payload,
+                            area: nextArea,
                         },
                     },
                 },
@@ -346,17 +470,35 @@ export function dotReducer(
             const changedElement = getElementById(state, action.payload.id);
             if (!changedElement) return state;
 
+            const resolvedChangedElement = resolveElement(
+                state.document,
+                changedElement.id,
+            );
+            if (!resolvedChangedElement) return state;
+
             const nextArea = action.payload.area;
 
-            const deltaX = nextArea.left - changedElement.area.left;
-            const deltaY = nextArea.top - changedElement.area.top;
+            const deltaX = nextArea.left - resolvedChangedElement.area.left;
+            const deltaY = nextArea.top - resolvedChangedElement.area.top;
 
             const isMove =
-                nextArea.width === changedElement.area.width &&
-                nextArea.height === changedElement.area.height;
+                nextArea.width === resolvedChangedElement.area.width &&
+                nextArea.height === resolvedChangedElement.area.height;
 
             const shouldMoveSelection =
                 state.selectedElementIds.has(changedElement.id) && isMove;
+
+            const changedElementArea = { ...nextArea };
+            const inheritedAttributes = getInheritedAttributes(
+                state.document,
+                changedElement.id,
+            );
+
+            for (const attribute of inheritedAttributes.geometry) {
+                Object.assign(changedElementArea, {
+                    [attribute]: changedElement.area[attribute],
+                });
+            }
 
             return {
                 ...state,
@@ -366,7 +508,7 @@ export function dotReducer(
                         if (element.id === changedElement.id) {
                             return {
                                 ...element,
-                                area: nextArea,
+                                area: changedElementArea,
                             };
                         }
 
@@ -404,7 +546,13 @@ export function dotReducer(
                 (element) => element.id === childId,
             );
 
-            if (!parentExists || !childExists) return state;
+            if (
+                !parentExists ||
+                !childExists ||
+                wouldCreateParentCycle(state.document, parentId, childId)
+            ) {
+                return state;
+            }
 
             return {
                 ...state,
@@ -425,6 +573,15 @@ export function dotReducer(
         }
 
         case "relationship/parent/unset": {
+            const relationshipExists = state.document.relationships.some(
+                (relationship) => relationship.childId === action.payload,
+            );
+            if (!relationshipExists) return state;
+
+            const resolvedElement = resolveElement(
+                state.document,
+                action.payload,
+            );
             const relationships = state.document.relationships.filter(
                 (rel) => rel.childId !== action.payload,
             );
@@ -433,7 +590,122 @@ export function dotReducer(
                 ...state,
                 document: {
                     ...state.document,
+                    elements: resolvedElement
+                        ? state.document.elements.map((element) =>
+                              element.id === action.payload
+                                  ? {
+                                        ...element,
+                                        area: { ...resolvedElement.area },
+                                        style: { ...resolvedElement.style },
+                                    }
+                                  : element,
+                          )
+                        : state.document.elements,
                     relationships: relationships,
+                },
+            };
+        }
+
+        // ---------------------------------------------------------------------
+        // Inheritance
+        case "inheritance/attribute/set": {
+            const { parentId, enabled } = action.payload;
+            const parent = getElementById(state, parentId);
+            if (!parent) return state;
+
+            const isEnabled =
+                action.payload.group === "geometry"
+                    ? parent.childInheritance.geometry.includes(
+                          action.payload.attribute,
+                      )
+                    : parent.childInheritance.style.includes(
+                          action.payload.attribute,
+                      );
+            if (isEnabled === enabled) return state;
+
+            const directChildIds = new Set(
+                state.document.relationships
+                    .filter(
+                        (relationship) => relationship.parentId === parentId,
+                    )
+                    .map((relationship) => relationship.childId),
+            );
+
+            const resolvedChildren = new Map(
+                state.document.elements
+                    .filter((element) => directChildIds.has(element.id))
+                    .map((element) => [
+                        element.id,
+                        resolveElement(state.document, element.id),
+                    ]),
+            );
+
+            const elementsWithMaterialisedAttribute = enabled
+                ? state.document.elements
+                : state.document.elements.map((element) => {
+                      const resolvedElement = resolvedChildren.get(element.id);
+                      if (!resolvedElement) return element;
+
+                      if (action.payload.group === "geometry") {
+                          return {
+                              ...element,
+                              area: {
+                                  ...element.area,
+                                  [action.payload.attribute]:
+                                      resolvedElement.area[
+                                          action.payload.attribute
+                                      ],
+                              },
+                          };
+                      }
+
+                      return {
+                          ...element,
+                          style: {
+                              ...element.style,
+                              [action.payload.attribute]:
+                                  resolvedElement.style[
+                                      action.payload.attribute
+                                  ],
+                          },
+                      };
+                  });
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: elementsWithMaterialisedAttribute.map(
+                        (element) => {
+                            if (element.id !== parentId) return element;
+
+                            if (action.payload.group === "geometry") {
+                                return {
+                                    ...element,
+                                    childInheritance: {
+                                        ...element.childInheritance,
+                                        geometry: setAttribute(
+                                            element.childInheritance.geometry,
+                                            action.payload.attribute,
+                                            enabled,
+                                        ),
+                                    },
+                                };
+                            }
+
+                            return {
+                                ...element,
+                                childInheritance: {
+                                    ...element.childInheritance,
+                                    style: setAttribute(
+                                        element.childInheritance.style,
+                                        action.payload.attribute,
+                                        enabled,
+                                    ),
+                                },
+                            };
+                        },
+                    ),
                 },
             };
         }

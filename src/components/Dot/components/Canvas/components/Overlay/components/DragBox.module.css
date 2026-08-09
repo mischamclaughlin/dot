@@ -32,6 +32,13 @@
     filter: opacity(1);
 }
 
+.dragZone.locked {
+    cursor: not-allowed;
+}
+.dragZone.locked:hover {
+    filter: opacity(0.25);
+}
+
 .square {
     width: calc(var(--grid-spacing) * 2);
     height: calc(var(--grid-spacing) * 2);

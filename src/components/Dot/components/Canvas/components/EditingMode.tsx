@@ -8,6 +8,7 @@ import DragBox from "./Overlay/components/DragBox";
 
 import stylesArea from "../styles/Area.module.css";
 import type { SingleDot } from "../../../types/DotTypes";
+import { getInheritedAttributes } from "../../../services/DotInheritanceService";
 // -----------------------------------------------------------------------------
 
 type EditingModeProps = DotStateProps & {
@@ -21,6 +22,15 @@ export default function EditingMode({
     canvasRef,
     pan,
 }: EditingModeProps): ReactElement {
+    const inheritedGeometry =
+        state.canvasMode.mode === "editing" &&
+        state.canvasMode.session.editId
+            ? getInheritedAttributes(
+                  state.document,
+                  state.canvasMode.session.editId,
+              ).geometry
+            : [];
+
     function handleSave(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
 
@@ -73,6 +83,7 @@ export default function EditingMode({
                                     payload: area,
                                 })
                             }
+                            lockedDimensions={inheritedGeometry}
                             pan={pan}
                         />
                     </>

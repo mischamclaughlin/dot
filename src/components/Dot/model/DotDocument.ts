@@ -1,5 +1,5 @@
 export type DotDocument = {
-    schemaVersion: 1;
+    schemaVersion: 2;
     elements: CanvasElement[];
     relationships: ParentRelationship[];
 };
@@ -20,6 +20,7 @@ export type TextElement = {
     area: Rect;
     style: TextStyle;
     text: string;
+    childInheritance: InheritancePolicy;
 };
 
 export type Rect = {
@@ -44,7 +45,40 @@ export type TextStyle = {
 
 export type ToolType = "text";
 
-type ParentRelationship = {
+export const inheritableGeometryAttributes = ["width", "height"] as const;
+
+export const inheritableStyleAttributes = [
+    "alignContent",
+    "alignText",
+    "colourBackground",
+    "colourForeground",
+    "fontSize",
+    "fontWeight",
+    "paddingTop",
+    "paddingRight",
+    "paddingBottom",
+    "paddingLeft",
+] as const satisfies readonly (keyof TextStyle)[];
+
+export type InheritableGeometryAttribute =
+    (typeof inheritableGeometryAttributes)[number];
+
+export type InheritableStyleAttribute =
+    (typeof inheritableStyleAttributes)[number];
+
+export type InheritancePolicy = {
+    geometry: readonly InheritableGeometryAttribute[];
+    style: readonly InheritableStyleAttribute[];
+};
+
+export function createDefaultInheritancePolicy(): InheritancePolicy {
+    return {
+        geometry: [...inheritableGeometryAttributes],
+        style: [...inheritableStyleAttributes],
+    };
+}
+
+export type ParentRelationship = {
     type: "parent";
     parentId: string;
     childId: string;

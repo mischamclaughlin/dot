@@ -1,7 +1,10 @@
 import type { ReactElement, RefObject } from "react";
 import React, { useState } from "react";
 
-import type { Rect } from "../../../../../model/DotDocument";
+import type {
+    InheritableGeometryAttribute,
+    Rect,
+} from "../../../../../model/DotDocument";
 import type { SingleDot } from "../../../../../types/DotTypes";
 
 import { dotConfig } from "../../../../../dotConfig/DotConfig";
@@ -18,6 +21,7 @@ type DragBoxProps = {
     canvasRef: RefObject<HTMLDivElement | null>;
     onChangeArea: (area: Rect) => void;
     pan: SingleDot;
+    lockedDimensions?: readonly InheritableGeometryAttribute[];
 };
 
 type MoveStart = {
@@ -30,6 +34,7 @@ export default function DragBox({
     canvasRef,
     onChangeArea,
     pan,
+    lockedDimensions = [],
 }: DragBoxProps): ReactElement {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -39,9 +44,21 @@ export default function DragBox({
 
     const displayedArea = isDragging ? resizeArea : area;
 
-    function handleResizePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    function isEdgeLocked(edge: "left" | "right" | "top" | "bottom") {
+        const dimension =
+            edge === "left" || edge === "right" ? "width" : "height";
+
+        return lockedDimensions.includes(dimension);
+    }
+
+    function handleResizePointerDown(
+        e: React.PointerEvent<HTMLDivElement>,
+        edge: "left" | "right" | "top" | "bottom",
+    ) {
         e.preventDefault();
         e.stopPropagation();
+        if (isEdgeLocked(edge)) return;
+
         e.currentTarget.setPointerCapture(e.pointerId);
 
         setResizeArea(area);
@@ -52,7 +69,7 @@ export default function DragBox({
         e: React.PointerEvent<HTMLDivElement>,
         edge: "left" | "right" | "top" | "bottom",
     ) {
-        if (!isDragging) return;
+        if (!isDragging || isEdgeLocked(edge)) return;
 
         const current = geo.getCanvasDot(e, canvasRef, pan);
         if (!current) return;
@@ -230,10 +247,14 @@ export default function DragBox({
                 <div
                     className={`
 					${styles.dragZone}
-					${styles.horizontal}
-					${styles.top}
-				`}
-                    onPointerDown={handleResizePointerDown}
+                    ${styles.horizontal}
+                    ${styles.top}
+                    ${isEdgeLocked("top") ? styles.locked : ""}
+                `}
+                    aria-disabled={isEdgeLocked("top")}
+                    onPointerDown={(e) =>
+                        handleResizePointerDown(e, "top")
+                    }
                     onPointerMove={(e) => handleResizePointerMove(e, "top")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
@@ -241,10 +262,14 @@ export default function DragBox({
                 <div
                     className={`
 					${styles.dragZone}
-					${styles.horizontal}
-					${styles.bottom}
-				`}
-                    onPointerDown={handleResizePointerDown}
+                    ${styles.horizontal}
+                    ${styles.bottom}
+                    ${isEdgeLocked("bottom") ? styles.locked : ""}
+                `}
+                    aria-disabled={isEdgeLocked("bottom")}
+                    onPointerDown={(e) =>
+                        handleResizePointerDown(e, "bottom")
+                    }
                     onPointerMove={(e) => handleResizePointerMove(e, "bottom")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
@@ -252,10 +277,14 @@ export default function DragBox({
                 <div
                     className={`
 					${styles.dragZone}
-					${styles.vertical}
-					${styles.right}
-				`}
-                    onPointerDown={handleResizePointerDown}
+                    ${styles.vertical}
+                    ${styles.right}
+                    ${isEdgeLocked("right") ? styles.locked : ""}
+                `}
+                    aria-disabled={isEdgeLocked("right")}
+                    onPointerDown={(e) =>
+                        handleResizePointerDown(e, "right")
+                    }
                     onPointerMove={(e) => handleResizePointerMove(e, "right")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}
@@ -263,10 +292,14 @@ export default function DragBox({
                 <div
                     className={`
 					${styles.dragZone}
-					${styles.vertical}
-					${styles.left}
-				`}
-                    onPointerDown={handleResizePointerDown}
+                    ${styles.vertical}
+                    ${styles.left}
+                    ${isEdgeLocked("left") ? styles.locked : ""}
+                `}
+                    aria-disabled={isEdgeLocked("left")}
+                    onPointerDown={(e) =>
+                        handleResizePointerDown(e, "left")
+                    }
                     onPointerMove={(e) => handleResizePointerMove(e, "left")}
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerCancel}

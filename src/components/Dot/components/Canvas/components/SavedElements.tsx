@@ -3,6 +3,10 @@ import { Fragment } from "react";
 
 import type { DotStateProps } from "../../../state/DotStateProps";
 import type { SingleDot } from "../../../types/DotTypes";
+import {
+    getInheritedAttributes,
+    resolveElement,
+} from "../../../services/DotInheritanceService";
 
 import { styleCSS } from "./shared/StyleCSS";
 
@@ -32,45 +36,59 @@ export default function SavedElements({
         <>
             {state.document.elements
                 .filter((element) => element.id !== activeEditId)
-                .map((element) => (
-                    <Fragment key={element.id}>
-                        <div
-                            className={`
-                                ${styles.savedElement}
-                                ${state.selectedElementIds.has(element.id) ? styles.selectedElement : ""}
-                                `}
-                            style={{
-                                ...styleCSS(element.style),
-                                ...element.area,
-                            }}
-                        >
-                            {element.text}
-                        </div>
+                .map((element) => {
+                    const resolvedElement = resolveElement(
+                        state.document,
+                        element.id,
+                    );
+                    if (!resolvedElement) return null;
 
-                        <ElementButtons
-                            dispatch={dispatch}
-                            element={element}
-                            isSelected={state.selectedElementIds.has(
-                                element.id,
-                            )}
-                        />
+                    const inheritedAttributes = getInheritedAttributes(
+                        state.document,
+                        element.id,
+                    );
 
-                        <DragBox
-                            area={element.area}
-                            canvasRef={canvasRef}
-                            onChangeArea={(area) =>
-                                dispatch({
-                                    type: "change/element/area",
-                                    payload: {
-                                        id: element.id,
-                                        area: area,
-                                    },
-                                })
-                            }
-                            pan={pan}
-                        />
-                    </Fragment>
-                ))}
+                    return (
+                        <Fragment key={resolvedElement.id}>
+                            <div
+                                className={`
+                                    ${styles.savedElement}
+                                    ${state.selectedElementIds.has(resolvedElement.id) ? styles.selectedElement : ""}
+                                    `}
+                                style={{
+                                    ...styleCSS(resolvedElement.style),
+                                    ...resolvedElement.area,
+                                }}
+                            >
+                                {resolvedElement.text}
+                            </div>
+
+                            <ElementButtons
+                                dispatch={dispatch}
+                                element={resolvedElement}
+                                isSelected={state.selectedElementIds.has(
+                                    resolvedElement.id,
+                                )}
+                            />
+
+                            <DragBox
+                                area={resolvedElement.area}
+                                canvasRef={canvasRef}
+                                onChangeArea={(area) =>
+                                    dispatch({
+                                        type: "change/element/area",
+                                        payload: {
+                                            id: resolvedElement.id,
+                                            area: area,
+                                        },
+                                    })
+                                }
+                                lockedDimensions={inheritedAttributes.geometry}
+                                pan={pan}
+                            />
+                        </Fragment>
+                    );
+                })}
         </>
     );
 }
