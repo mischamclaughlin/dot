@@ -7,8 +7,8 @@ import type { SingleDot } from "../../../types/DotTypes";
 import { styleCSS } from "./shared/StyleCSS";
 
 import DragBox from "./Overlay/components/DragBox";
-
 import ElementButtons from "./Overlay/components/ElementButtons";
+
 import styles from "./SavedElements.module.css";
 // -----------------------------------------------------------------------------
 
@@ -50,7 +50,9 @@ export default function SavedElements({
                         <ElementButtons
                             dispatch={dispatch}
                             element={element}
-                            isSelected={state.selectedElementIds.has(element.id)}
+                            isSelected={state.selectedElementIds.has(
+                                element.id,
+                            )}
                         />
 
                         <DragBox

@@ -5,6 +5,7 @@ export const initialState: DotState = {
     document: {
         schemaVersion: 1,
         elements: [],
+        relationships: [],
     },
     selectedElementIds: new Set(),
     toolType: null,

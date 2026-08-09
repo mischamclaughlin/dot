@@ -67,17 +67,13 @@
 }
 .left {
     place-self: start;
-    margin-left: -1px;
 }
 .right {
     place-self: end;
-    margin-right: -1px;
 }
 .top {
     place-self: start;
-    margin-top: -1px;
 }
 .bottom {
     place-self: end;
-    margin-bottom: -1px;
 }

@@ -17,8 +17,7 @@
 }
 
 .selectArea {
-    border: 1px solid color-mix(in srgb, var(--fg) 50%, transparent);
-    background-color: color-mix(in srgb, var(--highlight-m) 10%, transparent);
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent);
     backdrop-filter: blur(2.5px);
 }
 

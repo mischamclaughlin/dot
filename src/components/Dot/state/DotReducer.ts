@@ -58,6 +58,17 @@ export type Action =
     | {
           type: "change/draft/text";
           payload: string;
+      }
+    | {
+          type: "relationship/parent/set";
+          payload: {
+              childId: string;
+              parentId: string;
+          };
+      }
+    | {
+          type: "relationship/parent/unset";
+          payload: string;
       };
 
 function createSession(area: Rect): EditSession {
@@ -375,6 +386,54 @@ export function dotReducer(
 
                         return element;
                     }),
+                },
+            };
+        }
+
+        // ---------------------------------------------------------------------
+        // Relationship
+        case "relationship/parent/set": {
+            const { parentId, childId } = action.payload;
+
+            if (parentId === childId) return state;
+
+            const parentExists = state.document.elements.some(
+                (element) => element.id === parentId,
+            );
+            const childExists = state.document.elements.some(
+                (element) => element.id === childId,
+            );
+
+            if (!parentExists || !childExists) return state;
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    relationships: [
+                        ...state.document.relationships.filter(
+                            (relationship) => relationship.childId !== childId,
+                        ),
+                        {
+                            type: "parent",
+                            parentId,
+                            childId,
+                        },
+                    ],
+                },
+            };
+        }
+
+        case "relationship/parent/unset": {
+            const relationships = state.document.relationships.filter(
+                (rel) => rel.childId !== action.payload,
+            );
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    relationships: relationships,
                 },
             };
         }

@@ -1,6 +1,7 @@
 export type DotDocument = {
     schemaVersion: 1;
     elements: CanvasElement[];
+    relationships: ParentRelationship[];
 };
 
 export type BaseCanvasElement = TextElement;
@@ -42,3 +43,9 @@ export type TextStyle = {
 };
 
 export type ToolType = "text";
+
+type ParentRelationship = {
+    type: "parent";
+    parentId: string;
+    childId: string;
+};
