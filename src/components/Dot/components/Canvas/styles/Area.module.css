@@ -31,5 +31,7 @@
 }
 
 .resizeArea {
+    border: 1px dashed color-mix(in srgb, var(--fg) 50%, transparent);
     background-color: color-mix(in srgb, var(--highlight-l) 10%, transparent);
+    pointer-events: none;
 }

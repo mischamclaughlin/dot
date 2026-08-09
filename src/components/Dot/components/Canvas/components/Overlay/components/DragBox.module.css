@@ -11,10 +11,6 @@
     transition: background-color 100ms ease-in;
 }
 
-.container:has(> .dragZone:hover) {
-    border: 1px dashed color-mix(in srgb, var(--fg) 50%, transparent);
-}
-
 .dragZone {
     z-index: 900;
 

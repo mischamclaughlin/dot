@@ -11,6 +11,7 @@
 
 .hoverContainer {
     position: fixed;
+    cursor: pointer;
 }
 
 .buttonContainer {

@@ -2,14 +2,14 @@ import type { ReactElement, RefObject } from "react";
 import { Fragment } from "react";
 
 import type { DotStateProps } from "../../../state/DotStateProps";
+import type { SingleDot } from "../../../types/DotTypes";
 
 import { styleCSS } from "./shared/StyleCSS";
 
 import DragBox from "./Overlay/components/DragBox";
 
-import styles from "./SavedElements.module.css";
-import type { SingleDot } from "../../../types/DotTypes";
 import ElementButtons from "./Overlay/components/ElementButtons";
+import styles from "./SavedElements.module.css";
 // -----------------------------------------------------------------------------
 
 type SavedElementsProps = DotStateProps & {
@@ -35,7 +35,10 @@ export default function SavedElements({
                 .map((element) => (
                     <Fragment key={element.id}>
                         <div
-                            className={styles.savedElement}
+                            className={`
+                                ${styles.savedElement}
+                                ${element.selected ? styles.selectedElement : ""}
+                                `}
                             style={{
                                 ...styleCSS(element.style),
                                 ...element.area,

@@ -26,6 +26,12 @@ export default function ElementButtons({
             <div
                 className={styles.hoverContainer}
                 style={{ ...element.area }}
+                onClick={() =>
+                    dispatch({
+                        type: "element/select",
+                        payload: element.id,
+                    })
+                }
             />
             <div className={styles.buttonContainer}>
                 <button

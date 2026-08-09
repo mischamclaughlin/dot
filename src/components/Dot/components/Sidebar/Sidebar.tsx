@@ -11,6 +11,7 @@ import FullscreenButton from "./components/FullscreenButtons";
 import ToolSelectButtonsProps from "./components/ToolSelectButtons";
 
 import styles from "./Sidebar.module.css";
+import SelctedElementButtons from "./components/SelectedElementButtons";
 // -----------------------------------------------------------------------------
 
 export default function Sidebar({
@@ -39,9 +40,10 @@ export default function Sidebar({
                         <h2 className={styles.headerTool}>
                             {state.toolType?.toUpperCase() ?? "TOOL"}
                         </h2>
-                        <h3 className={styles.headerTool}>
-                            {state.canvasMode.mode}
-                        </h3>
+                        <SelctedElementButtons
+                            state={state}
+                            dispatch={dispatch}
+                        />
                         {!state.toolType && (
                             <ToolSelectButtonsProps
                                 state={state}

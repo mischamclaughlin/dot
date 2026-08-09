@@ -146,11 +146,14 @@ export default function DragBox({
         const deltaX = currentDot.x - moveStart.dot.x;
         const deltaY = currentDot.y - moveStart.dot.y;
 
-        setResizeArea({
+        const nextArea: Rect = {
             ...moveStart.area,
             left: moveStart.area.left + deltaX,
             top: moveStart.area.top + deltaY,
-        });
+        };
+
+        setResizeArea(nextArea);
+        onChangeArea(nextArea);
     }
 
     function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {

@@ -3,7 +3,8 @@ export type DotDocument = {
     elements: CanvasElement[];
 };
 
-export type CanvasElement = TextElement;
+export type BaseCanvasElement = TextElement;
+export type CanvasElement = BaseCanvasElement & { selected?: boolean };
 
 export type DraftTextElement = {
     toolType: "text";

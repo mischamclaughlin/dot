@@ -1,5 +1,6 @@
 import { dotConfig } from "../dotConfig/DotConfig";
 import type {
+    CanvasElement,
     DraftTextElement,
     Rect,
     TextElement,
@@ -43,6 +44,10 @@ export type Action =
           payload: string;
       }
     | {
+          type: "element/select";
+          payload: string;
+      }
+    | {
           type: "element/copy";
           payload: {
               id: string;
@@ -65,6 +70,14 @@ function createSession(area: Rect): EditSession {
             text: "",
         },
     };
+}
+
+function getElementById(state: DotState, id: string) {
+    const element = state.document.elements.find(
+        (candidate) => candidate.id === id,
+    );
+
+    return element ?? null;
 }
 
 export function dotReducer(
@@ -96,8 +109,21 @@ export function dotReducer(
         }
 
         case "action/cancel": {
+            const noSelectElements: CanvasElement[] = [];
+
+            state.document.elements.map((el) => {
+                if (el.selected) {
+                    el.selected = false;
+                }
+                noSelectElements.push(el);
+            });
+
             return {
                 ...state,
+                document: {
+                    ...state.document,
+                    elements: noSelectElements,
+                },
                 toolType: null,
                 canvasMode: {
                     mode: "idle",
@@ -178,9 +204,7 @@ export function dotReducer(
         // ---------------------------------------------------------------------
         // Element
         case "element/edit": {
-            const element = state.document.elements.find(
-                (candidate) => candidate.id === action.payload,
-            );
+            const element = getElementById(state, action.payload);
             if (!element) return state;
 
             return {
@@ -201,10 +225,25 @@ export function dotReducer(
             };
         }
 
+        case "element/select": {
+            const element = getElementById(state, action.payload);
+            if (!element) return state;
+
+            return {
+                ...state,
+                document: {
+                    ...state.document,
+                    elements: state.document.elements.map((element) =>
+                        element.id === action.payload
+                            ? { ...element, selected: !element.selected }
+                            : element,
+                    ),
+                },
+            };
+        }
+
         case "element/copy": {
-            const element = state.document.elements.find(
-                (candidate) => candidate.id === action.payload.id,
-            );
+            const element = getElementById(state, action.payload.id);
             if (!element) return state;
 
             const elementCopy: TextElement = {
@@ -285,18 +324,45 @@ export function dotReducer(
         }
 
         case "change/element/area": {
+            const changedElement = getElementById(state, action.payload.id);
+            if (!changedElement) return state;
+
+            const nextArea = action.payload.area;
+
+            const deltaX = nextArea.left - changedElement.area.left;
+            const deltaY = nextArea.top - changedElement.area.top;
+
+            const isMove =
+                nextArea.width === changedElement.area.width &&
+                nextArea.height === changedElement.area.height;
+
+            const shouldMoveSelection = changedElement.selected && isMove;
+
             return {
                 ...state,
                 document: {
                     ...state.document,
-                    elements: state.document.elements.map((el) =>
-                        el.id === action.payload.id
-                            ? {
-                                  ...el,
-                                  area: action.payload.area,
-                              }
-                            : el,
-                    ),
+                    elements: state.document.elements.map((element) => {
+                        if (element.id === changedElement.id) {
+                            return {
+                                ...element,
+                                area: nextArea,
+                            };
+                        }
+
+                        if (shouldMoveSelection && element.selected) {
+                            return {
+                                ...element,
+                                area: {
+                                    ...element.area,
+                                    left: element.area.left + deltaX,
+                                    top: element.area.top + deltaY,
+                                },
+                            };
+                        }
+
+                        return element;
+                    }),
                 },
             };
         }
