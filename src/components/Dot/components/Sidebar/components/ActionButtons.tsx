@@ -11,6 +11,7 @@ export default function ActionButtons({
 }: DotStateProps): ReactElement {
     return (
         <div className={stylesBtn.buttonsContainer}>
+            <p className={stylesBtn.btnHeader}>ACTIONS</p>
             <button
                 className={stylesBtn.btn}
                 onClick={() =>

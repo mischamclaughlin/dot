@@ -6,6 +6,7 @@ export const initialState: DotState = {
         schemaVersion: 1,
         elements: [],
     },
+    selectedElementIds: new Set(),
     toolType: null,
     canvasMode: {
         mode: "idle",

@@ -37,7 +37,7 @@ export default function SavedElements({
                         <div
                             className={`
                                 ${styles.savedElement}
-                                ${element.selected ? styles.selectedElement : ""}
+                                ${state.selectedElementIds.has(element.id) ? styles.selectedElement : ""}
                                 `}
                             style={{
                                 ...styleCSS(element.style),
@@ -47,7 +47,11 @@ export default function SavedElements({
                             {element.text}
                         </div>
 
-                        <ElementButtons dispatch={dispatch} element={element} />
+                        <ElementButtons
+                            dispatch={dispatch}
+                            element={element}
+                            isSelected={state.selectedElementIds.has(element.id)}
+                        />
 
                         <DragBox
                             area={element.area}

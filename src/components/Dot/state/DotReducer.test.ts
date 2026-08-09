@@ -21,6 +21,16 @@ const savedElement: TextElement = {
     text: "Original text",
 };
 
+const secondSavedElement: TextElement = {
+    ...savedElement,
+    id: "element-2",
+    area: {
+        ...area,
+        left: area.left + area.width + 15,
+    },
+    text: "Second element",
+};
+
 function stateWithSavedElement(): DotState {
     return {
         ...initialState,
@@ -291,6 +301,95 @@ describe("dotReducer", () => {
                 expect(getSession(editing).editId).toBe(savedElement.id);
             });
         });
+
+        describe("element/select", () => {
+            it("tracks selection outside the saved document", () => {
+                const state = stateWithSavedElement();
+                const selected = dotReducer(state, {
+                    type: "element/select",
+                    payload: savedElement.id,
+                });
+
+                expect(selected.document).toBe(state.document);
+                expect(selected.selectedElementIds).toEqual(
+                    new Set([savedElement.id]),
+                );
+                expect(selected.document.elements[0]).not.toHaveProperty(
+                    "selected",
+                );
+            });
+
+            it("toggles selection without mutating the previous state", () => {
+                const selected = dotReducer(stateWithSavedElement(), {
+                    type: "element/select",
+                    payload: savedElement.id,
+                });
+                const deselected = dotReducer(selected, {
+                    type: "element/select",
+                    payload: savedElement.id,
+                });
+
+                expect(selected.selectedElementIds).toEqual(
+                    new Set([savedElement.id]),
+                );
+                expect(deselected.selectedElementIds).toEqual(new Set());
+            });
+        });
+
+        describe("element/deselect", () => {
+            it("clears selection without changing the saved document", () => {
+                const state = stateWithSavedElement();
+                const selected = {
+                    ...state,
+                    selectedElementIds: new Set([savedElement.id]),
+                };
+                const deselected = dotReducer(selected, {
+                    type: "element/deselect",
+                });
+
+                expect(deselected.document).toBe(state.document);
+                expect(deselected.selectedElementIds).toEqual(new Set());
+                expect(selected.selectedElementIds).toEqual(
+                    new Set([savedElement.id]),
+                );
+            });
+        });
+
+        describe("element/delete", () => {
+            it("removes a deleted element from selection", () => {
+                const state = {
+                    ...stateWithSavedElement(),
+                    selectedElementIds: new Set([savedElement.id]),
+                };
+                const deleted = dotReducer(state, {
+                    type: "element/delete",
+                    payload: savedElement.id,
+                });
+
+                expect(deleted.document.elements).toEqual([]);
+                expect(deleted.selectedElementIds).toEqual(new Set());
+            });
+
+            it("cancels the active edit when its saved element is deleted", () => {
+                const selected = {
+                    ...stateWithSavedElement(),
+                    selectedElementIds: new Set([savedElement.id]),
+                };
+                const editing = dotReducer(selected, {
+                    type: "element/edit",
+                    payload: savedElement.id,
+                });
+                const deleted = dotReducer(editing, {
+                    type: "element/delete",
+                    payload: savedElement.id,
+                });
+
+                expect(deleted.document.elements).toEqual([]);
+                expect(deleted.selectedElementIds).toEqual(new Set());
+                expect(deleted.toolType).toBeNull();
+                expect(deleted.canvasMode).toEqual({ mode: "idle" });
+            });
+        });
     });
 
     describe("change/*", () => {
@@ -308,6 +407,57 @@ describe("dotReducer", () => {
 
                 expect(getSession(resized).editId).toBe(savedElement.id);
                 expect(getSession(resized).element.area).toEqual(resizedArea);
+            });
+        });
+
+        describe("change/element/area", () => {
+            function stateWithSelectedElements(): DotState {
+                return {
+                    ...initialState,
+                    document: {
+                        ...initialState.document,
+                        elements: [savedElement, secondSavedElement],
+                    },
+                    selectedElementIds: new Set([
+                        savedElement.id,
+                        secondSavedElement.id,
+                    ]),
+                };
+            }
+
+            it("moves the complete selection with a selected element", () => {
+                const state = stateWithSelectedElements();
+                const movedArea = {
+                    ...savedElement.area,
+                    left: savedElement.area.left + 30,
+                    top: savedElement.area.top + 15,
+                };
+                const moved = dotReducer(state, {
+                    type: "change/element/area",
+                    payload: { id: savedElement.id, area: movedArea },
+                });
+
+                expect(moved.document.elements[0].area).toEqual(movedArea);
+                expect(moved.document.elements[1].area).toEqual({
+                    ...secondSavedElement.area,
+                    left: secondSavedElement.area.left + 30,
+                    top: secondSavedElement.area.top + 15,
+                });
+            });
+
+            it("resizes only the changed element", () => {
+                const state = stateWithSelectedElements();
+                const resizedArea = {
+                    ...savedElement.area,
+                    width: savedElement.area.width + 15,
+                };
+                const resized = dotReducer(state, {
+                    type: "change/element/area",
+                    payload: { id: savedElement.id, area: resizedArea },
+                });
+
+                expect(resized.document.elements[0].area).toEqual(resizedArea);
+                expect(resized.document.elements[1]).toBe(secondSavedElement);
             });
         });
     });

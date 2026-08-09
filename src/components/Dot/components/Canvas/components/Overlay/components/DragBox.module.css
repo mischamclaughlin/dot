@@ -8,7 +8,14 @@
     display: grid;
     overflow: visible;
     background-color: transparent;
-    transition: background-color 100ms ease-in;
+    border: 1px dashed transparent;
+    transition:
+        background-color 100ms ease-in,
+        border-color 200ms ease-in;
+}
+
+.container:has(> .dragZone:hover) {
+    border: 1px dashed color-mix(in srgb, var(--fg) 50%, transparent);
 }
 
 .dragZone {
@@ -60,13 +67,17 @@
 }
 .left {
     place-self: start;
+    margin-left: -1px;
 }
 .right {
     place-self: end;
+    margin-right: -1px;
 }
 .top {
     place-self: start;
+    margin-top: -1px;
 }
 .bottom {
     place-self: end;
+    margin-bottom: -1px;
 }

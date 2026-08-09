@@ -224,4 +224,33 @@ describe("Dot component interactions", () => {
             expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
         });
     });
+
+    describe("element selection", () => {
+        it("selects an element and clears the transient selection", async () => {
+            const user = userEvent.setup();
+            const canvas = renderDot();
+
+            pointerDown(canvas);
+            pointerMove(canvas);
+            pointerUp(canvas);
+            await user.click(screen.getByRole("button", { name: "text" }));
+            await user.type(screen.getByRole("textbox"), "Hello world");
+            await user.click(screen.getByRole("button", { name: "save" }));
+
+            const selectButton = screen.getByRole("button", {
+                name: "Select Hello world",
+            });
+            await user.click(selectButton);
+
+            expect(selectButton).toHaveAttribute("aria-pressed", "true");
+            expect(screen.getByRole("button", { name: "clear" })).toBeVisible();
+
+            await user.click(screen.getByRole("button", { name: "clear" }));
+
+            expect(selectButton).toHaveAttribute("aria-pressed", "false");
+            expect(
+                screen.queryByRole("button", { name: "clear" }),
+            ).not.toBeInTheDocument();
+        });
+    });
 });

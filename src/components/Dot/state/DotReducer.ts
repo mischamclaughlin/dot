@@ -1,6 +1,5 @@
 import { dotConfig } from "../dotConfig/DotConfig";
 import type {
-    CanvasElement,
     DraftTextElement,
     Rect,
     TextElement,
@@ -47,6 +46,7 @@ export type Action =
           type: "element/select";
           payload: string;
       }
+    | { type: "element/deselect" }
     | {
           type: "element/copy";
           payload: {
@@ -109,21 +109,8 @@ export function dotReducer(
         }
 
         case "action/cancel": {
-            const noSelectElements: CanvasElement[] = [];
-
-            state.document.elements.map((el) => {
-                if (el.selected) {
-                    el.selected = false;
-                }
-                noSelectElements.push(el);
-            });
-
             return {
                 ...state,
-                document: {
-                    ...state.document,
-                    elements: noSelectElements,
-                },
                 toolType: null,
                 canvasMode: {
                     mode: "idle",
@@ -229,16 +216,26 @@ export function dotReducer(
             const element = getElementById(state, action.payload);
             if (!element) return state;
 
+            const selectedElementIds = new Set(state.selectedElementIds);
+
+            if (selectedElementIds.has(element.id)) {
+                selectedElementIds.delete(element.id);
+            } else {
+                selectedElementIds.add(element.id);
+            }
+
             return {
                 ...state,
-                document: {
-                    ...state.document,
-                    elements: state.document.elements.map((element) =>
-                        element.id === action.payload
-                            ? { ...element, selected: !element.selected }
-                            : element,
-                    ),
-                },
+                selectedElementIds,
+            };
+        }
+
+        case "element/deselect": {
+            if (state.selectedElementIds.size === 0) return state;
+
+            return {
+                ...state,
+                selectedElementIds: new Set(),
             };
         }
 
@@ -275,9 +272,20 @@ export function dotReducer(
             const elements = state.document.elements.filter(
                 (el) => el.id !== action.payload,
             );
+            const selectedElementIds = new Set(state.selectedElementIds);
+            selectedElementIds.delete(action.payload);
+
+            const isDeletingActiveEdit =
+                state.canvasMode.mode !== "idle" &&
+                state.canvasMode.session.editId === action.payload;
 
             return {
                 ...state,
+                selectedElementIds,
+                toolType: isDeletingActiveEdit ? null : state.toolType,
+                canvasMode: isDeletingActiveEdit
+                    ? { mode: "idle" }
+                    : state.canvasMode,
                 document: {
                     ...state.document,
                     elements: elements,
@@ -336,7 +344,8 @@ export function dotReducer(
                 nextArea.width === changedElement.area.width &&
                 nextArea.height === changedElement.area.height;
 
-            const shouldMoveSelection = changedElement.selected && isMove;
+            const shouldMoveSelection =
+                state.selectedElementIds.has(changedElement.id) && isMove;
 
             return {
                 ...state,
@@ -350,7 +359,10 @@ export function dotReducer(
                             };
                         }
 
-                        if (shouldMoveSelection && element.selected) {
+                        if (
+                            shouldMoveSelection &&
+                            state.selectedElementIds.has(element.id)
+                        ) {
                             return {
                                 ...element,
                                 area: {

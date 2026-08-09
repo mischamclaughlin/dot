@@ -9,11 +9,13 @@ import { dotConfig } from "../../../../../dotConfig/DotConfig";
 
 type ElementButtonsProps = Omit<DotStateProps, "state"> & {
     element: CanvasElement;
+    isSelected: boolean;
 };
 
 export default function ElementButtons({
     dispatch,
     element,
+    isSelected,
 }: ElementButtonsProps): ReactElement {
     return (
         <div
@@ -23,7 +25,10 @@ export default function ElementButtons({
                 top: element.area.top - dotConfig.gridSpacing * 2,
             }}
         >
-            <div
+            <button
+                type="button"
+                aria-label={`Select ${element.text || "element"}`}
+                aria-pressed={isSelected}
                 className={styles.hoverContainer}
                 style={{ ...element.area }}
                 onClick={() =>

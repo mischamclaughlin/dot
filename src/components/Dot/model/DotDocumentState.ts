@@ -17,6 +17,7 @@ export type CanvasMode =
 
 export type DotState = {
     document: DotDocument;
+    selectedElementIds: ReadonlySet<string>;
     toolType: ToolType | null;
     canvasMode: CanvasMode;
 };

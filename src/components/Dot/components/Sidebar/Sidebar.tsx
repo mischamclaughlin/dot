@@ -8,10 +8,10 @@ import { dotConfig } from "../../dotConfig/DotConfig";
 import ActionButtons from "./components/ActionButtons";
 import DragBar from "./components/DragBar";
 import FullscreenButton from "./components/FullscreenButtons";
-import ToolSelectButtonsProps from "./components/ToolSelectButtons";
+import SelctedElementButtons from "./components/SelectedElementButtons";
+import ToolSelectButtons from "./components/ToolSelectButtons";
 
 import styles from "./Sidebar.module.css";
-import SelctedElementButtons from "./components/SelectedElementButtons";
 // -----------------------------------------------------------------------------
 
 export default function Sidebar({
@@ -40,12 +40,8 @@ export default function Sidebar({
                         <h2 className={styles.headerTool}>
                             {state.toolType?.toUpperCase() ?? "TOOL"}
                         </h2>
-                        <SelctedElementButtons
-                            state={state}
-                            dispatch={dispatch}
-                        />
                         {!state.toolType && (
-                            <ToolSelectButtonsProps
+                            <ToolSelectButtons
                                 state={state}
                                 dispatch={dispatch}
                             />
@@ -53,6 +49,10 @@ export default function Sidebar({
                         {state.toolType && (
                             <ActionButtons state={state} dispatch={dispatch} />
                         )}
+                        <SelctedElementButtons
+                            state={state}
+                            dispatch={dispatch}
+                        />
                     </div>
 
                     <DragBar onSetWidth={setWidth} />

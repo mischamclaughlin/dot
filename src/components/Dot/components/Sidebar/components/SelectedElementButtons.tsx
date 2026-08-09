@@ -8,21 +8,16 @@ export default function SelctedElementButtons({
     dispatch,
 }: DotStateProps): ReactElement {
     const selectedElements = state.document.elements.filter(
-        (el) => el.selected,
+        (element) => state.selectedElementIds.has(element.id),
     );
-    console.log(selectedElements);
     if (selectedElements.length <= 0) return <></>;
 
     return (
         <div className={stylesBtn.buttonsContainer}>
-            <p>Selected</p>
+            <p className={stylesBtn.btnHeader}>SELECTED</p>
             <button
                 className={stylesBtn.btn}
-                onClick={() =>
-                    dispatch({
-                        type: "action/cancel",
-                    })
-                }
+                onClick={() => dispatch({ type: "element/deselect" })}
             >
                 clear
             </button>
@@ -41,6 +36,7 @@ export default function SelctedElementButtons({
             </button>
             <button
                 className={stylesBtn.btn}
+                disabled={state.canvasMode.mode === "editing"}
                 onClick={() =>
                     selectedElements.map((el) =>
                         dispatch({
