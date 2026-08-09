@@ -25,7 +25,7 @@ describe("updateText", () => {
         expect(update.document.elements["text-1"].text).toEqual("New text");
     });
 
-    it("updates only the requested element", () => {
+    it("updates only the requested TextElement", () => {
         const first = createTextElement(createEmptyDocument(), textElement());
         if (!first.ok) {
             throw new Error(`createTextElement error: ${first.error}`);
