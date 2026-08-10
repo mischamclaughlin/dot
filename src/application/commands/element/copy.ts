@@ -44,7 +44,6 @@ export function copyElement(
             x: element.rect.x + element.rect.width,
             y: element.rect.y + element.rect.height,
         },
-        text: "",
     };
 
     return {
