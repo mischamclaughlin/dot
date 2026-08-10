@@ -1,5 +1,5 @@
-import type { TextElement } from "../../../domain/elements/TextElement";
-import type { Rect } from "../../../domain/geometry/Rect";
+import type { TextElement } from "../../../../domain/elements/TextElement";
+import type { Rect } from "../../../../domain/geometry/Rect";
 
 export const textElement = (
     id: string = "text-1",
