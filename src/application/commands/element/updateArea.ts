@@ -1,5 +1,5 @@
 import type { DotDocument } from "../../../domain/document/DotDocument";
-import type { Rect } from "../../../domain/geometry/Rect";
+import { isValidRect, type Rect } from "../../../domain/geometry/Rect";
 
 export type UpdateAreaResult =
     | {
@@ -8,7 +8,7 @@ export type UpdateAreaResult =
       }
     | {
           ok: false;
-          error: "invalid-id";
+          error: "invalid-id" | "invalid-rectangle";
       };
 
 export function updateArea(
@@ -22,6 +22,13 @@ export function updateArea(
         return {
             ok: false,
             error: "invalid-id",
+        };
+    }
+
+    if (!isValidRect(area)) {
+        return {
+            ok: false,
+            error: "invalid-rectangle",
         };
     }
 

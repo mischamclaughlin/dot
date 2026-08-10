@@ -88,4 +88,26 @@ describe("updateArea", () => {
             error: "invalid-id",
         });
     });
+
+    it("reject invalid invalid rectagnle", () => {
+        const create = createTextElement(
+            createEmptyDocument(),
+            textElement("invalid-rectangle"),
+        );
+        if (!create.ok) {
+            throw new Error(`createTextElement error: ${create.error}`);
+        }
+
+        const result = updateArea(create.document, "invalid-rectangle", {
+            x: 0,
+            y: 0,
+            width: -10,
+            height: 20,
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: "invalid-rectangle",
+        });
+    });
 });
