@@ -1,4 +1,7 @@
-import type { DotDocument } from "../../../domain/document/DotDocument";
+import {
+    getElementById,
+    type DotDocument,
+} from "../../../domain/document/DotDocument";
 import type { CanvasElement } from "../../../domain/elements/CanvasElement";
 
 export type CopyElementResult =
@@ -20,7 +23,8 @@ export function copyElement(
     elementId: string,
     newElementId: string,
 ): CopyElementResult {
-    const element = document.elements[elementId];
+    const element = getElementById(document, elementId);
+
     if (!element) {
         return {
             ok: false,

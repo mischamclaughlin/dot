@@ -1,4 +1,7 @@
-import type { DotDocument } from "../../../domain/document/DotDocument";
+import {
+    getElementById,
+    type DotDocument,
+} from "../../../domain/document/DotDocument";
 import { isValidRect, type Rect } from "../../../domain/geometry/Rect";
 
 export type UpdateAreaResult =
@@ -16,7 +19,7 @@ export function updateArea(
     elementId: string,
     area: Rect,
 ): UpdateAreaResult {
-    const element = document.elements[elementId];
+    const element = getElementById(document, elementId);
 
     if (!element) {
         return {

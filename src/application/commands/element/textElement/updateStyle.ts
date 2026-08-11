@@ -1,4 +1,7 @@
-import type { DotDocument } from "../../../../domain/document/DotDocument";
+import {
+    getElementById,
+    type DotDocument,
+} from "../../../../domain/document/DotDocument";
 import type { TextStyle } from "../../../../domain/elements/TextElement";
 
 export type UpdateStyleResult =
@@ -16,7 +19,8 @@ export function updateStyle(
     elementId: string,
     style: TextStyle,
 ): UpdateStyleResult {
-    const element = document.elements[elementId];
+    const element = getElementById(document, elementId);
+
     if (!element) {
         return {
             ok: false,

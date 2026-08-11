@@ -1,4 +1,7 @@
-import type { DotDocument } from "../../../domain/document/DotDocument";
+import {
+    getElementById,
+    type DotDocument,
+} from "../../../domain/document/DotDocument";
 
 export type DeleteElementResult =
     | {
@@ -14,7 +17,9 @@ export function deleteElement(
     document: DotDocument,
     elementId: string,
 ): DeleteElementResult {
-    if (!Object.hasOwn(document.elements, elementId)) {
+    const element = getElementById(document, elementId);
+
+    if (!element) {
         return {
             ok: false,
             error: "invalid-id",
