@@ -13,3 +13,12 @@ export function createEmptyDocument(): DotDocument {
         elements: {},
     };
 }
+
+export function getElementById(
+    document: DotDocument,
+    elementId: string,
+): CanvasElement | undefined {
+    return Object.prototype.hasOwnProperty.call(document.elements, elementId)
+        ? document.elements[elementId]
+        : undefined;
+}
