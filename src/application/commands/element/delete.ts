@@ -1,41 +1,16 @@
 import {
-    getElementById,
+    removeElement,
     type DotDocument,
+    type DotDocumentResult,
 } from "../../../domain/document/DotDocument";
 
-export type DeleteElementResult =
-    | {
-          ok: true;
-          document: DotDocument;
-      }
-    | {
-          ok: false;
-          error: "invalid-id";
-      };
+type DotDocumentError = "invalid-id";
+
+export type DeleteElementResult = DotDocumentResult<DotDocumentError>;
 
 export function deleteElement(
     document: DotDocument,
     elementId: string,
 ): DeleteElementResult {
-    const element = getElementById(document, elementId);
-
-    if (!element) {
-        return {
-            ok: false,
-            error: "invalid-id",
-        };
-    }
-
-    const nextElements = { ...document.elements };
-
-    delete nextElements[elementId];
-
-    return {
-        ok: true,
-        document: {
-            ...document,
-            rootIds: document.rootIds.filter((id) => id !== elementId),
-            elements: nextElements,
-        },
-    };
+    return removeElement(document, elementId);
 }

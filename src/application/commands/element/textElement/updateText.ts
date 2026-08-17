@@ -1,17 +1,13 @@
 import {
     getElementById,
+    replaceElement,
     type DotDocument,
+    type DotDocumentResult,
 } from "../../../../domain/document/DotDocument";
 
-export type UpdateTextResult =
-    | {
-          ok: true;
-          document: DotDocument;
-      }
-    | {
-          ok: false;
-          error: "invalid-id";
-      };
+type UpdateTextError = "invalid-id";
+
+export type UpdateTextResult = DotDocumentResult<UpdateTextError>;
 
 export function updateText(
     document: DotDocument,
@@ -21,23 +17,11 @@ export function updateText(
     const element = getElementById(document, elementId);
 
     if (!element) {
-        return {
-            ok: false,
-            error: "invalid-id",
-        };
+        return { ok: false, error: "invalid-id" };
     }
 
-    return {
-        ok: true,
-        document: {
-            ...document,
-            elements: {
-                ...document.elements,
-                [elementId]: {
-                    ...element,
-                    text,
-                },
-            },
-        },
-    };
+    return replaceElement(document, {
+        ...element,
+        text,
+    });
 }
