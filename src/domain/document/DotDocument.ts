@@ -1,5 +1,6 @@
 import type { CanvasElement } from "../elements/CanvasElement";
-import { cloneTextElement } from "../elements/TextElement";
+
+import { cloneCanvasElement } from "../elements/CanvasElement";
 
 export type DotDocument = Readonly<{
     schemaVersion: 1;
@@ -46,7 +47,7 @@ export function addElement(
             rootIds: [...document.rootIds, element.id],
             elements: {
                 ...document.elements,
-                [element.id]: cloneTextElement(element),
+                [element.id]: cloneCanvasElement(element),
             },
         },
     };
@@ -66,7 +67,7 @@ export function replaceElement(
             ...document,
             elements: {
                 ...document.elements,
-                [element.id]: cloneTextElement(element),
+                [element.id]: cloneCanvasElement(element),
             },
         },
     };
