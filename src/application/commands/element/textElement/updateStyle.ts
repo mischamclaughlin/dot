@@ -1,6 +1,7 @@
 import type {
     DotDocument,
     DotDocumentResult,
+    ReplaceElementError,
 } from "../../../../domain/document/DotDocument";
 import type { TextStyle } from "../../../../domain/elements/TextElement";
 
@@ -9,9 +10,8 @@ import {
     replaceElement,
 } from "../../../../domain/document/DotDocument";
 
-type UpdateStyleError = "invalid-id";
-
-export type UpdateStyleResult = DotDocumentResult<UpdateStyleError>;
+type UpdateStyleError = ReplaceElementError;
+type UpdateStyleResult = DotDocumentResult<UpdateStyleError>;
 
 export function updateStyle(
     document: DotDocument,

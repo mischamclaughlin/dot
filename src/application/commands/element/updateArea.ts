@@ -1,6 +1,7 @@
 import type {
     DotDocument,
     DotDocumentResult,
+    ReplaceElementError,
 } from "../../../domain/document/DotDocument";
 import type { Rect } from "../../../domain/geometry/Rect";
 
@@ -8,11 +9,10 @@ import {
     getElementById,
     replaceElement,
 } from "../../../domain/document/DotDocument";
-import { isValidRect } from "../../../domain/geometry/Rect";
+import { isRect } from "../../../domain/geometry/Rect";
 
-type UpdateAreaError = "invalid-id" | "invalid-rectangle";
-
-export type UpdateAreaResult = DotDocumentResult<UpdateAreaError>;
+type UpdateAreaError = ReplaceElementError | "invalid-rectangle";
+type UpdateAreaResult = DotDocumentResult<UpdateAreaError>;
 
 export function updateArea(
     document: DotDocument,
@@ -25,7 +25,7 @@ export function updateArea(
         return { ok: false, error: "invalid-id" };
     }
 
-    if (!isValidRect(area)) {
+    if (!isRect(area)) {
         return {
             ok: false,
             error: "invalid-rectangle",

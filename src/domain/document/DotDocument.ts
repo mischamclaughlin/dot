@@ -1,6 +1,6 @@
 import type { CanvasElement } from "../elements/CanvasElement";
 
-import { cloneCanvasElement } from "../elements/CanvasElement";
+import { cloneCanvasElement, isCanvasElement } from "../elements/CanvasElement";
 
 export type DotDocument = Readonly<{
     schemaVersion: 1;
@@ -29,10 +29,17 @@ export function getElementById(
         : undefined;
 }
 
+export type AddElementError = "duplicate-id" | "invalid-element";
+export type AddElementResult = DotDocumentResult<AddElementError>;
+
 export function addElement(
     document: DotDocument,
     element: CanvasElement,
-): DotDocumentResult<"duplicate-id"> {
+): AddElementResult {
+    if (!isCanvasElement(element)) {
+        return { ok: false, error: "invalid-element" };
+    }
+
     if (Object.hasOwn(document.elements, element.id)) {
         return {
             ok: false,
@@ -53,10 +60,17 @@ export function addElement(
     };
 }
 
+export type ReplaceElementError = "invalid-element" | "invalid-id";
+export type ReplaceElementResult = DotDocumentResult<ReplaceElementError>;
+
 export function replaceElement(
     document: DotDocument,
     element: CanvasElement,
-): DotDocumentResult<"invalid-id"> {
+): ReplaceElementResult {
+    if (!isCanvasElement(element)) {
+        return { ok: false, error: "invalid-element" };
+    }
+
     if (!Object.hasOwn(document.elements, element.id)) {
         return { ok: false, error: "invalid-id" };
     }
@@ -73,10 +87,13 @@ export function replaceElement(
     };
 }
 
+export type RemoveElementError = "invalid-id";
+export type RemoveElementResult = DotDocumentResult<RemoveElementError>;
+
 export function removeElement(
     document: DotDocument,
     elementId: string,
-): DotDocumentResult<"invalid-id"> {
+): RemoveElementResult {
     if (!Object.hasOwn(document.elements, elementId)) {
         return { ok: false, error: "invalid-id" };
     }

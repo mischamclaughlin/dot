@@ -1,6 +1,7 @@
 import type {
     DotDocument,
     DotDocumentResult,
+    ReplaceElementError,
 } from "../../../../domain/document/DotDocument";
 
 import {
@@ -8,9 +9,8 @@ import {
     replaceElement,
 } from "../../../../domain/document/DotDocument";
 
-type UpdateTextError = "invalid-id";
-
-export type UpdateTextResult = DotDocumentResult<UpdateTextError>;
+type UpdateTextError = ReplaceElementError;
+type UpdateTextResult = DotDocumentResult<UpdateTextError>;
 
 export function updateText(
     document: DotDocument,

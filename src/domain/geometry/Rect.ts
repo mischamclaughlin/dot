@@ -1,3 +1,5 @@
+import { isRecord } from "../validation/isRecord";
+
 export type Rect = Readonly<{
     x: number;
     y: number;
@@ -5,13 +7,19 @@ export type Rect = Readonly<{
     height: number;
 }>;
 
-export function isValidRect(rect: Rect): boolean {
+export function isRect(value: unknown): value is Rect {
+    if (!isRecord(value)) return false;
+
     return (
-        Number.isFinite(rect.x) &&
-        Number.isFinite(rect.y) &&
-        Number.isFinite(rect.width) &&
-        Number.isFinite(rect.height) &&
-        rect.width > 0 &&
-        rect.height > 0
+        typeof value.x === "number" &&
+        Number.isFinite(value.x) &&
+        typeof value.y === "number" &&
+        Number.isFinite(value.y) &&
+        typeof value.width === "number" &&
+        Number.isFinite(value.width) &&
+        value.width > 0 &&
+        typeof value.height === "number" &&
+        Number.isFinite(value.height) &&
+        value.height > 0
     );
 }

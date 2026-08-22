@@ -1,12 +1,13 @@
-import {
-    removeElement,
-    type DotDocument,
-    type DotDocumentResult,
+import type {
+    DotDocument,
+    DotDocumentResult,
+    RemoveElementError,
 } from "../../../domain/document/DotDocument";
 
-type DeleteElementError = "invalid-id";
+import { removeElement } from "../../../domain/document/DotDocument";
 
-export type DeleteElementResult = DotDocumentResult<DeleteElementError>;
+type DeleteElementError = RemoveElementError;
+type DeleteElementResult = DotDocumentResult<DeleteElementError>;
 
 export function deleteElement(
     document: DotDocument,
