@@ -1,5 +1,5 @@
 import type { CanvasElement } from "../elements/CanvasElement";
-import type { TextElement } from "../elements/TextElement";
+import { cloneTextElement } from "../elements/TextElement";
 
 export type DotDocument = Readonly<{
     schemaVersion: 1;
@@ -28,7 +28,7 @@ export function getElementById(
         : undefined;
 }
 
-export function addELement(
+export function addElement(
     document: DotDocument,
     element: CanvasElement,
 ): DotDocumentResult<"duplicate-id"> {
@@ -90,13 +90,5 @@ export function removeElement(
             rootIds: document.rootIds.filter((id) => id !== elementId),
             elements,
         },
-    };
-}
-
-function cloneTextElement(element: TextElement): TextElement {
-    return {
-        ...element,
-        rect: { ...element.rect },
-        style: { ...element.style },
     };
 }

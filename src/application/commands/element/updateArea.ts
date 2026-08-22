@@ -1,18 +1,18 @@
+import type {
+    DotDocument,
+    DotDocumentResult,
+} from "../../../domain/document/DotDocument";
+import type { Rect } from "../../../domain/geometry/Rect";
+
 import {
     getElementById,
-    type DotDocument,
+    replaceElement,
 } from "../../../domain/document/DotDocument";
-import { isValidRect, type Rect } from "../../../domain/geometry/Rect";
+import { isValidRect } from "../../../domain/geometry/Rect";
 
-export type UpdateAreaResult =
-    | {
-          ok: true;
-          document: DotDocument;
-      }
-    | {
-          ok: false;
-          error: "invalid-id" | "invalid-rectangle";
-      };
+type UpdateAreaError = "invalid-id" | "invalid-rectangle";
+
+export type UpdateAreaResult = DotDocumentResult<UpdateAreaError>;
 
 export function updateArea(
     document: DotDocument,
@@ -22,10 +22,7 @@ export function updateArea(
     const element = getElementById(document, elementId);
 
     if (!element) {
-        return {
-            ok: false,
-            error: "invalid-id",
-        };
+        return { ok: false, error: "invalid-id" };
     }
 
     if (!isValidRect(area)) {
@@ -35,17 +32,8 @@ export function updateArea(
         };
     }
 
-    return {
-        ok: true,
-        document: {
-            ...document,
-            elements: {
-                ...document.elements,
-                [elementId]: {
-                    ...element,
-                    rect: area,
-                },
-            },
-        },
-    };
+    return replaceElement(document, {
+        ...element,
+        rect: area,
+    });
 }

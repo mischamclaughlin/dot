@@ -3,7 +3,7 @@ import type {
     DotDocumentResult,
 } from "../../../domain/document/DotDocument";
 import {
-    addELement,
+    addElement,
     getElementById,
 } from "../../../domain/document/DotDocument";
 import type { CanvasElement } from "../../../domain/elements/CanvasElement";
@@ -36,5 +36,5 @@ export function copyElement(
         },
     };
 
-    return addELement(document, copy);
+    return addElement(document, copy);
 }

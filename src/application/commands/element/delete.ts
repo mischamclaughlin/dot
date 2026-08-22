@@ -4,9 +4,9 @@ import {
     type DotDocumentResult,
 } from "../../../domain/document/DotDocument";
 
-type DotDocumentError = "invalid-id";
+type DeleteElementError = "invalid-id";
 
-export type DeleteElementResult = DotDocumentResult<DotDocumentError>;
+export type DeleteElementResult = DotDocumentResult<DeleteElementError>;
 
 export function deleteElement(
     document: DotDocument,

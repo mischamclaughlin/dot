@@ -15,3 +15,11 @@ export type TextElement = Readonly<{
     text: string;
     style: TextStyle;
 }>;
+
+export function cloneTextElement(element: TextElement): TextElement {
+    return {
+        ...element,
+        rect: { ...element.rect },
+        style: { ...element.style },
+    };
+}

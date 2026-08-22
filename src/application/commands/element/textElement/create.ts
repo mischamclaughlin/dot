@@ -2,7 +2,7 @@ import type {
     DotDocument,
     DotDocumentResult,
 } from "../../../../domain/document/DotDocument";
-import { addELement } from "../../../../domain/document/DotDocument";
+import { addElement } from "../../../../domain/document/DotDocument";
 import type { TextElement } from "../../../../domain/elements/TextElement";
 
 import { isValidRect } from "../../../../domain/geometry/Rect";
@@ -22,5 +22,5 @@ export function createTextElement(
         };
     }
 
-    return addELement(document, element);
+    return addElement(document, element);
 }

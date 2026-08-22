@@ -1,18 +1,17 @@
-import {
-    getElementById,
-    type DotDocument,
+import type {
+    DotDocument,
+    DotDocumentResult,
 } from "../../../../domain/document/DotDocument";
 import type { TextStyle } from "../../../../domain/elements/TextElement";
 
-export type UpdateStyleResult =
-    | {
-          ok: true;
-          document: DotDocument;
-      }
-    | {
-          ok: false;
-          error: "invalid-id";
-      };
+import {
+    getElementById,
+    replaceElement,
+} from "../../../../domain/document/DotDocument";
+
+type UpdateStyleError = "invalid-id";
+
+export type UpdateStyleResult = DotDocumentResult<UpdateStyleError>;
 
 export function updateStyle(
     document: DotDocument,
@@ -28,17 +27,8 @@ export function updateStyle(
         };
     }
 
-    return {
-        ok: true,
-        document: {
-            ...document,
-            elements: {
-                ...document.elements,
-                [elementId]: {
-                    ...element,
-                    style,
-                },
-            },
-        },
-    };
+    return replaceElement(document, {
+        ...element,
+        style: style,
+    });
 }

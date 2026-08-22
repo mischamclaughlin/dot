@@ -1,8 +1,11 @@
+import type {
+    DotDocument,
+    DotDocumentResult,
+} from "../../../../domain/document/DotDocument";
+
 import {
     getElementById,
     replaceElement,
-    type DotDocument,
-    type DotDocumentResult,
 } from "../../../../domain/document/DotDocument";
 
 type UpdateTextError = "invalid-id";
