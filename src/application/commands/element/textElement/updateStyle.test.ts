@@ -3,6 +3,7 @@ import { createTextElement } from "./create";
 import { createEmptyDocument } from "../../../../domain/document/DotDocument";
 import { textElement } from "../test/testFactory";
 import { updateStyle } from "./updateStyle";
+import type { TextStyle } from "../../../../domain/elements/TextElement";
 
 describe("updateStyle", () => {
     it("updates the TextElements style without changing the original document", () => {
@@ -64,6 +65,39 @@ describe("updateStyle", () => {
             previousTextTwoStyle,
         );
         expect(previousDocument.elements["text-1"].style.fontSize).toBe(10);
+    });
+
+    it("clones the supplied TextElement", () => {
+        const create = createTextElement(createEmptyDocument(), textElement());
+        if (!create.ok) {
+            throw new Error(`createTextElement error: ${create.error}`);
+        }
+
+        const requestedStyle = {
+            fontSize: 12,
+            fontWeight: 400,
+            foregroundColour: "#fff",
+            backgroundColour: "#000",
+            textAlign: "left",
+        } satisfies TextStyle;
+
+        const updated = updateStyle(create.document, "text-1", requestedStyle);
+        if (!updated.ok) {
+            throw new Error(`updateStyle error: ${updated.error}`);
+        }
+
+        requestedStyle.fontSize = 24;
+
+        expect(updated.document.elements["text-1"].style).toEqual({
+            fontSize: 12,
+            fontWeight: 400,
+            foregroundColour: "#fff",
+            backgroundColour: "#000",
+            textAlign: "left",
+        });
+        expect(updated.document.elements["text-1"].style).not.toBe(
+            requestedStyle,
+        );
     });
 
     it("rejects invalid IDs", () => {

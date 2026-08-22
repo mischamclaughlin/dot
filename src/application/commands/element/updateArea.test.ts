@@ -39,7 +39,7 @@ describe("updateArea", () => {
         });
     });
 
-    it("only updates only the requested CanvasElement", () => {
+    it("only updates the requested CanvasElement", () => {
         const first = createTextElement(createEmptyDocument(), textElement());
         if (!first.ok) {
             throw new Error(`createTextElement error: ${first.error}`);
@@ -73,6 +73,37 @@ describe("updateArea", () => {
             width: 10,
             height: 10,
         });
+    });
+
+    it("clones the supplied CanvasElement", () => {
+        const create = createTextElement(createEmptyDocument(), textElement());
+        if (!create.ok) {
+            throw new Error(`createTextElement error: ${create.error}`);
+        }
+
+        const requestedRect = {
+            x: 10,
+            y: 10,
+            width: 20,
+            height: 20,
+        };
+
+        const updated = updateArea(create.document, "text-1", requestedRect);
+        if (!updated.ok) {
+            throw new Error(`updateArea error: ${updated.error}`);
+        }
+
+        requestedRect.height = 999;
+
+        expect(updated.document.elements["text-1"].rect).toEqual({
+            x: 10,
+            y: 10,
+            width: 20,
+            height: 20,
+        });
+        expect(updated.document.elements["text-1"].rect).not.toBe(
+            requestedRect,
+        );
     });
 
     it("reject invalid IDs", () => {
