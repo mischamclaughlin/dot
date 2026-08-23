@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
-
-import { textElement } from "./test/testFactory";
-
 import { deleteElement } from "./delete";
+import { textElement } from "./test/testFactory";
 import { createTextElement } from "./textElement/create";
 
 describe("deleteElement", () => {

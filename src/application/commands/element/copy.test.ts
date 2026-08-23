@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { createTextElement } from "./textElement/create";
+import { describe, expect, it } from "vitest";
+
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
-import { textElement } from "./test/testFactory";
 import { copyElement } from "./copy";
+import { textElement } from "./test/testFactory";
+import { createTextElement } from "./textElement/create";
 
 describe("copyElement", () => {
     it("copies a CanvasElement without changing the original document", () => {

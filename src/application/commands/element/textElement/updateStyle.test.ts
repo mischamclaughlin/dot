@@ -1,9 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { createTextElement } from "./create";
+import { describe, expect, it } from "vitest";
+
+import type { TextStyle } from "../../../../domain/elements/TextElement";
+
 import { createEmptyDocument } from "../../../../domain/document/DotDocument";
 import { textElement } from "../test/testFactory";
+import { createTextElement } from "./create";
 import { updateStyle } from "./updateStyle";
-import type { TextStyle } from "../../../../domain/elements/TextElement";
 
 describe("updateStyle", () => {
     it("updates the TextElements style without changing the original document", () => {

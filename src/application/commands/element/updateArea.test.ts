@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import type { Rect } from "../../../domain/geometry/Rect";
 
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
-import { createTextElement } from "./textElement/create";
 import { textElement } from "./test/testFactory";
+import { createTextElement } from "./textElement/create";
 import { updateArea } from "./updateArea";
 
 describe("updateArea", () => {
