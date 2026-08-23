@@ -36,22 +36,56 @@ describe("validateDocument", () => {
         });
     });
 
-    it("clones an accepted document", () => {
-        const rootIDs = ["text-1"];
-        const element = unknownTextElement();
-        const elements = { "text-1": element };
+    it("clones all caller-owned data in an accepted document", () => {
+        const rootIds = ["text-1"];
 
-        const validDoc = validateDocument(
-            unknownDocument(1, rootIDs, elements),
+        const rect = {
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+        };
+
+        const style = {
+            fontSize: 10,
+            fontWeight: 400,
+            foregroundColour: "#fff",
+            backgroundColour: "#000",
+            textAlign: "left",
+        };
+
+        const element = unknownTextElement(
+            "text-1",
+            "text",
+            rect,
+            "Some text",
+            style,
         );
-        if (!validDoc.ok) {
-            throw new Error(`validateDocument error: ${validDoc.error}`);
+
+        const result = validateDocument(
+            unknownDocument(1, rootIds, { "text-1": element }),
+        );
+
+        if (!result.ok) {
+            throw new Error(`validateDocument error: ${result.error}`);
         }
 
-        rootIDs.push("corruption");
+        const acceptedElement = result.document.elements["text-1"];
+        if (!acceptedElement) {
+            throw new Error("Expected text-1");
+        }
 
-        expect(validDoc.ok).toEqual(true);
-        expect(validDoc.document.rootIds).toEqual(["text-1"]);
+        rootIds.push("corruption");
+        rect.x = 999;
+        style.fontSize = 999;
+
+        expect(result.document.rootIds).toEqual(["text-1"]);
+        expect(acceptedElement.rect.x).toBe(0);
+        expect(acceptedElement.style.fontSize).toBe(10);
+
+        expect(acceptedElement).not.toBe(element);
+        expect(acceptedElement.rect).not.toBe(rect);
+        expect(acceptedElement.style).not.toBe(style);
     });
 
     it("rejects an invalid document", () => {
