@@ -1,5 +1,5 @@
 import { isRect, type Rect } from "../geometry/Rect";
-import { isRecord } from "../validation/isRecord";
+import { hasOwnProperties, isRecord } from "../validation/isRecord";
 
 export type TextStyle = Readonly<{
     fontSize: number;
@@ -20,12 +20,16 @@ export type TextElement = Readonly<{
 }>;
 
 export function isTextElement(value: unknown): value is TextElement {
-    if (!isRecord(value)) return false;
+    if (
+        !isRecord(value) ||
+        !hasOwnProperties(value, ["id", "kind", "rect", "text", "style"])
+    )
+        return false;
 
     return (
-        value.kind === "text" &&
         typeof value.id === "string" &&
         value.id.trim().length > 0 &&
+        value.kind === "text" &&
         isRect(value.rect) &&
         typeof value.text === "string" &&
         isTextStyle(value.style)
@@ -33,7 +37,17 @@ export function isTextElement(value: unknown): value is TextElement {
 }
 
 function isTextStyle(value: unknown): value is TextStyle {
-    if (!isRecord(value)) return false;
+    if (
+        !isRecord(value) ||
+        !hasOwnProperties(value, [
+            "fontSize",
+            "fontWeight",
+            "foregroundColour",
+            "backgroundColour",
+            "textAlign",
+        ])
+    )
+        return false;
 
     return (
         typeof value.fontSize === "number" &&

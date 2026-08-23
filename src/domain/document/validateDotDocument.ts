@@ -1,10 +1,7 @@
 import type { CanvasElement } from "../elements/CanvasElement";
 import type { DotDocument } from "./DotDocument";
 
-import {
-    cloneCanvasElement,
-    isCanvasElementRecord,
-} from "../elements/CanvasElement";
+import { cloneCanvasElement, isCanvasElement } from "../elements/CanvasElement";
 import { isRecord } from "../validation/isRecord";
 
 export type ValidateDocumentError =
@@ -12,7 +9,7 @@ export type ValidateDocumentError =
     | "unsupported-schema-version"
     | "invalid-root-ids"
     | "invalid-elements"
-    | "rootIDs-element-mismatch";
+    | "root-ids-element-mismatch";
 
 type ValidateDocumentResult =
     | { ok: true; document: DotDocument }
@@ -23,13 +20,21 @@ export function validateDocument(input: unknown): ValidateDocumentResult {
         return { ok: false, error: "invalid-document" };
     }
 
-    const { schemaVersion, rootIds, elements } = input;
+    const schemaVersion = Object.hasOwn(input, "schemaVersion")
+        ? input.schemaVersion
+        : undefined;
 
-    if (!checkSupportedSchemaVersion(schemaVersion)) {
+    const rootIds = Object.hasOwn(input, "rootIds") ? input.rootIds : undefined;
+
+    const elements = Object.hasOwn(input, "elements")
+        ? input.elements
+        : undefined;
+
+    if (!isSupportedSchemaVersion(schemaVersion)) {
         return { ok: false, error: "unsupported-schema-version" };
     }
 
-    if (!checkRootIds(rootIds)) {
+    if (!isRootIds(rootIds)) {
         return { ok: false, error: "invalid-root-ids" };
     }
 
@@ -37,8 +42,8 @@ export function validateDocument(input: unknown): ValidateDocumentResult {
         return { ok: false, error: "invalid-elements" };
     }
 
-    if (!checkRootElementConsistency(rootIds, elements)) {
-        return { ok: false, error: "rootIDs-element-mismatch" };
+    if (!isRootElementConsistent(rootIds, elements)) {
+        return { ok: false, error: "root-ids-element-mismatch" };
     }
 
     const clonedElements = Object.fromEntries(
@@ -58,11 +63,11 @@ export function validateDocument(input: unknown): ValidateDocumentResult {
     };
 }
 
-function checkSupportedSchemaVersion(value: unknown): value is 1 {
+function isSupportedSchemaVersion(value: unknown): value is 1 {
     return value === 1;
 }
 
-function checkRootIds(value: unknown): value is readonly string[] {
+function isRootIds(value: unknown): value is readonly string[] {
     return (
         Array.isArray(value) &&
         value.every(
@@ -73,7 +78,18 @@ function checkRootIds(value: unknown): value is readonly string[] {
     );
 }
 
-function checkRootElementConsistency(
+function isCanvasElementRecord(
+    value: unknown,
+): value is Readonly<Record<string, CanvasElement>> {
+    return (
+        isRecord(value) &&
+        Object.entries(value).every(
+            ([id, element]) => isCanvasElement(element) && element.id === id,
+        )
+    );
+}
+
+function isRootElementConsistent(
     rootIDs: readonly string[],
     elements: Readonly<Record<string, CanvasElement>>,
 ): boolean {

@@ -1,4 +1,4 @@
-import { isRecord } from "../validation/isRecord";
+import { hasOwnProperties, isRecord } from "../validation/isRecord";
 
 export type Rect = Readonly<{
     x: number;
@@ -8,7 +8,11 @@ export type Rect = Readonly<{
 }>;
 
 export function isRect(value: unknown): value is Rect {
-    if (!isRecord(value)) return false;
+    if (
+        !isRecord(value) ||
+        !hasOwnProperties(value, ["x", "y", "width", "height"])
+    )
+        return false;
 
     return (
         typeof value.x === "number" &&
