@@ -9,7 +9,7 @@ import {
     replaceElement,
 } from "../../../../domain/document/DotDocument";
 
-type UpdateTextError = ReplaceElementError;
+export type UpdateTextError = ReplaceElementError;
 type UpdateTextResult = DotDocumentResult<UpdateTextError>;
 
 export function updateText(

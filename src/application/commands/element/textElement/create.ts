@@ -8,7 +8,7 @@ import type { TextElement } from "../../../../domain/elements/TextElement";
 import { addElement } from "../../../../domain/document/DotDocument";
 import { isRect } from "../../../../domain/geometry/Rect";
 
-type CreateTextElementError = AddElementError | "invalid-rectangle";
+export type CreateTextElementError = AddElementError | "invalid-rectangle";
 type CreateTextElementResult = DotDocumentResult<CreateTextElementError>;
 
 export function createTextElement(

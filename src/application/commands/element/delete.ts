@@ -6,7 +6,7 @@ import type {
 
 import { removeElement } from "../../../domain/document/DotDocument";
 
-type DeleteElementError = RemoveElementError;
+export type DeleteElementError = RemoveElementError;
 type DeleteElementResult = DotDocumentResult<DeleteElementError>;
 
 export function deleteElement(

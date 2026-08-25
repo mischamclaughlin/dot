@@ -11,7 +11,7 @@ import {
 } from "../../../domain/document/DotDocument";
 import { isRect } from "../../../domain/geometry/Rect";
 
-type UpdateAreaError = ReplaceElementError | "invalid-rectangle";
+export type UpdateAreaError = ReplaceElementError | "invalid-rectangle";
 type UpdateAreaResult = DotDocumentResult<UpdateAreaError>;
 
 export function updateArea(

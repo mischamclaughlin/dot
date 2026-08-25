@@ -10,7 +10,7 @@ import {
     replaceElement,
 } from "../../../../domain/document/DotDocument";
 
-type UpdateStyleError = ReplaceElementError;
+export type UpdateStyleError = ReplaceElementError;
 type UpdateStyleResult = DotDocumentResult<UpdateStyleError>;
 
 export function updateStyle(

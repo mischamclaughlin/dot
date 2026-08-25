@@ -1,16 +1,16 @@
-import type { CanvasElement } from "../../../domain/elements/CanvasElement";
 import type {
     AddElementError,
     DotDocument,
     DotDocumentResult,
 } from "../../../domain/document/DotDocument";
+import type { CanvasElement } from "../../../domain/elements/CanvasElement";
 
 import {
     addElement,
     getElementById,
 } from "../../../domain/document/DotDocument";
 
-type CopyElementError = AddElementError | "invalid-id";
+export type CopyElementError = AddElementError | "invalid-id";
 type CopyElementResult = DotDocumentResult<CopyElementError>;
 
 export function copyElement(
