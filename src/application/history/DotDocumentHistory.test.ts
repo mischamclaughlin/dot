@@ -88,6 +88,31 @@ describe("undoHistory", () => {
         expect(undoDocHistory.future.at(0)).toBe(nextDocument);
     });
 
+    it("clears the previous redo branch when committing after undo", () => {
+        const initialDocument = createEmptyDocument();
+        const nextDocument = { ...initialDocument };
+        const branchedDocument = { ...initialDocument };
+
+        const history = createHistory(initialDocument);
+        const commitedHistory = commitHistory(history, nextDocument);
+        const undoneHistory = undoHistory(commitedHistory);
+
+        expect(undoneHistory).toEqual({
+            past: [],
+            present: initialDocument,
+            future: [nextDocument],
+        });
+
+        const branchedHistory = commitHistory(undoneHistory, branchedDocument);
+
+        expect(branchedHistory).toEqual({
+            past: [initialDocument],
+            present: branchedDocument,
+            future: [],
+        });
+        expect(branchedHistory.present).toBe(branchedDocument);
+    });
+
     it("return history if there's no past", () => {
         const initialDocument = createEmptyDocument();
 
@@ -129,6 +154,41 @@ describe("redoHistory", () => {
         });
         expect(redoDocHistory.present).toBe(nextDocument);
         expect(redoDocHistory.future).toEqual([]);
+    });
+
+    it("redoes documents in the correct order", () => {
+        const initialDocument = createEmptyDocument();
+        const secondDocument = { ...initialDocument };
+        const thirdDocument = { ...initialDocument };
+
+        const history = createHistory(initialDocument);
+        const secondHistory = commitHistory(history, secondDocument);
+        const thirdHistory = commitHistory(secondHistory, thirdDocument);
+
+        const undoneOnce = undoHistory(thirdHistory);
+        const undoneTwice = undoHistory(undoneOnce);
+
+        expect(undoneTwice).toEqual({
+            past: [],
+            present: initialDocument,
+            future: [secondDocument, thirdDocument],
+        });
+
+        const redoneOnce = redoHistory(undoneTwice);
+
+        expect(redoneOnce).toEqual({
+            past: [initialDocument],
+            present: secondDocument,
+            future: [thirdDocument],
+        });
+
+        const redoneTwice = redoHistory(redoneOnce);
+
+        expect(redoneTwice).toEqual({
+            past: [initialDocument, secondDocument],
+            present: thirdDocument,
+            future: [],
+        });
     });
 
     it("return history if there's no future", () => {
