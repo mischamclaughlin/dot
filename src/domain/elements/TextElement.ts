@@ -75,3 +75,22 @@ export function cloneTextElement(element: TextElement): TextElement {
         style: { ...element.style },
     };
 }
+
+export function textElementsEqual(
+    first: TextElement,
+    second: TextElement,
+): boolean {
+    return (
+        first.id === second.id &&
+        first.text === second.text &&
+        first.rect.x === second.rect.x &&
+        first.rect.y === second.rect.y &&
+        first.rect.width === second.rect.width &&
+        first.rect.height === second.rect.height &&
+        first.style.fontSize === second.style.fontSize &&
+        first.style.fontWeight === second.style.fontWeight &&
+        first.style.foregroundColour === second.style.foregroundColour &&
+        first.style.backgroundColour === second.style.backgroundColour &&
+        first.style.textAlign === second.style.textAlign
+    );
+}

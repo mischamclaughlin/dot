@@ -3,9 +3,15 @@ import type {
     DotDocumentResult,
     ReplaceElementError,
 } from "../../../../domain/document/DotDocument";
-import type { TextElement } from "../../../../domain/elements/TextElement";
+import {
+    textElementsEqual,
+    type TextElement,
+} from "../../../../domain/elements/TextElement";
 
-import { replaceElement } from "../../../../domain/document/DotDocument";
+import {
+    getElementById,
+    replaceElement,
+} from "../../../../domain/document/DotDocument";
 import { createTextElement, type CreateTextElementError } from "./create";
 
 export type CommitTextElementDraft =
@@ -39,5 +45,19 @@ export function commitTextElementDraft(
         return { ok: false, error: "id-mismatch" };
     }
 
-    return replaceElement(document, draft.element);
+    const existingElement = getElementById(document, draft.originalId);
+    const result = replaceElement(document, draft.element);
+
+    if (!result.ok) {
+        return result;
+    }
+
+    if (existingElement && textElementsEqual(existingElement, draft.element)) {
+        return {
+            ok: true,
+            document,
+        };
+    }
+
+    return result;
 }
