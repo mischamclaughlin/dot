@@ -46,13 +46,18 @@ export function commitTextElementDraft(
     }
 
     const existingElement = getElementById(document, draft.originalId);
+
+    if (!existingElement) {
+        return { ok: false, error: "invalid-id" };
+    }
+
     const result = replaceElement(document, draft.element);
 
     if (!result.ok) {
         return result;
     }
 
-    if (existingElement && textElementsEqual(existingElement, draft.element)) {
+    if (textElementsEqual(existingElement, draft.element)) {
         return {
             ok: true,
             document,

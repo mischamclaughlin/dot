@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { textElement } from "../../test/fixtures/textElement";
 import type { CanvasElement } from "../elements/CanvasElement";
-
-import { textElement } from "../../application/commands/element/test/testFactory";
 import { addElement, createEmptyDocument, replaceElement } from "./DotDocument";
 
 describe("addElement", () => {

@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { Rect } from "../../../domain/geometry/Rect";
-
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
-import { textElement } from "./test/testFactory";
+import { textElement } from "../../../test/fixtures/textElement";
 import { createTextElement } from "./textElement/create";
 import { updateArea } from "./updateArea";
 

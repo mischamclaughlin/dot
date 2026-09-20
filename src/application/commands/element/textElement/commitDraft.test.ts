@@ -1,10 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createEmptyDocument } from "../../../../domain/document/DotDocument";
+import type { TextElement } from "../../../../domain/elements/TextElement";
+import { textElement } from "../../../../test/fixtures/textElement";
 import {
     commitTextElementDraft,
     type CommitTextElementDraft,
 } from "./commitDraft";
-import { textElement } from "../test/testFactory";
 import { createTextElement } from "./create";
 
 describe("commitTextElementDraft", () => {
@@ -120,5 +121,53 @@ describe("commitTextElementDraft", () => {
             ok: false,
             error: "invalid-id",
         });
+    });
+
+    it("returns the existing document when an edit is unchanged", () => {
+        const element = textElement();
+        const created = createTextElement(createEmptyDocument(), element);
+
+        if (!created.ok) {
+            throw new Error(`createTextElement error: ${created.error}`);
+        }
+
+        const result = commitTextElementDraft(created.document, {
+            mode: "edit",
+            originalId: element.id,
+            element,
+        });
+
+        if (!result.ok) {
+            throw new Error(`commitTextElementDraft error: ${result.error}`);
+        }
+
+        expect(result.document).toBe(created.document);
+    });
+
+    it("rejects an invalid element when editing", () => {
+        const element = textElement();
+        const created = createTextElement(createEmptyDocument(), element);
+
+        if (!created.ok) {
+            throw new Error(`createTextElement error: ${created.error}`);
+        }
+
+        const invalidElement = {
+            ...element,
+            kind: "bad-kind",
+        } as unknown as TextElement;
+
+        const result = commitTextElementDraft(created.document, {
+            mode: "edit",
+            originalId: element.id,
+            element: invalidElement,
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: "invalid-element",
+        });
+
+        expect(created.document.elements[element.id]).toEqual(element);
     });
 });

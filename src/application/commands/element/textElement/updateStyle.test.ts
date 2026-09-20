@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { TextStyle } from "../../../../domain/elements/TextElement";
-
 import { createEmptyDocument } from "../../../../domain/document/DotDocument";
-import { textElement } from "../test/testFactory";
+import type { TextStyle } from "../../../../domain/elements/TextElement";
+import { textElement } from "../../../../test/fixtures/textElement";
 import { createTextElement } from "./create";
 import { updateStyle } from "./updateStyle";
 

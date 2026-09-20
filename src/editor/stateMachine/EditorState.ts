@@ -69,13 +69,13 @@ export function reduceEditorState(
         case "draftStyleChanged":
             return updateDraft(state, (draft) => ({
                 ...draft,
-                style: event.style,
+                style: { ...event.style },
             }));
 
         case "draftRectChanged":
             return updateDraft(state, (draft) => ({
                 ...draft,
-                rect: event.rect,
+                rect: { ...event.rect },
             }));
 
         case "draftSaved":

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createEmptyDocument } from "../../../domain/document/DotDocument";
 import { copyElement } from "./copy";
-import { textElement } from "./test/testFactory";
+import { textElement } from "../../../test/fixtures/textElement";
 import { createTextElement } from "./textElement/create";
 
 describe("copyElement", () => {

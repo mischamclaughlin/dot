@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { textElement } from "../../application/commands/element/test/testFactory";
+
+import { textElement } from "../../test/fixtures/textElement";
 import { createTextElement } from "../../application/commands/element/textElement/create";
 import { createEmptyDocument } from "../../domain/document/DotDocument";
 import {
@@ -305,15 +306,21 @@ describe("reduceEditorState", () => {
                 throw new Error("Expected editing-text mode");
             }
 
-            const updatedStyle = reduceEditorState(editingState, {
+            const incomingStyle = {
+                ...element.style,
+                fontSize: 12,
+            };
+
+            const updatedState = reduceEditorState(editingState, {
                 type: "draftStyleChanged",
-                style: {
-                    ...element.style,
-                    fontSize: 12,
-                },
+                style: incomingStyle,
             });
 
-            expect(updatedStyle.mode).toEqual({
+            if (updatedState.mode.status !== "editing-text") {
+                throw new Error("Expected editing-text mode");
+            }
+
+            expect(updatedState.mode).toEqual({
                 status: "editing-text",
                 originalId: "text-1",
                 draft: {
@@ -324,6 +331,7 @@ describe("reduceEditorState", () => {
                     },
                 },
             });
+            expect(updatedState.mode.draft.style).not.toBe(incomingStyle);
         });
     });
 
@@ -357,15 +365,21 @@ describe("reduceEditorState", () => {
                 throw new Error("Expected editing-text mode");
             }
 
-            const updatedRect = reduceEditorState(editingState, {
+            const incomingRect = {
+                ...element.rect,
+                x: 1000,
+            };
+
+            const updatedState = reduceEditorState(editingState, {
                 type: "draftRectChanged",
-                rect: {
-                    ...element.rect,
-                    x: 1000,
-                },
+                rect: incomingRect,
             });
 
-            expect(updatedRect.mode).toEqual({
+            if (updatedState.mode.status !== "editing-text") {
+                throw new Error("Expected editing-text mode");
+            }
+
+            expect(updatedState.mode).toEqual({
                 status: "editing-text",
                 originalId: "text-1",
                 draft: {
@@ -376,6 +390,7 @@ describe("reduceEditorState", () => {
                     },
                 },
             });
+            expect(updatedState.mode.draft.rect).not.toBe(incomingRect);
         });
     });
 

@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
+
 import { unknownTextElement, unknownTextStyle } from "../test/testFactory";
-import { isTextElement } from "./TextElement";
+import { isTextElement, textElementsEqual } from "./TextElement";
+import { textElement } from "../../test/fixtures/textElement";
 
 describe("validates TextElement", () => {
     it("returns true for a valid TextElement", () => {
@@ -13,6 +15,26 @@ describe("validates TextElement", () => {
         const isValid = isTextElement(unknownTextElement(""));
 
         expect(isValid).toEqual(false);
+    });
+
+    describe("textElementEqual", () => {
+        it("returns true when first and second are equal", () => {
+            const first = textElement();
+            const second = textElement();
+
+            const result = textElementsEqual(first, second);
+
+            expect(result).toEqual(true);
+        });
+
+        it("returns false when first and second are not equal", () => {
+            const first = textElement();
+            const second = textElement("different-id");
+
+            const result = textElementsEqual(first, second);
+
+            expect(result).toEqual(false);
+        });
     });
 
     describe("returns false for a malformed TextElement", () => {
