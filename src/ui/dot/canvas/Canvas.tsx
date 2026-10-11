@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactElement,
-} from "react";
+import { type CSSProperties, type ReactElement } from "react";
 
 import { type DocumentHistory } from "../../../application/history/DotDocumentHistory";
 import type {
@@ -12,35 +7,16 @@ import type {
 } from "../../../domain/elements/TextElement";
 import { type EditorMode } from "../../../editor/stateMachine/EditorState";
 
-import styles from "./Canvas.module.css";
 import type { Rect } from "../../../domain/geometry/Rect";
+import { DragTool } from "./components/DragTool";
 
-const textStyle = (style: TextStyle): CSSProperties => {
-  return {
-    fontSize: style.fontSize,
-    fontWeight: style.fontWeight,
-    textAlign: style.textAlign,
-    color: style.foregroundColour,
-    backgroundColor: style.backgroundColour,
-  };
-};
-
-const rectStyle = (rect: Rect): CSSProperties => {
-  return {
-    position: "absolute",
-    left: rect.x,
-    top: rect.y,
-    width: rect.width,
-    height: rect.height,
-  };
-};
+import styles from "./Canvas.module.css";
 
 type CanvasProps = {
   isActiveElement: (id: string) => boolean;
   history: DocumentHistory;
   mode: EditorMode;
-  onEditStart: (id: string) => void;
-  onRectChange: (rectUpdate: Rect) => void;
+  onRectChange: (elementId: string, rect: Rect) => void;
   onSelectElement: (id: string) => void;
   onTextChange: (event: string) => void;
 };
@@ -49,11 +25,30 @@ export default function Canvas({
   isActiveElement,
   history,
   mode,
-  onEditStart,
   onRectChange,
   onSelectElement,
   onTextChange,
 }: CanvasProps): ReactElement {
+  const textStyle = (style: TextStyle): CSSProperties => {
+    return {
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      textAlign: style.textAlign,
+      color: style.foregroundColour,
+      backgroundColor: style.backgroundColour,
+    };
+  };
+
+  const rectStyle = (rect: Rect): CSSProperties => {
+    return {
+      position: "absolute",
+      left: rect.x,
+      top: rect.y,
+      width: rect.width,
+      height: rect.height,
+    };
+  };
+
   const displayedElement = (element: TextElement): TextElement => {
     return mode.status === "editing-text" && mode.originalId === element.id
       ? mode.draft
@@ -71,6 +66,8 @@ export default function Canvas({
 
           const isEditingThis =
             mode.status === "editing-text" && mode.originalId === element.id;
+
+          const isBlocked = mode.status !== "idle" && !isEditingThis;
 
           return (
             <article
@@ -111,75 +108,66 @@ export default function Canvas({
                                 : ""
                             }`}
               >
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isEditingThis || isBlocked}
                   element={displayed}
                   dragSide="dragRect"
-                  dragType="dragButton"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragTop"
-                  dragType="dragBar"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragBottom"
-                  dragType="dragBar"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragRight"
-                  dragType="dragBar"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragLeft"
-                  dragType="dragBar"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragTopLeft"
-                  dragType="dragCorner"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragTopRight"
-                  dragType="dragCorner"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragBottomLeft"
-                  dragType="dragCorner"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
-                <ResizeBtn
+                <DragTool
+                  isDisabled={isBlocked}
                   element={displayed}
                   dragSide="dragBottomRight"
-                  dragType="dragCorner"
-                  onEditStart={() => onEditStart(displayed.id)}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
@@ -187,7 +175,7 @@ export default function Canvas({
             </article>
           );
         })}
-        {mode.status === "creating-text" && (
+        {mode.status === "creating-text" ? (
           <section className={styles.creatingText} aria-label="Saved elements">
             <textarea
               value={mode.draft.text}
@@ -199,158 +187,8 @@ export default function Canvas({
               }}
             />
           </section>
-        )}
+        ) : null}
       </section>
     </main>
-  );
-}
-
-type DragSide =
-  | "dragRect"
-  | "dragTop"
-  | "dragBottom"
-  | "dragRight"
-  | "dragLeft"
-  | "dragTopLeft"
-  | "dragTopRight"
-  | "dragBottomLeft"
-  | "dragBottomRight";
-
-type ResizeBtnProps = {
-  element: TextElement;
-  dragSide: DragSide;
-  dragType: "dragButton" | "dragBar" | "dragCorner";
-  onEditStart: (id: string) => void;
-  onRectChange: (rectUpdate: Rect) => void;
-  onSelectElement: (id: string) => void;
-};
-
-function ResizeBtn({
-  element,
-  dragSide,
-  dragType,
-  onEditStart,
-  onRectChange,
-  onSelectElement,
-}: ResizeBtnProps): ReactElement {
-  const [resizeRect, setResizeRect] = useState<Rect | null>(null);
-  const dragStart = useRef<{
-    pointerId: number;
-    x: number;
-    y: number;
-    rect: Rect;
-  } | null>(null);
-
-  function handlePointerDown(
-    event: React.PointerEvent<HTMLButtonElement>,
-    rect: Rect,
-  ) {
-    if (event.button !== 0) return;
-
-    event.preventDefault();
-    event.currentTarget.setPointerCapture(event.pointerId);
-
-    dragStart.current = {
-      pointerId: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-      rect: { ...rect },
-    };
-  }
-
-  function handlePointerMove(
-    event: React.PointerEvent<HTMLButtonElement>,
-    dragSide: DragSide,
-  ) {
-    const start = dragStart.current;
-    if (!start || event.pointerId !== start.pointerId) return;
-
-    onEditStart(element.id);
-
-    if (dragSide === "dragRect") {
-      setResizeRect({
-        ...start.rect,
-        x: start.rect.x + event.clientX - start.x,
-        y: start.rect.y + event.clientY - start.y,
-      });
-
-      return;
-    }
-
-    const movesLeft =
-      dragSide === "dragLeft" ||
-      dragSide === "dragTopLeft" ||
-      dragSide === "dragBottomLeft";
-    const movesRight =
-      dragSide === "dragRight" ||
-      dragSide === "dragTopRight" ||
-      dragSide === "dragBottomRight";
-    const movesTop =
-      dragSide === "dragTop" ||
-      dragSide === "dragTopLeft" ||
-      dragSide === "dragTopRight";
-    const movesBottom =
-      dragSide === "dragBottom" ||
-      dragSide === "dragBottomLeft" ||
-      dragSide === "dragBottomRight";
-
-    const distanceX = movesLeft || movesRight ? event.clientX - start.x : 0;
-    const distanceY = movesTop || movesBottom ? event.clientY - start.y : 0;
-
-    const width = start.rect.width + (movesLeft ? -distanceX : distanceX);
-    const height = start.rect.height + (movesTop ? -distanceY : distanceY);
-
-    setResizeRect({
-      ...start.rect,
-      x: movesLeft
-        ? start.rect.x + Math.min(distanceX, start.rect.width)
-        : start.rect.x + Math.min(0, width),
-      y: movesTop
-        ? start.rect.y + Math.min(distanceY, start.rect.height)
-        : start.rect.y + Math.min(0, height),
-      width: Math.abs(width),
-      height: Math.abs(height),
-    });
-  }
-
-  function handlePointerEnd(event: React.PointerEvent<HTMLButtonElement>) {
-    if (event.pointerId !== dragStart.current?.pointerId) return;
-
-    dragStart.current = null;
-
-    if (resizeRect !== null && event.type === "pointerup") {
-      onRectChange({ ...resizeRect });
-    }
-    setResizeRect(null);
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  }
-
-  return (
-    <>
-      <button
-        className={`${styles[dragType]} ${styles[dragSide]}`}
-        aria-label={`Resize ${dragSide.replace("drag", "")}`}
-        type="button"
-        onPointerDown={(event) => handlePointerDown(event, element.rect)}
-        onPointerMove={(event) => handlePointerMove(event, dragSide)}
-        onPointerUp={handlePointerEnd}
-        onPointerCancel={handlePointerEnd}
-        onClick={() => onSelectElement(element.id)}
-      />
-      {resizeRect !== null ? (
-        <div
-          className={styles.tempResizeArea}
-          style={{
-            left: resizeRect.x - element.rect.x,
-            top: resizeRect.y - element.rect.y,
-            width: resizeRect.width,
-            height: resizeRect.height,
-          }}
-        />
-      ) : null}
-    </>
   );
 }

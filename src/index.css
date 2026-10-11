@@ -1,54 +1,62 @@
 :root {
-    /* ---------------------------------------------------------------------- */
-    --c-accent: #286983;
-    --c-accent-1: #d7827e;
+  /* ---------------------------------------------------------------------- */
+  --c-accent: #286983;
+  --c-accent-1: #d7827e;
+  --c-accent-2: #56949f;
 
-    --c-fg: #464261;
-    --c-bg: #faf4ed;
+  --c-accent-faded: #28698310;
+  --c-accent-1-faded: #d7827e10;
 
-    --c-surface: #fffaf3;
-    --c-overlay: #f2e9e1;
+  --c-fg: #464261;
+  --c-bg: #faf4ed;
 
-    --c-highlight-l: #f4ede8;
-    --c-highlight-m: #dfdad9;
-    --c-highlight-h: #cecacd;
+  --c-surface: #fffaf3;
+  --c-overlay: #f2e9e1;
 
-    --c-success: #56949f;
-    --c-error: #b4637a;
-    --c-info: #907aa9;
+  --c-highlight-l: #f4ede8;
+  --c-highlight-m: #dfdad9;
+  --c-highlight-h: #cecacd;
 
-    /* ---------------------------------------------------------------------- */
-    --accent: var(--c-accent);
-    --accent-1: var(--c-accent-1);
+  --c-success: #56949f;
+  --c-error: #b4637a;
+  --c-info: #907aa9;
 
-    --fg: var(--c-fg);
-    --bg: var(--c-bg);
+  /* ---------------------------------------------------------------------- */
+  --accent: var(--c-accent);
+  --accent-1: var(--c-accent-1);
+  --accent-2: var(--c-accent-2);
 
-    --surface: var(--c-surface);
-    --overlay: var(--c-overlay);
+  --accent-faded: var(--c-accent-faded);
+  --accent-1-faded: var(--c-accent-1-faded);
 
-    --highlight-l: var(--c-highlight-l);
-    --highlight-m: var(--c-highlight-m);
-    --highlight-h: var(--c-highlight-h);
+  --fg: var(--c-fg);
+  --bg: var(--c-bg);
 
-    --success: var(--c-success);
-    --error: var(--c-error);
-    --info: var(--c-info);
+  --surface: var(--c-surface);
+  --overlay: var(--c-overlay);
+
+  --highlight-l: var(--c-highlight-l);
+  --highlight-m: var(--c-highlight-m);
+  --highlight-h: var(--c-highlight-h);
+
+  --success: var(--c-success);
+  --error: var(--c-error);
+  --info: var(--c-info);
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-family: inherit;
-    line-height: 1.2;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: inherit;
+  line-height: 1.2;
 }
 
 button {
-    cursor: pointer;
-    transition:
-        color 50ms ease-in,
-        background-color 50ms ease-in,
-        filter 50ms ease-in;
+  cursor: pointer;
+  transition:
+    color 50ms ease-in,
+    background-color 50ms ease-in,
+    filter 50ms ease-in;
 }

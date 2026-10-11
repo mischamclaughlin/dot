@@ -27,15 +27,23 @@ export default function Dot(): ReactElement {
 
   const isEditPossible: boolean = selectedElementIds.length > 0;
 
-  const handleEditStart = () =>
-    selectedElementIds.map((id) => {
-      dispatch({
-        type: "editStarted",
-        originalId: id,
-      });
-    });
-  const handleElementEditStart = (id: string) => {
-    return dispatch({ type: "editStarted", originalId: id });
+  const handleEditStart = (elementId?: string) => {
+    const id = elementId ?? selectedElementIds[0];
+    if (id === undefined) return;
+
+    setSelectedElementIds((curr) => (curr.includes(id) ? curr : [...curr, id]));
+
+    dispatch({ type: "editStarted", originalId: id });
+  };
+
+  const handleElementRectChange = (elementId: string, rect: Rect) => {
+    if (!isRect(rect)) return;
+
+    if (mode.status === "editing-text" && mode.originalId === elementId) {
+      dispatch({ type: "draftRectChanged", rect });
+    } else {
+      dispatch({ type: "elementRectChanged", elementId, rect });
+    }
   };
 
   const handleSave = () => {
@@ -103,21 +111,20 @@ export default function Dot(): ReactElement {
         isEditing={isEditing}
         isEditPossible={isEditPossible}
         draft={draft}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onUndo={handleUndo}
-        onRedo={handleRedo}
         onAddText={handleAddText}
+        onCancel={handleCancel}
+        onEditStart={() => handleEditStart()}
         onRectChange={handleRectChange}
-        onEditStart={handleEditStart}
+        onRedo={handleRedo}
+        onSave={handleSave}
+        onUndo={handleUndo}
       />
 
       <Canvas
         isActiveElement={isActiveElement}
         history={history}
         mode={state.mode}
-        onEditStart={handleElementEditStart}
-        onRectChange={handleRectChange}
+        onRectChange={handleElementRectChange}
         onSelectElement={handleSelectElement}
         onTextChange={handleTextChange}
       />

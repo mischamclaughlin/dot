@@ -2,6 +2,7 @@ import {
   commitTextElementDraft,
   type CommitTextElementDraftError,
 } from "../../application/commands/element/textElement/commitDraft";
+import { updateArea } from "../../application/commands/element/updateArea";
 import {
   commitHistory,
   redoHistory,
@@ -43,7 +44,8 @@ export type EditorEvent =
   | Readonly<{ type: "draftSaved" }>
   | Readonly<{ type: "draftCancelled" }>
   | Readonly<{ type: "undo" }>
-  | Readonly<{ type: "redo" }>;
+  | Readonly<{ type: "redo" }>
+  | Readonly<{ type: "elementRectChanged"; elementId: string; rect: Rect }>;
 
 export function createEditorState(history: DocumentHistory): EditorState {
   return { history, mode: { status: "idle" } };
@@ -95,6 +97,24 @@ export function reduceEditorState(
       return state.mode.status === "idle"
         ? { ...state, history: redoHistory(state.history) }
         : state;
+
+    case "elementRectChanged": {
+      const result = updateArea(
+        state.history.present,
+        event.elementId,
+        event.rect,
+      );
+
+      if (!result.ok) {
+        return { ...state, lastError: result.error };
+      }
+
+      return {
+        ...state,
+        history: commitHistory(state.history, result.document),
+        lastError: undefined,
+      };
+    }
   }
 }
 

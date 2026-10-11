@@ -1,0 +1,78 @@
+.tempResizeArea {
+  z-index: 1000;
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--accent-faded);
+  border: 1px dashed var(--accent);
+  backdrop-filter: blur(1px);
+}
+
+.dragArea {
+  --drag-size: 16px;
+
+  z-index: 1000;
+  pointer-events: auto;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  transition: background-color 50ms ease-in;
+}
+.dragArea:hover {
+  background-color: rgba(255, 0, 0, 0.078);
+}
+
+.dragRect {
+  cursor: move;
+  place-self: center;
+}
+.dragTop,
+.dragBottom {
+  cursor: ns-resize;
+  height: var(--drag-size);
+}
+.dragLeft,
+.dragRight {
+  cursor: ew-resize;
+  width: var(--drag-size);
+}
+.dragTop {
+  place-self: start center;
+}
+.dragBottom {
+  place-self: end center;
+}
+.dragLeft {
+  place-self: center start;
+}
+.dragRight {
+  place-self: center end;
+}
+
+.dragTopLeft,
+.dragTopRight,
+.dragBottomLeft,
+.dragBottomRight {
+  width: var(--drag-size);
+  height: var(--drag-size);
+}
+.dragTopLeft,
+.dragBottomRight {
+  cursor: nwse-resize;
+}
+.dragTopRight,
+.dragBottomLeft {
+  cursor: nesw-resize;
+}
+.dragTopLeft {
+  place-self: start start;
+}
+.dragTopRight {
+  place-self: start end;
+}
+.dragBottomLeft {
+  place-self: end start;
+}
+.dragBottomRight {
+  place-self: end end;
+}
