@@ -1,7 +1,6 @@
 .tempResizeArea {
-  z-index: 1000;
-  position: absolute;
   pointer-events: none;
+  position: absolute;
   background-color: var(--accent-faded);
   border: 1px dashed var(--accent);
   backdrop-filter: blur(1px);
@@ -10,7 +9,6 @@
 .dragArea {
   --drag-size: 16px;
 
-  z-index: 1000;
   pointer-events: auto;
   position: absolute;
   height: 100%;

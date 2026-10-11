@@ -42,7 +42,7 @@ export default function Sidebar({
         }}
       >
         <nav className={styles.buttonLayout} aria-label="Editor actions">
-          <button onClick={() => onAddText()} disabled={isEditing}>
+          <button onClick={onAddText} disabled={isEditing}>
             Add text
           </button>
           <button onClick={() => onEditStart()} disabled={isEditingPossible}>

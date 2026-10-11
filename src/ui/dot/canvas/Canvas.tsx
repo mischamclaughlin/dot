@@ -1,14 +1,10 @@
-import { type CSSProperties, type ReactElement } from "react";
-
-import { type DocumentHistory } from "../../../application/history/DotDocumentHistory";
-import type {
-  TextElement,
-  TextStyle,
-} from "../../../domain/elements/TextElement";
-import { type EditorMode } from "../../../editor/stateMachine/EditorState";
-
+import { useCallback, type ReactElement } from "react";
+import type { DocumentHistory } from "../../../application/history/DotDocumentHistory";
 import type { Rect } from "../../../domain/geometry/Rect";
-import { DragTool } from "./components/DragTool";
+import type { EditorMode } from "../../../editor/stateMachine/EditorState";
+import CanvasElement from "./components/CanvasElement";
+import DragOverlay from "./components/DragTool";
+import { rectStyle, textStyle } from "./shared/Style";
 
 import styles from "./Canvas.module.css";
 
@@ -29,145 +25,51 @@ export default function Canvas({
   onSelectElement,
   onTextChange,
 }: CanvasProps): ReactElement {
-  const textStyle = (style: TextStyle): CSSProperties => {
-    return {
-      fontSize: style.fontSize,
-      fontWeight: style.fontWeight,
-      textAlign: style.textAlign,
-      color: style.foregroundColour,
-      backgroundColor: style.backgroundColour,
-    };
-  };
+  const mapElement = useCallback(
+    (id: string) => {
+      const element = history.present.elements[id];
+      if (!element) return null;
 
-  const rectStyle = (rect: Rect): CSSProperties => {
-    return {
-      position: "absolute",
-      left: rect.x,
-      top: rect.y,
-      width: rect.width,
-      height: rect.height,
-    };
-  };
+      const isEditingThis =
+        mode.status === "editing-text" && mode.originalId === id;
 
-  const displayedElement = (element: TextElement): TextElement => {
-    return mode.status === "editing-text" && mode.originalId === element.id
-      ? mode.draft
-      : element;
-  };
+      return {
+        displayed: isEditingThis ? mode.draft : element,
+        isActive: isActiveElement(id),
+        isEditingThis,
+        isBlocked: mode.status !== "idle" && !isEditingThis,
+      };
+    },
+    [history.present.elements, mode, isActiveElement],
+  );
 
   return (
     <main className={styles.canvas}>
-      <section className={styles.savedElements} aria-label="Saved elements">
+      <section className={styles.savedElements} aria-label="Canvas elements">
         {history.present.rootIds.map((id) => {
-          const element = history.present.elements[id];
-          if (!element) return null;
-
-          const displayed = displayedElement(element);
-
-          const isEditingThis =
-            mode.status === "editing-text" && mode.originalId === element.id;
-
-          const isBlocked = mode.status !== "idle" && !isEditingThis;
+          const mapped = mapElement(id);
+          if (!mapped) return null;
 
           return (
             <article
-              key={element.id}
+              key={mapped.displayed.id}
               style={{
-                ...rectStyle(displayed.rect),
-                ...textStyle(displayed.style),
+                ...rectStyle(mapped.displayed.rect),
+                ...textStyle(mapped.displayed.style),
               }}
             >
-              {isEditingThis ? (
-                <textarea
-                  aria-label="Element text"
-                  value={displayed.text}
-                  onChange={(event) => onTextChange(event.target.value)}
-                  style={{
-                    ...textStyle(displayed.style),
-                    width: "100%",
-                    height: "100%",
-                    resize: "none",
-                  }}
-                />
-              ) : (
-                <p
-                  style={{
-                    ...textStyle(displayed.style),
-                    position: "absolute",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {displayed.text}
-                </p>
-              )}
-              <div
-                className={`${styles.selectLayer}
-                            ${
-                              isActiveElement(displayed.id)
-                                ? styles.activeElement
-                                : ""
-                            }`}
-              >
-                <DragTool
-                  isDisabled={isEditingThis || isBlocked}
-                  element={displayed}
-                  dragSide="dragRect"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragTop"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragBottom"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragRight"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragLeft"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragTopLeft"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragTopRight"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragBottomLeft"
-                  onRectChange={onRectChange}
-                  onSelectElement={onSelectElement}
-                />
-                <DragTool
-                  isDisabled={isBlocked}
-                  element={displayed}
-                  dragSide="dragBottomRight"
+              <CanvasElement
+                isEditingThis={mapped.isEditingThis}
+                element={mapped.displayed}
+                onTextChange={onTextChange}
+              />
+              <div className={styles.selectLayer}>
+                <div className={mapped.isActive ? styles.activeElement : ""} />
+                <DragOverlay
+                  isActive={mapped.isActive}
+                  isBlocked={mapped.isBlocked}
+                  isEditingThis={mapped.isEditingThis}
+                  element={mapped.displayed}
                   onRectChange={onRectChange}
                   onSelectElement={onSelectElement}
                 />
@@ -176,17 +78,15 @@ export default function Canvas({
           );
         })}
         {mode.status === "creating-text" ? (
-          <section className={styles.creatingText} aria-label="Saved elements">
-            <textarea
-              value={mode.draft.text}
-              onChange={(event) => onTextChange(event.target.value)}
-              style={{
-                ...rectStyle(mode.draft.rect),
-                ...textStyle(mode.draft.style),
-                resize: "none",
-              }}
-            />
-          </section>
+          <textarea
+            value={mode.draft.text}
+            onChange={(event) => onTextChange(event.target.value)}
+            style={{
+              ...rectStyle(mode.draft.rect),
+              ...textStyle(mode.draft.style),
+              resize: "none",
+            }}
+          />
         ) : null}
       </section>
     </main>
