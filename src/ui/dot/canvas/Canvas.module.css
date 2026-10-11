@@ -1,99 +1,117 @@
 .canvas {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .creatingText,
+.tempResizeArea,
 .savedElements,
 .selectLayer {
-    position: relative;
-    height: 100%;
-    width: 100%;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.tempResizeArea {
+  position: absolute;
+  pointer-events: none;
+  background-color: rgba(255, 0, 0, 0.238);
 }
 
 .activeElement {
-    border: 1px solid blue;
+  border: 1px solid blue;
 }
 
 .selectLayer {
-    background-color: transparent;
-    display: grid;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-color: transparent;
+  display: grid;
 }
 
-.selectButton {
-    cursor: move;
-    height: 95%;
-    width: 95%;
-    place-self: center;
-    background-color: transparent;
-    transition: background-color 50ms ease-in;
+.dragButton,
+.dragBar,
+.dragCorner {
+  pointer-events: auto;
 }
-.selectButton:hover {
-    background-color: rgba(255, 0, 0, 0.078);
+
+.dragButton {
+  cursor: move;
+  height: 95%;
+  width: 95%;
+  place-self: center;
+  background-color: transparent;
+  transition: background-color 50ms ease-in;
+}
+.dragButton:hover {
+  background-color: rgba(255, 0, 0, 0.078);
 }
 
 .dragBar {
-    position: absolute;
-    height: 95%;
-    width: 95%;
-    background-color: transparent;
-    transition: background-color 50ms ease-in;
+  position: absolute;
+  height: 95%;
+  width: 95%;
+  background-color: transparent;
+  transition: background-color 50ms ease-in;
 }
 .dragBar:hover {
-    background-color: rgba(255, 0, 0, 0.078);
+  background-color: rgba(255, 0, 0, 0.078);
 }
 
 .dragTop {
-    cursor: ns-resize;
-    height: 2.5%;
-    place-self: start center;
+  cursor: ns-resize;
+  height: 2.5%;
+  place-self: start center;
 }
 
 .dragBottom {
-    cursor: ns-resize;
-    height: 2.5%;
-    place-self: end center;
+  cursor: ns-resize;
+  height: 2.5%;
+  place-self: end center;
 }
 
 .dragRight {
-    cursor: ew-resize;
-    width: 2.5%;
-    place-self: center end;
+  cursor: ew-resize;
+  width: 2.5%;
+  place-self: center end;
 }
 
 .dragLeft {
-    cursor: ew-resize;
-    width: 2.5%;
-    place-self: center start;
+  cursor: ew-resize;
+  width: 2.5%;
+  place-self: center start;
 }
 
 .dragCorner {
-    position: absolute;
-    height: 2.5%;
-    width: 2.5%;
-    background-color: transparent;
-    transition: background-color 50ms ease-in;
+  position: absolute;
+  height: 2.5%;
+  width: 2.5%;
+  background-color: transparent;
+  transition: background-color 50ms ease-in;
 }
 .dragCorner:hover {
-    background-color: rgba(255, 0, 0, 0.078);
+  background-color: rgba(255, 0, 0, 0.078);
 }
 
 .dragTopLeft {
-    cursor: nwse-resize;
-    place-self: start start;
+  cursor: nwse-resize;
+  place-self: start start;
 }
 
 .dragTopRight {
-    cursor: nesw-resize;
-    place-self: start end;
+  cursor: nesw-resize;
+  place-self: start end;
 }
 
 .dragBottomLeft {
-    cursor: nesw-resize;
-    place-self: end start;
+  cursor: nesw-resize;
+  place-self: end start;
 }
 
 .dragBottomRight {
-    cursor: nwse-resize;
-    place-self: end end;
+  cursor: nwse-resize;
+  place-self: end end;
 }
