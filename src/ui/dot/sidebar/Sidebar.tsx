@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import type { TextElement } from "../../../domain/elements/TextElement";
 import type { Rect } from "../../../domain/geometry/Rect";
 
@@ -29,10 +29,44 @@ export default function Sidebar({
   onSave,
   onUndo,
 }: SidebarProps): ReactElement {
+  const [widthControl, setWdithControl] = useState<{
+    isDragging: boolean;
+    width: number;
+  }>({ isDragging: false, width: 100 });
+
   const isEditingPossible = !isEditPossible || isEditing;
 
+  function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+
+    setWdithControl({ isDragging: true, width: event.clientX });
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    if (!widthControl.isDragging) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+
+    setWdithControl({ isDragging: true, width: event.clientX });
+  }
+
+  function handlePointerEnd(event: React.PointerEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    setWdithControl({
+      isDragging: false,
+      width: widthControl.width,
+    });
+  }
+
   return (
-    <div className={styles.sidebar}>
+    <div
+      className={styles.sidebar}
+      style={{
+        width: `${widthControl.width}px`,
+      }}
+    >
       <form
         className={styles.sidebarLayout}
         style={{ display: "flex", flexDirection: "column" }}
@@ -48,8 +82,8 @@ export default function Sidebar({
           <button onClick={() => onEditStart()} disabled={isEditingPossible}>
             Edit
           </button>
-          <button onClick={() => onUndo()}>Undo</button>
           <button onClick={() => onRedo()}>Redo</button>
+          <button onClick={() => onUndo()}>Undo</button>
         </nav>
         {draft && (
           <>
@@ -158,6 +192,13 @@ export default function Sidebar({
           </>
         )}
       </form>
+      <button
+        className={styles.dragBar}
+        onPointerDown={(event) => handlePointerDown(event)}
+        onPointerMove={(event) => handlePointerMove(event)}
+        onPointerCancel={(event) => handlePointerEnd(event)}
+        onPointerUp={(event) => handlePointerEnd(event)}
+      />
     </div>
   );
 }

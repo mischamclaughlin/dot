@@ -17,7 +17,7 @@
   transition: background-color 50ms ease-in;
 }
 .dragArea:hover {
-  background-color: rgba(255, 0, 0, 0.078);
+  background-color: var(--accent-faded);
 }
 
 .dragRect {

@@ -1,27 +1,42 @@
 .sidebar {
-    z-index: 1000;
-    background-color: #00000050;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    border-right: 1px solid #00000050;
+  --drag-size: 16px;
+
+  z-index: 2000;
+  background-color: #00000050;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  border-right: 1px solid #00000050;
+  display: grid;
 }
 
 .sidebarLayout {
-    padding: 0.75rem 0.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .buttonLayout {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .buttonLayout button {
-    padding: 0.5rem 0.25rem;
-    text-align: left;
+  padding: 0.5rem 0.25rem;
+  text-align: left;
+}
+
+.dragBar {
+  position: absolute;
+  width: var(--drag-size);
+  height: 100%;
+  background-color: transparent;
+  place-self: end;
+}
+.dragBar:hover {
+  cursor: col-resize;
+  background-color: var(--accent);
 }
