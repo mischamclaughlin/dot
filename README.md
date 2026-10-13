@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Dot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dot is a React, TypeScript and Vite prototype for arranging styled text blocks on a dot-grid canvas. This README describes the `main` branch.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node.js 22.13+ on the Node 22 release line, or Node.js 24+, and npm.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open the local URL printed by Vite. To build and preview the production bundle:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm run build
+npm run preview
 ```
+
+The build output is written to `dist/`. No backend or environment-variable configuration is required.
+
+## Using the editor
+
+1. Drag on the dot grid to draw a text region, then choose **Text**, or choose **Text** before drawing.
+2. Enter text and use the sidebar to choose typography presets, text/content alignment and foreground/background colours.
+3. Choose **Save** to add the block to the current document, or **Back** / **Escape** to leave the draft.
+4. Use a saved block's edge handles to resize it. The sidebar can be resized or hidden using its fullscreen controls; these controls hide the sidebar rather than entering browser fullscreen.
+
+## Current limitations
+
+Documents live in React state in memory. **Save** commits to the current document; refreshing the page loses the content. Persistent storage, file import/export and undo/redo are not implemented on this branch.
+
+Text is the implemented tool. Padding controls are not exposed. Editing existing blocks is experimental: starting an edit removes the original from the document, and cancelling does not restore it; the text controls may also remain hidden when no tool is selected.
+
+## Architecture
+
+| Location | Responsibility |
+| --- | --- |
+| `src/components/SquareDot.tsx` | Reducer-backed editor composition. |
+| `src/components/model/` | Versioned document and notification models. |
+| `src/components/components/SquareDot/` | Canvas, sidebar, text controls, grid service and editor reducer. |
+| `src/test/` | Shared jsdom test setup. |
+
+React components dispatch reducer actions; the canvas and sidebar render editor state. Grid services handle snapping and coordinate conversion. The document model holds saved elements separately from the current drawing or editing session.
+
+## Development checks
+
+| Command | Purpose |
+| --- | --- |
+| `npm test` | Run the Vitest suite once. |
+| `npm run test:watch` | Run tests in watch mode. |
+| `npm run lint` | Run ESLint. |
+| `npm run build` | Type-check with TypeScript and build with Vite. |
+
+Tests use Vitest with jsdom and shared setup in `src/test/setup.ts`. The `test:ui` script is also defined, but its optional `@vitest/ui` package is not included in the dependencies.
+
+Run the relevant deterministic checks for behaviour changes. Canvas layout, dragging, resizing, focus and sidebar interactions also need browser verification; source inspection and unit tests do not establish that these interactions work correctly.
