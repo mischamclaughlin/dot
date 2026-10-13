@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+# Dot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dot is a React, TypeScript and Vite text editor on a dot-grid canvas. The `full-full-rework` branch extends the document/editor-state implementation with parent relationships and configurable inheritance.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node.js 22.13+ on the Node 22 release line, or Node.js 24+, and npm.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open the local URL printed by Vite. To build and preview the production bundle:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm run build
+npm run preview
 ```
+
+The build output is written to `dist/`. No backend or environment-variable configuration is required.
+
+## Using the editor
+
+1. Draw a region on the dot grid and choose the text tool, or choose the text tool before drawing.
+2. Type into the text area and save the element, or cancel the draft.
+3. Use saved-element controls to edit, copy, delete or select elements. Drag an element to move it and use its edge handles to resize it.
+4. Select multiple elements to move, copy or delete them together; use the sidebar to clear the selection.
+5. Hold Command while dragging with the left mouse button to pan the canvas. Resize or hide the sidebar using its controls; fullscreen hides the sidebar rather than entering browser fullscreen.
+
+Select two or more elements to choose a parent using the sidebar. Select a child to unlink it, or select a parent to configure which dimensions and style attributes its children inherit. Child text and positions remain independent. These relationship features are experimental.
+
+## Current limitations
+
+Documents live in React state in memory. **Save** commits to the current document; refreshing the page loses the content. Persistent storage, file import/export and undo/redo are not implemented on this branch.
+
+Text is the implemented element type. Inheritance resolves parent dimensions and style attributes; it does not provide a general text-style editor. Inherited dimensions are locked in the child resize controls.
+
+## Architecture
+
+| Location | Responsibility |
+| --- | --- |
+| `src/components/Dot/components/Canvas/` | Drawing, editing, saved elements and drag controls. |
+| `src/components/Dot/components/Sidebar/` | Tool, selection, parent and inheritance controls. |
+| `src/components/Dot/model/` | Schema-version 2 document and transient editor state. |
+| `src/components/Dot/state/` | Initial state, reducer and reducer tests. |
+| `src/components/Dot/services/` | Grid geometry and inherited geometry/style resolution. |
+| `src/components/Dot/dotConfig/` | Canvas and sidebar configuration. |
+| `src/test/` | Shared jsdom test setup. |
+
+React components dispatch reducer actions; the canvas and sidebar render editor state. Grid services handle snapping and coordinate conversion. The document model holds saved elements separately from the current drawing or editing session.
+
+## Development checks
+
+| Command | Purpose |
+| --- | --- |
+| `npm test` | Run the Vitest suite once. |
+| `npm run test:watch` | Run tests in watch mode. |
+| `npm run lint` | Run ESLint. |
+| `npm run build` | Type-check with TypeScript and build with Vite. |
+
+Tests use Vitest with jsdom and shared setup in `src/test/setup.ts`. The `test:ui` script is also defined, but its optional `@vitest/ui` package is not included in the dependencies.
+
+Run the relevant deterministic checks for behaviour changes. Canvas layout, dragging, resizing, focus and sidebar interactions also need browser verification; source inspection and unit tests do not establish that these interactions work correctly.
