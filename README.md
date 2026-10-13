@@ -6,7 +6,7 @@ The editor lets you create and edit text elements, move and resize them, and und
 
 ## Getting started
 
-Use Node.js 22.12+ within the Node 22 release line, or Node.js 24+, and npm.
+Use Node.js 22.13+ within the Node 22 release line, or Node.js 24+, and npm.
 
 ```sh
 npm ci
@@ -53,7 +53,7 @@ The editor keeps an active draft separate from the committed document. Saving va
 | --- | --- |
 | `npm test` | Run the Vitest suite once. |
 | `npm run test:watch` | Run tests in watch mode. |
-| `npm run test:ui` | Open the Vitest test interface. |
+| `npm run test:ui` | Open the Vitest interface after installing the optional `@vitest/ui` package, which is not included in the dependencies. |
 | `npm run test:coverage` | Run tests with V8 coverage and enforce the configured thresholds. |
 | `npm run lint` | Run ESLint. |
 | `npm run build` | Type-check with TypeScript and build with Vite. |
